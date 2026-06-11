@@ -7,7 +7,7 @@ Inner cards / timeline / accents reuse `library/` unless the topic demands somet
 ## Generate
 
 ```bash
-/Users/aref/.claude/skills/gemini-imagegen/scripts/generate_image.py "PROMPT" out.jpg --aspect 4:5 --size 2K
+$HOME/.claude/skills/gemini-imagegen/scripts/generate_image.py "PROMPT" out.jpg --aspect 4:5 --size 2K
 ```
 
 Then make it blend into the slide background. **The method depends on whether the theme is light or

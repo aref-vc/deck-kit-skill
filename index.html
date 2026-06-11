@@ -41,12 +41,12 @@
     <p class="lede">One backbone, ten distinct looks. Each deck opens in any browser, edits in place,
       swaps its own images, and exports a pixel-accurate PDF. No install, no server.</p>
     <p class="meta">Each card opens a live, empty template, or the same Claude Fable 5 report rendered
-      in that style. Full source on <a href="https://github.com/aref-vc/deck-kit">GitHub</a>.</p>
+      in that style. Full source on <a href="https://github.com/aref-vc/deck-kit-skill">GitHub</a>.</p>
   </header>
   <div class="grid" id="grid"></div>
   <footer>
     Built with the Deck Kit. Fonts are open-licensed (SIL OFL / Apache 2.0). See the
-    <a href="README.md">README</a> and <a href="deck-kit/BUILD.md">build spec</a>.
+    <a href="README.md">README</a> and <a href="SKILL.md">skill spec</a>.
   </footer>
 </div>
 <script>
@@ -65,12 +65,12 @@
   document.getElementById('grid').innerHTML = T.map(function(t){
     var id=t[0]+'-'+t[1];
     return '<div class="card">'
-      + '<a href="deck-kit/templates/'+id+'/deck.html"><img class="shot" loading="lazy" src="screenshots/'+id+'-grid.jpg" alt="'+t[2]+' slides"></a>'
+      + '<a href="templates/'+id+'/deck.html"><img class="shot" loading="lazy" src="screenshots/'+id+'-grid.jpg" alt="'+t[2]+' slides"></a>'
       + '<div class="body"><div class="row"><h2>'+t[2]+'</h2><span class="num">'+t[0]+'</span></div>'
       + '<div class="fam">'+t[3]+'</div>'
       + '<div class="best">'+t[4]+'</div>'
-      + '<div class="links"><a href="deck-kit/templates/'+id+'/deck.html">Open template &rarr;</a>'
-      + '<a href="deck-kit/examples/fable5/'+id+'/deck.html">Fable 5 example &rarr;</a></div>'
+      + '<div class="links"><a href="templates/'+id+'/deck.html">Open template &rarr;</a>'
+      + '<a href="examples/fable5/'+id+'/deck.html">Fable 5 example &rarr;</a></div>'
       + '</div></div>';
   }).join('');
 </script>

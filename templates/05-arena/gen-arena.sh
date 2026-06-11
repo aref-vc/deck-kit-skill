@@ -4,7 +4,7 @@
 # Place directly, with only a gentle black-point lift so shadows merge into #0E0E0E.
 set -uo pipefail
 cd "$(dirname "$0")"
-GEN=/Users/aref/.claude/skills/gemini-imagegen/scripts/generate_image.py
+GEN=$HOME/.claude/skills/gemini-imagegen/scripts/generate_image.py
 gen(){ # name prompt aspect
   "$GEN" "$2 High-contrast black and white sports photograph, dramatic low-key lighting on a near-black #0E0E0E background, a single electric-yellow (#E8FF00) rim light accent, motion energy, fine film grain, editorial sports magazine look. No text, no letters, no watermark." "assets/$1" --aspect "$3" --size 2K >/dev/null 2>&1 \
     && magick "assets/$1" -level 5%,100% -quality 90 "assets/$1" \

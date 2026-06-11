@@ -5,7 +5,7 @@
 # onto the #0E0E0E background so the PDF needs no blend mode.
 set -u
 cd "$(dirname "$0")"
-GEN="/Users/aref/.claude/skills/gemini-imagegen/scripts/generate_image.py"
+GEN="$HOME/.claude/skills/gemini-imagegen/scripts/generate_image.py"
 BG="#0E0E0E"
 
 bake(){ # name

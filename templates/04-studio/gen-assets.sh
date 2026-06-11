@@ -1,7 +1,7 @@
 #!/bin/bash
 set -u
-cd "/Users/aref/Dev/04_Design Exploration/Decks Design/deck-kit/templates/04-studio"
-GEN="/Users/aref/.claude/skills/gemini-imagegen/scripts/generate_image.py"
+cd "$(dirname "$0")"
+GEN="$HOME/.claude/skills/gemini-imagegen/scripts/generate_image.py"
 BG="#F5F4F2"
 STYLE="Bold high-contrast duotone photograph, two-tone posterized, heavy grain, editorial creative-studio mood. Two-color treatment only: deep near-black shadows and a light warm off-white background hex #F5F4F2 in the highlights. A single saturated accent tint pushes through. Flat, graphic, confident negative space. No text, no logos, no watermarks."
 

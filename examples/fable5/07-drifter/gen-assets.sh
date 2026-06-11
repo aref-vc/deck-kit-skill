@@ -5,7 +5,7 @@
 # via multiply so the PDF needs no blend mode.
 set -uo pipefail
 cd "$(dirname "$0")"
-GEN=/Users/aref/.claude/skills/gemini-imagegen/scripts/generate_image.py
+GEN=$HOME/.claude/skills/gemini-imagegen/scripts/generate_image.py
 BG="#EAE0CF"
 gen(){ # name prompt aspect size
   "$GEN" "$2" "assets/$1" --aspect "$3" --size "$4" >/dev/null 2>&1 \

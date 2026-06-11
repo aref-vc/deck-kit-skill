@@ -25,7 +25,7 @@ Each deck, out of the box, can:
 
 ## See it in action
 
-`deck-kit/examples/fable5/` is one real report (the launch of Anthropic's Claude Fable 5) rendered
+`examples/fable5/` is one real report (the launch of Anthropic's Claude Fable 5) rendered
 through all ten templates, with the real benchmark figures. It is the clearest way to see how the
 same content reads in ten different voices.
 
@@ -46,39 +46,50 @@ same content reads in ten different voices.
 
 Full 12-slide patchworks for each are in [`screenshots/`](screenshots) (the `*-grid.jpg` files).
 
-## How to use it
+## Install as a Claude skill
 
-**With Claude (the intended path).** Ask it to build a deck in a given template from your input. It
-maps your content onto the twelve sections, regenerates or selects imagery, and produces the deck.
-The spec it follows is [`deck-kit/BUILD.md`](deck-kit/BUILD.md).
+This repository **is** a Claude skill (a `SKILL.md` at the root plus its resources). For Claude Code,
+clone it into your skills directory:
 
-**By hand.**
+```bash
+git clone https://github.com/aref-vc/deck-kit-skill.git ~/.claude/skills/deck-kit
+```
+
+Then just ask Claude for a deck, or type `/deck-kit`:
+
+> Build me a luxury-style pitch deck from this brief …
+
+Claude reads `SKILL.md`, picks a template, maps your content onto the twelve slides, handles imagery,
+and hands back a single self-contained `deck-standalone.html`. For claude.ai, zip this folder and
+upload it under **Settings → Features**.
+
+Optional: for fresh, topic-matched imagery on the six photo templates, also install the companion
+[`gemini-imagegen`](https://github.com/anthropics/skills) skill and set `GEMINI_API_KEY`. The four SVG
+templates (Grid, Ledger, Terminal, Vanguard) need nothing.
+
+## Use it by hand (no skill needed)
 
 ```bash
 # 1) scaffold a new deck from a template
-deck-kit/scripts/new-deck.sh my-deck 04-studio
-
-# 2) edit the content in my-deck/deck.html (or open it and press E to edit in place)
-
+scripts/new-deck.sh my-deck 04-studio
+# 2) edit my-deck/deck.html (or open it and press E to edit text and images in place)
 # 3) build the single self-contained file
 cd my-deck && python3 build-standalone.py     # -> deck-standalone.html
-
-# open deck-standalone.html anywhere, or deck.html via a local server
 ```
 
 ## Project structure
 
 ```
-deck-kit/
-  BUILD.md                 the build spec (how a deck gets made)
-  TEMPLATES.md             the registry of the ten templates
+deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
+  SKILL.md                 the skill: when to use it + the build workflow
+  TEMPLATES.md             registry of the ten templates
   templates/01..10/        each template: deck.html, assets/, vendor/ (fonts + lib), build-standalone.py
   references/              palettes, slide-types, imagery rules
   library/                 reusable collage assets + manifest
   scripts/                 new-deck.sh, add-image-swap.py
   examples/fable5/         the Fable 5 report, rendered ten ways
-screenshots/               covers + 12-slide patchworks (used here and on the gallery page)
-index.html                 a gallery page (GitHub Pages)
+  screenshots/             covers + 12-slide patchworks
+  README.md, index.html    presentation + gallery (not used by the skill itself)
 ```
 
 ## Dependencies
@@ -96,4 +107,4 @@ index.html                 a gallery page (GitHub Pages)
 - `deck-standalone.html` and `*.pdf` are generated artifacts and are git-ignored; regenerate with
   `build-standalone.py`.
 - Dark photo templates must use dark-background imagery placed directly, never the light-theme multiply
-  bake (it crushes images to black). See [`deck-kit/references/image-prompts.md`](deck-kit/references/image-prompts.md).
+  bake (it crushes images to black). See [`references/image-prompts.md`](references/image-prompts.md).
