@@ -108,3 +108,6 @@ deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
   `build-standalone.py`.
 - Dark photo templates must use dark-background imagery placed directly, never the light-theme multiply
   bake (it crushes images to black). See [`references/image-prompts.md`](references/image-prompts.md).
+- `python3 scripts/check-decks.py` asserts every template and example deck shares the same core chrome
+  (navigation, palette, inline editing, PDF export, image swap). Run it as a pre-push or CI guard so a
+  template-only change can't silently skip the examples.
