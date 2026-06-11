@@ -4,7 +4,7 @@
 repo, or a brief, and it produces a 16:9 deck you can open in any browser, edit in place, and export
 to a pixel-accurate PDF. No build step to view, no fonts to install, no server.
 
-![Ten template covers](screenshots/_hero.jpg)
+![Ten template covers](screenshots/hero.jpg)
 
 ---
 

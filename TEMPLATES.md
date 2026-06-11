@@ -1,10 +1,10 @@
-# Deck Template Library — Proposal
+# Template Registry
 
-A family of themed deck templates that all share **one YAML backbone** (the style schema below) but
-fill it with a distinct mood, palette, typography, visual medium, and layout signature. The end user
-calls a template by id — `template-05` — and points it at an input (research dossier, repo, document,
-chat, brief). The backbone is what makes them interchangeable in the pipeline; the fill is what makes
-each one feel like a different studio made it.
+Ten themed deck templates that share **one 12-slide backbone** (the style schema below) but fill it with
+a distinct mood, palette, typography, visual medium, and layout signature. They live in
+`templates/<id>-<name>/`; pick one by id and point it at an input (research dossier, repo, document,
+chat, brief). The backbone is what makes them interchangeable; the fill is what makes each one feel like
+a different studio made it.
 
 ---
 
@@ -52,7 +52,7 @@ theme → assemble → image → PDF) works unchanged.
 
 | # | Call | Codename | Family | Visual medium | Best input |
 |---|------|----------|--------|---------------|-----------|
-| 01 | `template-01` | **Newsroom** | Editorial collage *(built)* | Sculpture + newsprint collage | Brand story, manifesto, research dossier |
+| 01 | `template-01` | **Newsroom** | Editorial collage | Sculpture + newsprint collage | Brand story, manifesto, research dossier |
 | 02 | `template-02` | **Grid** | Mondrian / De Stijl | Primary color planes + black rules | Frameworks, design systems, modular breakdowns |
 | 03 | `template-03` | **Plein Air** | Impressionist | Painterly washes + soft photography | Culture, vision, narrative, human topics |
 | 04 | `template-04` | **Studio** | Creative agency | Bold duotone + type-as-hero | Pitches, portfolios, brand proposals |
@@ -74,7 +74,7 @@ theme → assemble → image → PDF) works unchanged.
 | 06 Maison | `#F1ECE3` | `#1B1A18` | gold `#B08D4C` · burgundy `#6E2433` · ink |
 | 07 Drifter | `#EAE0CF` | `#3B3225` | terracotta `#C2683E` · mustard `#C9942F` · olive `#7C7A4A` · kraft `#9C7A4E` |
 | 08 Ledger | `#FBFAF8` | `#16181D` | signal red `#E5484D` · grey ramp `#C9CCD1 → #3A3E47` |
-| 09 Terminal | `#E8E6D9` (greenbar) | `#14160F` | CRT green `#2E7D32` · amber `#C77B16` · IBM blue `#1F4E8C` · *(dark variant: `#0B0E0C` + phosphor `#33FF66`)* |
+| 09 Terminal | `#0A0E0A` (dark CRT) | `#E3FBE9` | phosphor green `#3BE26B` · amber `#FFB454` · cyan `#54D1E6` |
 | 10 Vanguard | `#F2F5F7` (lab) | `#0A0F1C` | electric blue `#2B6BFF` · cyan `#19D3E0` · violet `#7A3CFF` · *(dark HUD variant: `#0A0F1C` + cyan glow)* |
 
 ---
@@ -112,9 +112,9 @@ the "visual assets" are sparklines, small multiples, dot-plots, tables, and the 
 photo. Grotesque + mono tabular figures. Dense but ordered, footnoted, sourced. *Abandons collage for
 charts.* For analyst, financial, and research decks.
 
-**09 · Terminal (Coding / IT vintage)** — Monospace everywhere, ASCII frames, punch cards, circuit
-traces, schematic line diagrams, dot-matrix print, vintage-hardware B&W. Greenbar-paper light theme
-(prints well) with an optional dark CRT-terminal variant. For repos, architecture, agent/AI systems.
+**09 · Terminal (Coding / IT)** — A dark CRT console: black-green phosphor on near-black, real terminal
+windows (traffic-light dots, `$` prompts), ASCII frames, circuit traces, and schematic line diagrams,
+with subtle scanlines. Monospace throughout. For repos, architecture, agent/AI systems.
 
 **10 · Vanguard (Robotics / futuristic)** — Wireframe/HUD overlays, exploded isometric mech renders,
 blueprint line-art, sensor scans, glowing nodes, targeting reticles; wide techy grotesque + mono.
@@ -122,20 +122,9 @@ Light "lab" theme + dark "HUD" variant. For deep-tech, robotics, R&D.
 
 ---
 
-## One design decision to align on
+## Imagery medium
 
-The original Newsroom template is **photo-collage**. Four of the new themes are *most authentic in a
-different medium*: **Grid** (geometric planes), **Ledger** (charts), **Terminal** (schematic/mono),
-**Vanguard** (wireframe/HUD). My recommendation: let each template adopt its **native medium** rather
-than forcing collage everywhere — that's what makes a 10-template library feel genuinely distinct
-instead of ten reskins of the same look. The backbone's `imagery.medium` field already encodes this
-(`collage | duotone-photo | painterly | geometric | charts | wireframe | ephemera`), so the pipeline
-branches on it: collage/ephemera/painterly themes generate imagery via Gemini; geometric/charts themes
-render assets as inline SVG/CSS instead.
-
-## Build order (suggested)
-
-Finish **01 Newsroom** (deck-02 in progress) as the reference implementation, then build in waves by
-how different the medium is from what exists:
-1. Closest (reuse collage pipeline): **07 Drifter**, **04 Studio**, **05 Arena**, **06 Maison**, **03 Plein Air**
-2. New medium (SVG/CSS or chart pipeline): **02 Grid**, **08 Ledger**, **09 Terminal**, **10 Vanguard**
+Each template declares an `imagery.medium`. Collage, duotone-photo, painterly, and ephemera templates
+(01, 03, 04, 05, 06, 07) use photographic or generated imagery via the `gemini-imagegen` skill;
+geometric, charts, and wireframe templates (02, 08, 09, 10) render their visuals as inline SVG and need
+no image generation.

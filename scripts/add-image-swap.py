@@ -10,10 +10,10 @@ Idempotent: skips files already carrying the feature. Geometric (SVG-only) slots
 """
 import pathlib
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]  # the repo root
+ROOT = pathlib.Path(__file__).resolve().parents[1]  # repo root (scripts/ is one level down)
 # every template, plus any example decks
-FILES = sorted((ROOT / "deck-kit/templates").glob("*/deck.html")) \
-      + sorted((ROOT / "deck-kit/examples").glob("*/*/deck.html"))
+FILES = sorted((ROOT / "templates").glob("*/deck.html")) \
+      + sorted((ROOT / "examples").glob("*/*/deck.html"))
 
 CSS = """
   /* ---- IMGSWAP_FEATURE: click or drop to replace an image (edit mode only) ---- */

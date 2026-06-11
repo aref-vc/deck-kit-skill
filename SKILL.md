@@ -1,6 +1,14 @@
 ---
 name: deck-kit
-description: Build a polished, self-contained 16:9 HTML slide deck from any input (a topic, a document, a repo, a chat, or a brief) in one of ten editorial styles: editorial collage, Mondrian, impressionist, creative-agency, sports, luxury, earthy kraft, data/charts, dark terminal, or futuristic wireframe. Every deck has live palette switching, inline text and image editing, and one-click pixel-accurate PDF export with fonts embedded. Use this whenever the user wants a presentation, slide deck, pitch deck, report deck, capabilities deck, sales deck, or asks to "turn this into slides" or "make a deck", even if they do not name a style, and especially when they want a specific visual look or a report rendered as slides.
+description: >-
+  Build a polished, self-contained 16:9 HTML slide deck from any input (a topic, a document, a repo, a
+  chat, or a brief) in one of ten editorial styles, from editorial collage, Mondrian, impressionist,
+  creative-agency, sports, and luxury to earthy kraft, data charts, dark terminal, and futuristic
+  wireframe. Every deck has live palette switching, inline text and image editing, and one-click
+  pixel-accurate PDF export with fonts embedded. Use this whenever the user wants a presentation, slide
+  deck, pitch deck, report deck, capabilities deck, sales deck, or asks to turn something into slides or
+  make a deck, even if they do not name a style, and especially when they want a specific visual look or
+  a report rendered as slides.
 ---
 
 # Deck Kit

@@ -39,7 +39,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         try:
             subprocess.run(
                 [CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-                 "--no-sandbox", f"--print-to-pdf={tmp}", f"http://localhost:{PORT}/{DECK}"],
+                 f"--print-to-pdf={tmp}", f"http://localhost:{PORT}/{DECK}"],
                 check=True, timeout=120,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             with open(tmp, "rb") as f:
