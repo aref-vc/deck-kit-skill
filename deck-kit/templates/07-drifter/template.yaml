@@ -1,0 +1,104 @@
+# template-07 · Drifter
+# Hobo / earthy kraft-ephemera reskin of the deck backbone.
+# Same 12-slide chrome as deck-02; reskinned palette, fonts, imagery, copy, layout.
+
+id: "07"
+call: template-07
+name: Drifter
+family: editorial-collage
+status: built            # built | draft | planned
+best_for:
+  - craft and artisanal brands
+  - travel and field goods
+  - sustainability story
+  - field report
+
+reference_decks:
+  - deck-kit/templates/07-drifter/deck.html   # 12-slide, kraft palette, Alfa Slab One / Spline Sans / Courier Prime
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range; this build ships 12
+
+mood:
+  - earthy
+  - handcrafted
+  - warm
+  - editorial
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: drifter
+  themes:
+    drifter:   { bg: "#EAE0CF", ink: "#3B3225", ink_2: "#6B5E4A", paper: "#F2EAD8",
+                 red: "#C2683E", cyan: "#A8542F", yellow: "#C9942F", olive: "#7C7A4A", peach: "#9C7A4E" }
+    newsroom:  { bg: "#ECECEC", ink: "#1E1E1E", ink_2: "#565656", paper: "#F6F4EE",
+                 red: "#E5443B", cyan: "#34C5CE", yellow: "#ECC94B", olive: "#C2CE86", peach: "#F0AA8B" }
+    riso:      { bg: "#F2EFE6", ink: "#1A1A2E", red: "#F8487F", cyan: "#3D5AFE", yellow: "#FFC400", olive: "#26C281", peach: "#FF8A65" }
+    noir:      { bg: "#E9E7E2", ink: "#161616", red: "#E5403A", cyan: "#9AA0A6", yellow: "#C9C2B0", olive: "#B8BCAE", peach: "#CDC4BB" }
+    botanic:   { bg: "#EDE9DF", ink: "#2B2A26", red: "#CE5B3C", cyan: "#5FA6B5", yellow: "#E0A52E", olive: "#7E8C4F", peach: "#E5A07C" }
+  # accent slots keep deck-02 names but hold Drifter hexes:
+  # red=terracotta cyan=rust yellow=mustard olive=olive peach=kraft-brown
+
+typography:
+  source: google-fonts     # bundled locally in vendor/fonts so the PDF embeds them
+  pairing:
+    alfa-spline-courier:
+      heading: { family: Alfa Slab One, weight: 400, case: title }   # woodtype slab; size carries weight
+      body:    { family: Spline Sans, weight: 400 }
+      label:   { family: Courier Prime, weight: 400, case: upper }   # kickers, page numbers, footer, nav
+
+imagery:
+  medium: ephemera         # kraft-paper ephemera collage
+  strategy: generate-all   # all 12 slide heroes generated in this medium
+  motifs:
+    - kraft paper and torn paper scraps
+    - postage stamps, postmark cancellation rings
+    - jute twine, hand-stitched thread, photo corners, masking tape
+    - sepia travel photographs
+    - folded route maps, ticket stubs, luggage tags
+  rendering: [kraft paper grain, sepia photo, coffee stain, torn edges, soft scrapbook shadows]
+  generate: { tool: gemini-imagegen, post: "magick -level 0%,88% multiply onto --bg #EAE0CF" }
+  fallback: css-svg        # each image sits in a .slot with a compass-rose CSS/SVG placeholder
+
+layout:
+  signature:
+    - scrapbook / field-journal feel
+    - taped photo cutouts and layered ephemera
+    - postmark rings and hand-stitched dashed rules
+    - route-map fragments connecting elements
+    - warm asymmetric editorial, one idea per slide
+  blocks:
+    - cover
+    - statement
+    - index
+    - about
+    - landscape          # "The ground"
+    - pillars            # "How we build" (5)
+    - services           # "What we make" (3)
+    - team               # "The crew" (6 placeholders)
+    - numbers            # "By the numbers" (placeholders)
+    - roadmap            # "The trail ahead" (6 milestones)
+    - perspective        # pull quote
+    - closing            # contact
+
+effects:
+  texture: [kraft paper grain, coffee stain, film grain overlay]
+  shadows: soft scrapbook
+  motifs: [tape, postmark, route-line, stitch, knot]
+
+rules:
+  - kraft ephemera collage over illustration; no corporate clip-art
+  - sepia photos taped and mounted; flat torn accent-colour paper
+  - include stamps, postmarks, twine, stitched and route-map motifs
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

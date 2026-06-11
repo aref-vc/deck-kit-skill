@@ -1,0 +1,105 @@
+# template-08 · Ledger
+# Data / market-research deck. Same backbone as template-01; reskinned to a
+# Tufte-clean, monochromatic chart system with one signal red.
+
+id: "08"
+call: template-08
+name: Ledger
+family: editorial-data
+status: built            # built | draft | planned
+best_for:
+  - market research
+  - financial / analyst decks
+  - KPI reviews
+  - due diligence
+reference_decks:         # working implementations in this repo
+  - deck-kit/templates/08-ledger/deck.html   # 12-slide, bone-white + signal red, charts medium
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range
+
+mood:
+  - editorial
+  - analytical
+  - quiet
+  - ordered
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: ledger
+  themes:
+    ledger:    { bg: "#FBFAF8", ink: "#16181D", ink_2: "#5B5F66", paper: "#FFFFFF",
+                 red: "#E5484D", cyan: "#3A3E47", yellow: "#7B8089", olive: "#9CA0A8", peach: "#C9CCD1" }
+    # note: in Ledger the five accent slots hold ONE signal red plus a grey ramp
+    #       (#C9CCD1 light -> #3A3E47 dark) instead of five hues.
+    newsroom:  { bg: "#ECECEC", ink: "#1E1E1E", ink_2: "#565656", paper: "#F6F4EE",
+                 red: "#E5443B", cyan: "#34C5CE", yellow: "#ECC94B", olive: "#C2CE86", peach: "#F0AA8B" }
+    riso:      { bg: "#F2EFE6", ink: "#1A1A2E", red: "#F8487F", cyan: "#3D5AFE", yellow: "#FFC400", olive: "#26C281", peach: "#FF8A65" }
+    noir:      { bg: "#E9E7E2", ink: "#161616", red: "#E5403A", cyan: "#9AA0A6", yellow: "#C9C2B0", olive: "#B8BCAE", peach: "#CDC4BB" }
+    botanic:   { bg: "#EDE9DF", ink: "#2B2A26", red: "#CE5B3C", cyan: "#5FA6B5", yellow: "#E0A52E", olive: "#7E8C4F", peach: "#E5A07C" }
+
+typography:
+  source: google-fonts
+  bundled: true          # woff2 localized under vendor/fonts so the PDF embeds them
+  # varied away from deck-02 (Fraunces/Spline/Space Mono): a single Inter superfamily + Plex Mono
+  pairings:
+    inter-tight-plex:
+      heading: { family: Inter Tight, weight: 600, case: title }
+      body:    { family: Inter, weight: 400 }
+      label:   { family: IBM Plex Mono, weight: 500, case: upper, numerals: tabular }  # kickers, figures, footer, tables
+
+imagery:
+  medium: charts         # collage | duotone-photo | painterly | geometric | charts | wireframe | ephemera
+  strategy: authored     # no generated photos; all visuals are inline SVG/CSS dataviz
+  motifs:
+    - sparklines and small multiples
+    - dot-plots and tenure strips
+    - scatter / quadrant bubble plots
+    - cumulative area charts
+    - forecast lines with confidence bands
+    - dense data tables with tabular numerals
+  rendering: [flat vector, hairline gridlines, one signal accent, no shadows, no photos]
+  generate: none
+  fallback: inline-svg    # visuals live in .slot blocks as SVG; no external assets to miss
+
+layout:
+  signature:
+    - Tufte-clean and monochromatic with one signal colour
+    - high data-ink ratio, hairline gridlines, no chartjunk
+    - dense but ordered grids with footnotes and source lines
+    - asymmetric editorial split: text left, chart right
+    - one idea per slide
+  blocks:                # the section vocabulary; pick and order per outline
+    - cover              # stacked sparkline panel
+    - statement          # full-bleed opening line + signal bar chart
+    - index              # contents + dot-plot marker
+    - about              # narrative + cumulative area chart
+    - landscape          # two-column context + scatter/quadrant
+    - method             # 5-step process line (was pillars)
+    - coverage           # 3 sector cards with mini bar charts (was services)
+    - team               # tenure dot-plot (placeholders)
+    - numbers            # stats + data table (placeholders)
+    - outlook            # forecast line with confidence band (was roadmap)
+    - perspective        # pull quote + error-bar motif
+    - closing            # contact + ledger dot grid
+
+effects:
+  texture: [faint paper tone overlay only]
+  shadows: none
+
+rules:
+  - charts over decoration; no chartjunk, no 3D, no gradients
+  - one signal colour (red); everything else ink and a grey ramp
+  - every figure carries a source line and labels stay readable
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable (incl. table cells)
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, headless: export-pdf.sh, standalone: build-standalone.py }  # one exact 1600x900 page per slide

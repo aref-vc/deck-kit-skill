@@ -1,0 +1,105 @@
+# template-01 · Newsroom
+# Worked example of the deck backbone. Every other template fills the same keys.
+# Build pipeline reads this file to drive ingest -> outline -> theme -> assemble -> image -> pdf.
+
+id: "01"
+call: template-01
+name: Newsroom
+family: editorial-collage
+status: built            # built | draft | planned
+best_for:
+  - brand story
+  - manifesto
+  - research dossier
+  - capabilities deck
+reference_decks:         # working implementations in this repo
+  - editorial-collage/deck.html      # 9-slide reference
+  - deck-02/deck.html                # 12-slide, warm-bone palette, Fraunces/Spline/Space Mono
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range
+
+mood:
+  - editorial
+  - avant-garde
+  - artful
+  - contemporary
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: meridian
+  themes:
+    newsroom:  { bg: "#ECECEC", ink: "#1E1E1E", ink_2: "#565656", paper: "#F6F4EE",
+                 red: "#E5443B", cyan: "#34C5CE", yellow: "#ECC94B", olive: "#C2CE86", peach: "#F0AA8B" }
+    meridian:  { bg: "#ECE8E1", ink: "#1A1A1A", ink_2: "#5A554D", paper: "#F4EFE6",
+                 red: "#E85D2A", cyan: "#2A3D8F", yellow: "#E0A22E", olive: "#9DAE77", peach: "#E0A083" }
+    riso:      { bg: "#F2EFE6", ink: "#1A1A2E", red: "#F8487F", cyan: "#3D5AFE", yellow: "#FFC400", olive: "#26C281", peach: "#FF8A65" }
+    noir:      { bg: "#E9E7E2", ink: "#161616", red: "#E5403A", cyan: "#9AA0A6", yellow: "#C9C2B0", olive: "#B8BCAE", peach: "#CDC4BB" }
+    botanic:   { bg: "#EDE9DF", ink: "#2B2A26", red: "#CE5B3C", cyan: "#5FA6B5", yellow: "#E0A52E", olive: "#7E8C4F", peach: "#E5A07C" }
+
+typography:
+  source: google-fonts
+  # vary the pairing per deck so two Newsroom decks do not read identically
+  pairings:
+    archivo-inter:                       # deck.html (reference)
+      heading: { family: Archivo, weight: 900, case: upper, width: condensed }
+      body:    { family: Inter, weight: 400 }
+      label:   { family: Archivo, weight: 600, case: upper }
+    fraunces-spline-mono:                # deck-02
+      heading: { family: Fraunces, weight: 900, case: title }
+      body:    { family: Spline Sans, weight: 400 }
+      label:   { family: Space Mono, weight: 400, case: upper }   # kickers, page numbers, footer
+
+imagery:
+  medium: collage        # collage | duotone-photo | painterly | geometric | charts | wireframe | ephemera
+  strategy: hybrid       # reuse library + generate only the topic-carrying heroes
+  motifs:
+    - classical sculpture (busts, statues, marble hands and eyes)
+    - torn vintage newspaper
+    - planets, moon, halftone circles
+    - flat accent-colour paper shapes
+    - hand-drawn ink scribbles
+  rendering: [mixed-media collage, paper grain, halftone, monochrome subject + colour accent]
+  generate: { tool: gemini-imagegen, post: "magick -level 0%,88-90%" }   # white-point to blend via multiply
+  fallback: css-svg      # every image sits in a .slot with a CSS/SVG placeholder if the asset is missing
+
+layout:
+  signature:
+    - strong asymmetry
+    - oversized headlines
+    - floating cutouts that bleed off edges
+    - generous negative space
+  blocks:                # the section vocabulary; pick and order per outline
+    - cover
+    - statement          # full-bleed opening line
+    - index              # contents
+    - about              # narrative + figure
+    - landscape          # two-column context
+    - pillars            # 5-6 elements in a row
+    - services           # 3-4 cards
+    - team               # portrait gallery (placeholders)
+    - numbers            # stats / results (placeholders)
+    - roadmap            # timeline, 4-6 milestones
+    - perspective        # pull quote
+    - closing            # contact
+
+effects:
+  texture: [newsprint, paper grain, film grain overlay]
+  shadows: minimal
+
+rules:
+  - collage over illustration; no corporate clip-art
+  - monochrome photography with flat accent-colour shapes
+  - include torn-paper fragments and newsprint
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

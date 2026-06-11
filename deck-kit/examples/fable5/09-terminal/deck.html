@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Fable 5 // Release Report</title>
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<style>
+  /* ===== palette themes ===== */
+  :root,
+  .theme-terminal{          /* dark CRT terminal: black-green phosphor + amber / cyan */
+    --bg:#0A0E0A; --ink:#E3FBE9; --ink-2:#7FB890; --paper:#101710;
+    --red:#3BE26B; --cyan:#54D1E6; --yellow:#FFB454; --olive:#9BD66B; --peach:#FF6B6B;
+  }
+  .theme-newsroom{
+    --bg:#ECECEC; --ink:#1E1E1E; --ink-2:#565656; --paper:#F6F4EE;
+    --red:#E5443B; --cyan:#34C5CE; --yellow:#ECC94B; --olive:#C2CE86; --peach:#F0AA8B;
+  }
+  .theme-riso{
+    --bg:#F2EFE6; --ink:#1A1A2E; --ink-2:#5A5A6E; --paper:#FBFAF4;
+    --red:#F8487F; --cyan:#3D5AFE; --yellow:#FFC400; --olive:#26C281; --peach:#FF8A65;
+  }
+  .theme-noir{
+    --bg:#E9E7E2; --ink:#161616; --ink-2:#4F4F4F; --paper:#F4F2EC;
+    --red:#E5403A; --cyan:#9AA0A6; --yellow:#C9C2B0; --olive:#B8BCAE; --peach:#CDC4BB;
+  }
+  .theme-botanic{
+    --bg:#EDE9DF; --ink:#2B2A26; --ink-2:#5E5B50; --paper:#F6F2E8;
+    --red:#CE5B3C; --cyan:#5FA6B5; --yellow:#E0A52E; --olive:#7E8C4F; --peach:#E5A07C;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:var(--bg);overflow:hidden}
+  body{font-family:'JetBrains Mono',monospace;color:var(--ink)}
+
+  .viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  .stage{position:relative;width:1600px;height:900px;flex:none;transform-origin:center center}
+  .slide{position:absolute;inset:0;background:var(--bg);opacity:0;visibility:hidden;transition:opacity .45s ease;overflow:hidden}
+  .slide.active{opacity:1;visibility:visible}
+
+  /* subtle CRT scanlines + screen vignette, behind content so text stays crisp */
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:
+      repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,.22) 2px, rgba(0,0,0,.22) 3px),
+      radial-gradient(130% 130% at 50% 45%, transparent 58%, rgba(0,0,0,.55) 100%);
+  }
+  /* faint screen grain overlay */
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.22;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== schematic visual slot (inline SVG lives here) ===== */
+  .slot{position:absolute;z-index:6}
+  .slot svg{width:100%;height:100%;display:block}
+
+  /* ===== typography ===== */
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;font-weight:400;text-transform:uppercase;color:var(--ink-2);letter-spacing:.16em;line-height:1.95}
+  h1,h2,h3,.num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+  h1{font-size:104px;font-weight:700;line-height:.96;letter-spacing:-.03em}
+  h2{font-size:54px;font-weight:700;line-height:1.02;letter-spacing:-.02em}
+  h3{font-size:21px;font-weight:700;letter-spacing:-.005em}
+  .kicker{font-family:'Space Mono',monospace;font-weight:400;text-transform:uppercase;font-size:12.5px;letter-spacing:.18em;color:var(--red)}
+  .body{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:400;line-height:1.78;color:var(--ink-2)}
+  .small{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:400;line-height:1.66;color:var(--ink-2)}
+  /* code-comment annotation */
+  .cmt{font-family:'Space Mono',monospace;font-size:12.5px;font-weight:400;color:var(--ink-2);letter-spacing:.02em}
+  .cmt::before{content:"// ";color:var(--red)}
+  /* terminal prompt prefix */
+  .prompt::before{content:"$ ";color:var(--red);font-weight:700}
+
+  .foot{position:absolute;bottom:30px;left:64px;right:64px;display:flex;justify-content:space-between;z-index:30;
+        font-family:'Space Mono',monospace;font-weight:400;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+
+  /* boxed ASCII frame: drawn with a 1px ink border + corner tick marks */
+  .frame{position:absolute;border:1.5px solid var(--ink);z-index:4}
+  .frame::before,.frame::after{content:"+";position:absolute;font-family:'JetBrains Mono',monospace;font-size:16px;line-height:1;color:var(--ink)}
+  .frame::before{left:-8px;top:-11px}
+  .frame::after{right:-8px;bottom:-12px}
+  /* dashed sub-frame */
+  .dframe{position:absolute;border:1px dashed var(--ink-2);z-index:3}
+
+  /* ledger rule */
+  .rule{height:4px;background:var(--red)}
+  /* dot grid / punch-card holes */
+  .dotgrid{position:absolute;z-index:5;background-image:radial-gradient(var(--ink) 2px,transparent 2.4px);background-size:20px 20px}
+
+  /* tag chip */
+  .tag{display:inline-block;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+       border:1.5px solid var(--ink);padding:3px 9px;color:var(--ink)}
+
+  /* ===== index ===== */
+  .index-list{position:absolute;left:100px;top:236px;width:760px;z-index:10}
+  .index-row{display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px dashed rgba(127,184,144,.28)}
+  .index-row .num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--red);min-width:48px}
+  .index-row h3{font-size:20px;flex:1;font-weight:400}
+  .index-row .pg{font-family:'Space Mono',monospace;font-weight:400;font-size:12px;color:var(--ink-2);letter-spacing:.1em}
+
+  /* ===== two-column ===== */
+  .twocol{position:absolute;left:100px;top:250px;width:700px;display:grid;grid-template-columns:1fr 1fr;gap:48px;z-index:10}
+  .twocol h3{margin-bottom:12px}
+  .twocol h3::before{content:"> ";color:var(--red)}
+
+  /* ===== row labels ===== */
+  .rowlabel{position:absolute;width:206px;transform:translateX(-50%);text-align:center;z-index:10}
+  .rowlabel h3{font-size:17px;margin-bottom:5px}
+
+  /* ===== cards ===== */
+  .col3{position:absolute;left:100px;right:100px;top:236px;display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:54px;z-index:6}
+  .col3 .cell{display:flex;flex-direction:column;border:1.5px solid var(--ink);padding:0}
+  .col3 .cardtop{height:36px;border-bottom:1.5px solid var(--ink);display:flex;align-items:center;padding:0 12px;
+                 font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+  .col3 .slot{position:relative;width:100%;height:182px}
+  .col3 .cardbody{padding:18px}
+  .col3 h3{margin:0 0 10px}
+  .col3 h3::before{content:"# "}
+
+  /* ===== stats ===== */
+  .stats{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:34px 56px;z-index:10}
+  .stat .statnum{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:62px;line-height:1;color:var(--ink)}
+  .stat .statlabel{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-2);margin-top:4px;letter-spacing:.06em}
+  .stat .bar{width:48px;height:5px;background:var(--red);margin:12px 0 0}
+
+  /* ===== timeline ===== */
+  .tl-line{position:absolute;height:0;border-top:2px dashed var(--ink);z-index:10}
+  .tl-dot{position:absolute;width:11px;height:11px;background:var(--bg);border:2px solid var(--ink);transform:translate(-50%,-6px) rotate(45deg);z-index:11}
+  .tl-year{position:absolute;transform:translateX(-50%);font-family:'Space Mono',monospace;font-weight:700;font-size:17px;z-index:10}
+
+  /* ===== contact ===== */
+  .contact{display:flex;flex-direction:column;gap:16px;margin-top:36px}
+  .contact div{display:flex;align-items:center;gap:14px;font-size:15px;color:var(--ink)}
+  .contact svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ===== nav + toolbar ===== */
+  .nav{position:fixed;right:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:10px;
+       font-family:'Space Mono',monospace;font-weight:400;font-size:11px;letter-spacing:.12em;color:var(--ink-2);user-select:none}
+  .nav button{border:1px solid rgba(227,251,233,.28);background:transparent;color:var(--ink);width:30px;height:30px;cursor:pointer;font-size:14px}
+  .nav button:hover{background:var(--ink);color:var(--bg)}
+  .toolbar{position:fixed;left:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:8px;
+           font-family:'Space Mono',monospace;font-weight:400;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.32;transition:opacity .2s}
+  .toolbar:hover{opacity:1}
+  .toolbar select,.toolbar button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);
+           border:1px solid rgba(227,251,233,.28);background:rgba(18,26,18,.75);height:30px;padding:0 10px;cursor:pointer}
+  .toolbar button:hover{background:var(--ink);color:var(--bg)}
+  .toolbar button.on{background:var(--red);border-color:var(--red);color:#fff}
+
+  body.editing [contenteditable]{outline:1px dashed rgba(227,251,233,.4);outline-offset:3px;border-radius:2px}
+  body.editing [contenteditable]:focus{outline:1.5px solid var(--red);background:rgba(40,60,44,.5)}
+
+  /* during PDF export, force every slide fully visible so each captures its real content */
+  body.exporting .slide{opacity:1!important;visibility:visible!important;transition:none!important}
+
+  @media print{
+    @page{size:1600px 900px;margin:0}
+    html,body{overflow:visible;height:auto;background:#fff}
+    .viewport{position:static;display:block;width:auto;height:auto}
+    .stage{position:static;transform:none!important;width:1600px;height:auto}
+    .slide{position:relative;inset:auto;opacity:1!important;visibility:visible!important;
+           width:1600px;height:900px;break-after:page;page-break-after:always;
+           -webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .slide:last-child{break-after:auto;page-break-after:auto}
+    .nav,.toolbar{display:none!important}
+  }
+</style>
+</head>
+<body class="theme-terminal">
+
+<div class="viewport"><div class="stage">
+
+  <!-- 01 · COVER -->
+  <section class="slide active">
+    <!-- punch-card holes top-left -->
+    <div class="dotgrid" style="left:64px;top:64px;width:200px;height:40px;opacity:.5"></div>
+    <!-- right-side schematic: stacked rack / circuit board -->
+    <div class="slot" style="left:1000px;top:120px;width:520px;height:660px">
+      <svg viewBox="0 0 520 660" fill="none">
+        <rect x="2" y="2" width="516" height="656" stroke="var(--ink)" stroke-width="2"/>
+        <!-- rack units -->
+        <g stroke="var(--ink)" stroke-width="1.5">
+          <rect x="34" y="40" width="452" height="78"/>
+          <rect x="34" y="142" width="452" height="78"/>
+          <rect x="34" y="244" width="452" height="78"/>
+        </g>
+        <!-- status leds -->
+        <circle cx="64" cy="79" r="7" fill="var(--red)"/>
+        <circle cx="64" cy="181" r="7" fill="var(--yellow)"/>
+        <circle cx="64" cy="283" r="7" fill="var(--cyan)"/>
+        <g font-family="'Space Mono',monospace" font-size="13" fill="var(--ink-2)">
+          <text x="92" y="84">fable-5  ONLINE</text>
+          <text x="92" y="186">mythos-5  TRUSTED</text>
+          <text x="92" y="288">opus-4.8  FALLBACK</text>
+        </g>
+        <!-- circuit traces lower half -->
+        <g stroke="var(--ink)" stroke-width="1.5" fill="none">
+          <path d="M40 380 H180 V470 H300"/>
+          <path d="M40 430 H120 V540 H300"/>
+          <path d="M300 380 H480"/>
+          <path d="M300 470 V540 H480"/>
+        </g>
+        <g fill="var(--ink)">
+          <circle cx="40" cy="380" r="5"/><circle cx="40" cy="430" r="5"/>
+          <circle cx="480" cy="380" r="5"/><circle cx="480" cy="540" r="5"/>
+          <circle cx="300" cy="470" r="5"/>
+        </g>
+        <rect x="240" y="450" width="120" height="40" fill="var(--cyan)"/>
+        <text x="300" y="476" font-family="'Space Mono',monospace" font-size="13" fill="#fff" text-anchor="middle">CORE</text>
+        <text x="34" y="630" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">CLAUDE-5 // MYTHOS-CLASS // READY</text>
+      </svg>
+    </div>
+    <div style="position:absolute;left:100px;top:200px;z-index:10;max-width:780px">
+      <p class="eyebrow">Release report // June 2026</p>
+      <h1 style="margin:30px 0 0">Claude<br>Fable 5</h1>
+      <div class="rule" style="width:56px;margin:36px 0 22px"></div>
+      <p class="kicker" style="max-width:480px;line-height:1.7">The first public Mythos-class model. Anthropic's most capable generally available model.</p>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>01 / 12</span></div>
+  </section>
+
+  <!-- 02 · STATEMENT -->
+  <section class="slide">
+    <p class="kicker" style="position:absolute;left:100px;top:120px;z-index:10">01 · Statement</p>
+    <div class="frame" style="left:96px;top:280px;width:920px;height:240px"></div>
+    <h2 style="position:absolute;left:128px;top:312px;width:860px;z-index:10;font-size:50px">Mythos-class intelligence,<br>made safe for general use.</h2>
+    <p class="body prompt" style="position:absolute;left:128px;top:560px;width:540px;z-index:10">released June 9, 2026 // model id claude-fable-5</p>
+    <!-- terminal block visual -->
+    <div class="slot" style="left:1080px;top:300px;width:420px;height:300px">
+      <svg viewBox="0 0 420 300" fill="none">
+        <rect x="2" y="2" width="416" height="296" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="2" y="2" width="416" height="34" fill="#16221A"/>
+        <circle cx="24" cy="19" r="6" fill="var(--red)"/>
+        <circle cx="46" cy="19" r="6" fill="var(--yellow)"/>
+        <circle cx="68" cy="19" r="6" fill="var(--peach)"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="14">
+          <text x="22" y="76" fill="var(--red)">$ claude --model fable-5</text>
+          <text x="22" y="106" fill="var(--ink-2)">  loading mythos-class</text>
+          <text x="22" y="132" fill="var(--ink-2)">  safeguards active</text>
+          <text x="22" y="158" fill="var(--ink-2)">  cutoff jan 2026</text>
+          <text x="22" y="190" fill="var(--cyan)">  OK  ready</text>
+          <text x="22" y="228" fill="var(--red)">$ <tspan fill="var(--ink)">_</tspan></text>
+        </g>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>02 / 12</span></div>
+  </section>
+
+  <!-- 03 · INDEX -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">Index</h2>
+    <p class="cmt" style="position:absolute;left:100px;top:170px;z-index:10">table of contents // 12 sections</p>
+    <div class="index-list">
+      <div class="index-row"><span class="num">01</span><h3>About</h3><span class="pg">P.04</span></div>
+      <div class="index-row"><span class="num">02</span><h3>The Landscape</h3><span class="pg">P.05</span></div>
+      <div class="index-row"><span class="num">03</span><h3>Capabilities</h3><span class="pg">P.06</span></div>
+      <div class="index-row"><span class="num">04</span><h3>Where It Ships</h3><span class="pg">P.07</span></div>
+      <div class="index-row"><span class="num">05</span><h3>Trusted By</h3><span class="pg">P.08</span></div>
+      <div class="index-row"><span class="num">06</span><h3>By the Numbers</h3><span class="pg">P.09</span></div>
+      <div class="index-row"><span class="num">07</span><h3>Roadmap</h3><span class="pg">P.10</span></div>
+      <div class="index-row"><span class="num">08</span><h3>Access</h3><span class="pg">P.12</span></div>
+    </div>
+    <!-- directory tree visual -->
+    <div class="slot" style="left:1120px;top:200px;width:400px;height:440px">
+      <svg viewBox="0 0 400 440" fill="none">
+        <rect x="2" y="2" width="396" height="436" stroke="var(--ink)" stroke-width="2"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="14" fill="var(--ink)">
+          <text x="22" y="48">claude-5/</text>
+          <text x="40" y="80" fill="var(--ink-2)">├─ fable-5/</text>
+          <text x="58" y="108" fill="var(--cyan)">│  ├─ general-use</text>
+          <text x="58" y="136" fill="var(--cyan)">│  └─ safeguards</text>
+          <text x="40" y="168" fill="var(--ink-2)">├─ mythos-5/</text>
+          <text x="58" y="196" fill="var(--ink-2)">│  └─ trusted-access</text>
+          <text x="40" y="228" fill="var(--ink-2)">├─ benchmarks/</text>
+          <text x="40" y="260" fill="var(--ink-2)">├─ pricing/</text>
+          <text x="40" y="292" fill="var(--ink-2)">├─ roadmap/</text>
+          <text x="40" y="324" fill="var(--ink-2)">└─ access.md</text>
+        </g>
+        <line x1="22" y1="376" x2="378" y2="376" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="22" y="408" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">claude 5 family // mythos-class</text>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>03 / 12</span></div>
+  </section>
+
+  <!-- 04 · ABOUT -->
+  <section class="slide">
+    <div class="dotgrid" style="right:64px;top:64px;width:180px;height:40px;opacity:.5"></div>
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">About</h2>
+    <p class="body" style="position:absolute;left:100px;top:230px;width:520px;z-index:10">Fable 5 is the first model in Anthropic's Claude 5 family and the first of a new Mythos-class tier that sits above Opus. Fable 5 and Mythos 5 are the same underlying model. Fable 5 ships with safeguards for general use; Mythos 5 has those safeguards lifted for trusted partners. The pairing marks the safety difference, not a capability difference.</p>
+    <p class="kicker" style="position:absolute;left:100px;top:500px;z-index:10">Knowledge cutoff January 2026 · model id claude-fable-5</p>
+    <div class="tag" style="position:absolute;left:100px;top:560px">fable: general use</div>
+    <div class="tag" style="position:absolute;left:320px;top:560px">mythos: trusted</div>
+    <!-- schematic: layered stack -->
+    <div class="slot" style="left:880px;top:150px;width:560px;height:560px">
+      <svg viewBox="0 0 560 560" fill="none">
+        <g stroke="var(--ink)" stroke-width="2">
+          <rect x="40" y="40" width="480" height="80"/>
+          <rect x="40" y="150" width="480" height="80"/>
+          <rect x="40" y="260" width="480" height="80"/>
+          <rect x="40" y="370" width="480" height="80"/>
+        </g>
+        <rect x="40" y="40" width="14" height="80" fill="var(--red)"/>
+        <rect x="40" y="150" width="14" height="80" fill="var(--yellow)"/>
+        <rect x="40" y="260" width="14" height="80" fill="var(--cyan)"/>
+        <rect x="40" y="370" width="14" height="80" fill="var(--olive)"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="18" fill="var(--ink)">
+          <text x="80" y="86">Mythos-class</text>
+          <text x="80" y="196">Fable 5</text>
+          <text x="80" y="306">Mythos 5</text>
+          <text x="80" y="416">Safeguards</text>
+        </g>
+        <g font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">
+          <text x="80" y="106">tier above opus</text>
+          <text x="80" y="216">general use</text>
+          <text x="80" y="326">trusted access</text>
+          <text x="80" y="436">under 5% fallback</text>
+        </g>
+        <line x1="280" y1="120" x2="280" y2="150" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <line x1="280" y1="230" x2="280" y2="260" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <line x1="280" y1="340" x2="280" y2="370" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <text x="40" y="500" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">FIG.1 // claude 5 family</text>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>04 / 12</span></div>
+  </section>
+
+  <!-- 05 · THE LANDSCAPE -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">The landscape</h2>
+    <div class="twocol">
+      <div><h3>What changed</h3><p class="body">A tier above Opus, with the biggest gains on long-horizon work. State of the art on nearly all tested benchmarks. Compared here against Opus 4.8, GPT-5.5, and Gemini 3.1 Pro.</p></div>
+      <div><h3>Where it leads</h3><p class="body">Software engineering, knowledge work and vision, scientific research, and finance. The largest lead shows on longer, more complex tasks.</p></div>
+    </div>
+    <!-- SWE-Bench Pro comparison bar chart -->
+    <div class="slot" style="left:880px;top:200px;width:600px;height:460px">
+      <svg viewBox="0 0 600 460" fill="none">
+        <text x="0" y="20" font-family="'Space Mono',monospace" font-size="13" fill="var(--ink-2)">SWE-BENCH PRO // PERCENT SOLVED</text>
+        <!-- axis -->
+        <line x1="200" y1="40" x2="200" y2="360" stroke="var(--ink)" stroke-width="1.5"/>
+        <!-- gridlines at 0/25/50/75/100 mapped to x 200..560 -->
+        <g stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4">
+          <line x1="290" y1="40" x2="290" y2="360"/><line x1="380" y1="40" x2="380" y2="360"/>
+          <line x1="470" y1="40" x2="470" y2="360"/><line x1="560" y1="40" x2="560" y2="360"/>
+        </g>
+        <!-- bars: x width = value*3.6px ; rows at 70/150/230/310 -->
+        <g font-family="'JetBrains Mono',monospace" font-size="14" fill="var(--ink)">
+          <text x="0" y="76">Fable 5</text>
+          <text x="0" y="156">Opus 4.8</text>
+          <text x="0" y="236">GPT-5.5</text>
+          <text x="0" y="316">Gemini 3.1</text>
+        </g>
+        <rect x="200" y="56" width="289" height="34" fill="var(--red)"/>
+        <rect x="200" y="136" width="249" height="34" fill="var(--cyan)"/>
+        <rect x="200" y="216" width="211" height="34" fill="var(--yellow)"/>
+        <rect x="200" y="296" width="195" height="34" fill="var(--olive)"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="15" font-weight="700" fill="var(--ink)">
+          <text x="499" y="80">80.3%</text>
+          <text x="459" y="160">69.2%</text>
+          <text x="421" y="240">58.6%</text>
+          <text x="405" y="320">54.2%</text>
+        </g>
+        <text x="0" y="420" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">FIG.2 // state of the art on long-horizon coding</text>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>05 / 12</span></div>
+  </section>
+
+  <!-- 06 · HOW WE WORK (5 pillars) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">Capabilities</h2>
+    <p class="cmt" style="position:absolute;left:100px;top:170px;z-index:10">five pillars // where Fable 5 leads</p>
+    <!-- pipeline boxes + connecting trace -->
+    <div class="slot" style="left:100px;top:280px;width:1400px;height:260px">
+      <svg viewBox="0 0 1400 260" fill="none">
+        <line x1="60" y1="100" x2="1340" y2="100" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 6"/>
+        <g stroke="var(--ink)" stroke-width="2">
+          <rect x="20" y="40" width="200" height="120"/>
+          <rect x="320" y="40" width="200" height="120"/>
+          <rect x="620" y="40" width="200" height="120"/>
+          <rect x="920" y="40" width="200" height="120"/>
+          <rect x="1220" y="40" width="160" height="120"/>
+        </g>
+        <g font-family="'JetBrains Mono',monospace" font-size="40" font-weight="700" fill="var(--red)">
+          <text x="120" y="118" text-anchor="middle">01</text>
+          <text x="420" y="118" text-anchor="middle">02</text>
+          <text x="720" y="118" text-anchor="middle">03</text>
+          <text x="1020" y="118" text-anchor="middle">04</text>
+          <text x="1300" y="118" text-anchor="middle">05</text>
+        </g>
+        <g fill="var(--ink)">
+          <polygon points="300,94 320,100 300,106"/>
+          <polygon points="600,94 620,100 600,106"/>
+          <polygon points="900,94 920,100 900,106"/>
+          <polygon points="1200,94 1220,100 1200,106"/>
+        </g>
+      </svg>
+    </div>
+    <div class="rowlabel" style="left:264px;top:560px"><h3>Engineering</h3><p class="small">Top score on SWE-Bench Pro and FrontierCode.</p></div>
+    <div class="rowlabel" style="left:564px;top:560px"><h3>Knowledge</h3><p class="small">Rebuilds app source from screenshots; SOTA on vision.</p></div>
+    <div class="rowlabel" style="left:864px;top:560px"><h3>Research</h3><p class="small">Frontier physics and biology, fewer reasoning tokens.</p></div>
+    <div class="rowlabel" style="left:1164px;top:560px"><h3>Finance</h3><p class="small">Strongest finance model Anthropic has tested.</p></div>
+    <div class="rowlabel" style="left:1404px;top:560px"><h3>Agentic</h3><p class="small">Holds context across long, multi-step tasks.</p></div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>06 / 12</span></div>
+  </section>
+
+  <!-- 07 · WHAT WE BUILD (3 products) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">Where it ships</h2>
+    <p class="cmt" style="position:absolute;left:100px;top:170px;z-index:10">available everywhere // model id claude-fable-5</p>
+    <div class="col3" style="top:240px">
+      <div class="cell">
+        <div class="cardtop">MOD.01</div>
+        <div class="slot"><svg viewBox="0 0 360 182" fill="none">
+          <g stroke="var(--ink)" stroke-width="1.5">
+            <rect x="40" y="40" width="120" height="100"/><line x1="40" y1="68" x2="160" y2="68"/>
+            <line x1="60" y1="90" x2="140" y2="90"/><line x1="60" y1="110" x2="120" y2="110"/>
+          </g>
+          <rect x="200" y="40" width="120" height="20" fill="var(--red)"/>
+          <line x1="200" y1="80" x2="320" y2="80" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="200" y1="104" x2="300" y2="104" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="200" y1="128" x2="320" y2="128" stroke="var(--ink-2)" stroke-width="1.5"/>
+        </svg></div>
+        <div class="cardbody"><h3>Claude apps & API</h3><p class="small">Pro, Max, Team, Enterprise. Model id claude-fable-5.</p></div>
+      </div>
+      <div class="cell">
+        <div class="cardtop">MOD.02</div>
+        <div class="slot"><svg viewBox="0 0 360 182" fill="none">
+          <circle cx="180" cy="91" r="34" fill="var(--cyan)"/>
+          <text x="180" y="97" font-family="'Space Mono',monospace" font-size="13" fill="#fff" text-anchor="middle">COPILOT</text>
+          <g stroke="var(--ink)" stroke-width="1.5">
+            <line x1="180" y1="57" x2="180" y2="30"/><line x1="214" y1="91" x2="320" y2="91"/>
+            <line x1="146" y1="91" x2="40" y2="91"/><line x1="180" y1="125" x2="180" y2="152"/>
+          </g>
+          <g fill="var(--ink)"><circle cx="180" cy="30" r="5"/><circle cx="40" cy="91" r="5"/><circle cx="320" cy="91" r="5"/><circle cx="180" cy="152" r="5"/></g>
+        </svg></div>
+        <div class="cardbody"><h3>GitHub Copilot</h3><p class="small">Generally available for long-horizon coding.</p></div>
+      </div>
+      <div class="cell">
+        <div class="cardtop">MOD.03</div>
+        <div class="slot"><svg viewBox="0 0 360 182" fill="none">
+          <g stroke="var(--ink)" stroke-width="1.5" fill="none">
+            <rect x="40" y="50" width="280" height="90"/>
+          </g>
+          <text x="60" y="84" font-family="'JetBrains Mono',monospace" font-size="13" fill="var(--red)">bedrock deploy</text>
+          <text x="60" y="110" font-family="'JetBrains Mono',monospace" font-size="13" fill="var(--ink-2)">enterprise OK</text>
+          <rect x="240" y="64" width="60" height="20" fill="var(--yellow)"/>
+        </svg></div>
+        <div class="cardbody"><h3>Amazon Bedrock</h3><p class="small">Available for enterprise deployment. Harvey for legal too.</p></div>
+      </div>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>07 / 12</span></div>
+  </section>
+
+  <!-- 08 · THE TEAM (6 placeholders) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">Trusted by</h2>
+    <p class="cmt" style="position:absolute;left:100px;top:170px;z-index:10">early partners // across coding, cloud, and research</p>
+    <div class="slot" style="left:100px;top:250px;width:1400px;height:300px">
+      <svg viewBox="0 0 1400 300" fill="none">
+        <g>
+          <!-- 6 punch-card portraits -->
+          <g transform="translate(0,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--red)"/></g>
+          <g transform="translate(232,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--cyan)"/></g>
+          <g transform="translate(464,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--yellow)"/></g>
+          <g transform="translate(696,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--olive)"/></g>
+          <g transform="translate(928,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--peach)"/></g>
+          <g transform="translate(1160,0)"><rect x="10" y="20" width="200" height="260" stroke="var(--ink)" stroke-width="2"/><circle cx="110" cy="110" r="46" stroke="var(--ink)" stroke-width="2"/><path d="M70 220c0-30 18-46 40-46s40 16 40 46" stroke="var(--ink)" stroke-width="2"/><rect x="30" y="36" width="40" height="14" fill="var(--red)"/></g>
+        </g>
+      </svg>
+    </div>
+    <div class="rowlabel" style="left:217px;top:572px"><h3 style="font-size:16px">Stripe</h3><p class="small">Engineering</p></div>
+    <div class="rowlabel" style="left:449px;top:572px"><h3 style="font-size:16px">GitHub</h3><p class="small">Coding</p></div>
+    <div class="rowlabel" style="left:681px;top:572px"><h3 style="font-size:16px">Bedrock</h3><p class="small">Cloud</p></div>
+    <div class="rowlabel" style="left:913px;top:572px"><h3 style="font-size:16px">Harvey</h3><p class="small">Legal</p></div>
+    <div class="rowlabel" style="left:1145px;top:572px"><h3 style="font-size:16px">IMC</h3><p class="small">Trading</p></div>
+    <div class="rowlabel" style="left:1377px;top:572px"><h3 style="font-size:16px">Open Phil</h3><p class="small">Research</p></div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>08 / 12</span></div>
+  </section>
+
+  <!-- 09 · BY THE NUMBERS -->
+  <section class="slide">
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">By the numbers</h2>
+    <!-- FrontierCode Diamond comparison -->
+    <div class="slot" style="left:90px;top:240px;width:560px;height:540px">
+      <svg viewBox="0 0 560 540" fill="none">
+        <rect x="2" y="2" width="556" height="536" stroke="var(--ink)" stroke-width="2"/>
+        <text x="40" y="42" font-family="'Space Mono',monospace" font-size="13" fill="var(--ink-2)">FRONTIERCODE DIAMOND // PERCENT</text>
+        <line x1="120" y1="60" x2="120" y2="460" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="120" y1="460" x2="520" y2="460" stroke="var(--ink)" stroke-width="1.5"/>
+        <!-- value*10 px tall, baseline 460 -->
+        <rect x="150" y="167" width="80" height="293" fill="var(--red)"/>
+        <rect x="280" y="326" width="80" height="134" fill="var(--cyan)"/>
+        <rect x="410" y="403" width="80" height="57" fill="var(--yellow)"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="17" font-weight="700" fill="var(--ink)">
+          <text x="190" y="152" text-anchor="middle">29.3</text>
+          <text x="320" y="311" text-anchor="middle">13.4</text>
+          <text x="450" y="388" text-anchor="middle">5.7</text>
+        </g>
+        <g font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">
+          <text x="190" y="484" text-anchor="middle">Fable 5</text>
+          <text x="320" y="484" text-anchor="middle">Opus 4.8</text>
+          <text x="450" y="484" text-anchor="middle">GPT-5.5</text>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4">
+          <line x1="120" y1="360" x2="520" y2="360"/><line x1="120" y1="260" x2="520" y2="260"/><line x1="120" y1="160" x2="520" y2="160"/>
+        </g>
+        <text x="40" y="512" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">FIG.3 // hardest coding tasks, more than 2x Opus</text>
+      </svg>
+    </div>
+    <div class="stats" style="left:760px;top:260px;width:740px">
+      <div class="stat"><div class="statnum">80.3%</div><div class="statlabel">SWE-Bench Pro (Opus 69.2)</div><div class="bar"></div></div>
+      <div class="stat"><div class="statnum">90%+</div><div class="statlabel">analytics, first to break it</div><div class="bar" style="background:var(--cyan)"></div></div>
+      <div class="stat"><div class="statnum">&lt;5%</div><div class="statlabel">sessions fall back to Opus</div><div class="bar" style="background:var(--yellow)"></div></div>
+      <div class="stat"><div class="statnum">$10/$50</div><div class="statlabel">per M tokens, in / out</div><div class="bar" style="background:var(--olive)"></div></div>
+    </div>
+    <p class="cmt" style="position:absolute;left:760px;top:680px;z-index:10">analytics up 10 points over Opus // figures sourced</p>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>09 / 12</span></div>
+  </section>
+
+  <!-- 10 · ROADMAP (6 milestones) -->
+  <section class="slide">
+    <div class="dotgrid" style="right:64px;top:64px;width:180px;height:40px;opacity:.5"></div>
+    <h2 style="position:absolute;left:100px;top:90px;z-index:10">Roadmap</h2>
+    <p class="cmt" style="position:absolute;left:100px;top:170px;z-index:10">rollout log // shipping now</p>
+    <span class="tl-year" style="left:300px;top:300px">Jun 9</span>
+    <span class="tl-year" style="left:520px;top:300px">Jun 9-22</span>
+    <span class="tl-year" style="left:740px;top:300px">Jun 22+</span>
+    <span class="tl-year" style="left:960px;top:300px">Mythos 5</span>
+    <span class="tl-year" style="left:1180px;top:300px">Next</span>
+    <span class="tl-year" style="left:1380px;top:300px">Ongoing</span>
+    <div class="tl-line" style="left:300px;right:200px;top:360px"></div>
+    <span class="tl-dot" style="left:300px;top:360px"></span>
+    <span class="tl-dot" style="left:520px;top:360px"></span>
+    <span class="tl-dot" style="left:740px;top:360px"></span>
+    <span class="tl-dot" style="left:960px;top:360px"></span>
+    <span class="tl-dot" style="left:1180px;top:360px"></span>
+    <span class="tl-dot" style="left:1380px;top:360px"></span>
+    <div class="rowlabel" style="left:300px;top:392px"><p class="small">Available everywhere: API, apps, Copilot, Bedrock.</p></div>
+    <div class="rowlabel" style="left:520px;top:392px"><p class="small">Included on Pro, Max, Team, Enterprise.</p></div>
+    <div class="rowlabel" style="left:740px;top:392px"><p class="small">Usage credits until capacity expands.</p></div>
+    <div class="rowlabel" style="left:960px;top:392px"><p class="small">Live for Project Glasswing cyberdefenders.</p></div>
+    <div class="rowlabel" style="left:1180px;top:392px"><p class="small">Mythos access expanding to biology researchers.</p></div>
+    <div class="rowlabel" style="left:1380px;top:392px"><p class="small">Capacity expansion and broader rollout.</p></div>
+    <!-- gantt-style schematic below -->
+    <div class="slot" style="left:300px;top:540px;width:1080px;height:220px">
+      <svg viewBox="0 0 1080 220" fill="none">
+        <g stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 5">
+          <line x1="0" y1="0" x2="0" y2="200"/><line x1="220" y1="0" x2="220" y2="200"/><line x1="440" y1="0" x2="440" y2="200"/>
+          <line x1="660" y1="0" x2="660" y2="200"/><line x1="880" y1="0" x2="880" y2="200"/><line x1="1080" y1="0" x2="1080" y2="200"/>
+        </g>
+        <rect x="0" y="20" width="300" height="22" fill="var(--red)"/>
+        <rect x="180" y="60" width="340" height="22" fill="var(--cyan)"/>
+        <rect x="440" y="100" width="340" height="22" fill="var(--yellow)"/>
+        <rect x="660" y="140" width="420" height="22" fill="var(--olive)"/>
+        <text x="0" y="195" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">FIG.4 // rollout windows</text>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>10 / 12</span></div>
+  </section>
+
+  <!-- 11 · PERSPECTIVE -->
+  <section class="slide">
+    <p class="kicker" style="position:absolute;left:100px;top:190px;z-index:10">Perspective</p>
+    <div class="frame" style="left:96px;top:280px;width:840px;height:230px"></div>
+    <h2 style="position:absolute;left:128px;top:312px;width:780px;z-index:10;font-size:50px">It compressed months of<br>engineering into days.</h2>
+    <p class="body prompt" style="position:absolute;left:128px;top:548px;width:480px;z-index:10">Stripe, on a large codebase migration</p>
+    <!-- quote machine glyph -->
+    <div class="slot" style="left:1060px;top:200px;width:440px;height:440px">
+      <svg viewBox="0 0 440 440" fill="none">
+        <rect x="40" y="40" width="360" height="280" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="40" y="40" width="360" height="34" fill="#16221A"/>
+        <text x="60" y="63" font-family="'Space Mono',monospace" font-size="13" fill="var(--bg)">~/quote.txt</text>
+        <text x="60" y="130" font-family="'JetBrains Mono',monospace" font-size="80" font-weight="700" fill="var(--red)">"</text>
+        <g stroke="var(--ink-2)" stroke-width="2">
+          <line x1="70" y1="170" x2="360" y2="170"/><line x1="70" y1="200" x2="340" y2="200"/>
+          <line x1="70" y1="230" x2="360" y2="230"/><line x1="70" y1="260" x2="280" y2="260"/>
+        </g>
+        <rect x="40" y="360" width="120" height="40" fill="var(--cyan)"/>
+        <text x="100" y="386" font-family="'Space Mono',monospace" font-size="13" fill="#fff" text-anchor="middle">SIGNED</text>
+      </svg>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>11 / 12</span></div>
+  </section>
+
+  <!-- 12 · CONTACT -->
+  <section class="slide">
+    <div class="dotgrid" style="left:64px;bottom:64px;width:200px;height:40px;opacity:.5"></div>
+    <!-- closing terminal -->
+    <div class="slot" style="left:1020px;top:180px;width:480px;height:520px">
+      <svg viewBox="0 0 480 520" fill="none">
+        <rect x="2" y="2" width="476" height="516" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="2" y="2" width="476" height="36" fill="#16221A"/>
+        <circle cx="26" cy="20" r="6" fill="var(--red)"/><circle cx="48" cy="20" r="6" fill="var(--yellow)"/><circle cx="70" cy="20" r="6" fill="var(--peach)"/>
+        <g font-family="'JetBrains Mono',monospace" font-size="15">
+          <text x="24" y="92" fill="var(--red)">$ claude --model fable-5</text>
+          <text x="24" y="128" fill="var(--ink-2)">  available now</text>
+          <text x="24" y="164" fill="var(--ink-2)">  api / apps / copilot</text>
+          <text x="24" y="220" fill="var(--cyan)">  ready for input...</text>
+          <text x="24" y="270" fill="var(--red)">$ <tspan fill="var(--ink)">_</tspan></text>
+        </g>
+        <g stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="4 4">
+          <line x1="24" y1="330" x2="456" y2="330"/>
+        </g>
+        <text x="24" y="370" font-family="'Space Mono',monospace" font-size="12" fill="var(--ink-2)">SESSION // ready</text>
+      </svg>
+    </div>
+    <div style="position:absolute;left:100px;top:230px;z-index:10;max-width:560px">
+      <h1 style="font-size:88px">Available<br>now</h1>
+      <p class="body" style="margin:30px 0 0;max-width:420px">Model id claude-fable-5 via the Claude API. On Pro, Max, Team, Enterprise; GitHub Copilot; Amazon Bedrock.</p>
+      <div class="contact">
+        <div><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><ellipse cx="24" cy="24" rx="7" ry="16"/><path d="M8 24h32"/></svg> anthropic.com/news/claude-fable-5-mythos-5</div>
+        <div><svg viewBox="0 0 48 48"><rect x="8" y="13" width="32" height="22" rx="2"/><path d="M9 15l15 12 15-12"/></svg> model id: claude-fable-5</div>
+        <div><svg viewBox="0 0 48 48"><path d="M12 8h18l8 8v24H12z"/><path d="M30 8v8h8"/><path d="M17 26l-4 4 4 4M31 26l4 4-4 4"/></svg> Claude API · Copilot · Bedrock</div>
+      </div>
+    </div>
+    <div class="foot"><span>Claude Fable 5 // Release report</span><span>12 / 12</span></div>
+  </section>
+
+</div></div>
+
+<div class="toolbar">
+  <select id="theme" title="Palette">
+    <option value="terminal">Terminal</option>
+    <option value="newsroom">Newsroom</option>
+    <option value="riso">Riso</option>
+    <option value="noir">Noir</option>
+    <option value="botanic">Botanic</option>
+  </select>
+  <button id="editBtn" title="Toggle inline editing (E)">Edit</button>
+  <button id="saveBtn" title="Save edited HTML (Cmd S)">Save</button>
+  <button id="pdfBtn" title="Print to PDF">PDF</button>
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous slide">‹</button>
+  <span id="counter">01 / 12</span>
+  <button id="next" aria-label="Next slide">›</button>
+</div>
+
+<script src="vendor/html-to-image.js"></script>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const stage=document.querySelector('.stage');
+  let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+
+  function show(n){
+    i=(n+slides.length)%slides.length;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+
+  addEventListener('keydown',e=>{
+    if(e.target.isContentEditable){
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save();}
+      return;
+    }
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save();return;}
+    if(e.key.toLowerCase()==='e'){e.preventDefault();toggleEdit();return;}
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  addEventListener('hashchange',()=>{const n=(parseInt(location.hash.slice(1))||1)-1;if(n!==i)show(n);});
+
+  const themeSel=document.getElementById('theme');
+  const THEMES=['terminal','newsroom','riso','noir','botanic'];
+  function setTheme(name){
+    THEMES.forEach(t=>document.body.classList.remove('theme-'+t));
+    document.body.classList.add('theme-'+name);
+    themeSel.value=name;
+  }
+  themeSel.onchange=()=>setTheme(themeSel.value);
+  setTheme((document.body.className.match(/theme-(\w+)/)||[])[1]||'terminal');
+
+  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.body,.small,.cmt,.tag,.statnum,.statlabel,.tl-year,.pg,.foot span,.contact div';
+  const editBtn=document.getElementById('editBtn');
+  let editing=false;
+  function toggleEdit(){
+    editing=!editing;
+    document.body.classList.toggle('editing',editing);
+    editBtn.classList.toggle('on',editing);
+    editBtn.textContent=editing?'Done':'Edit';
+    stage.querySelectorAll(EDIT_SEL).forEach(el=>{
+      if(editing)el.setAttribute('contenteditable','true');
+      else el.removeAttribute('contenteditable');
+    });
+  }
+  editBtn.onclick=toggleEdit;
+  // Flush any in-progress edit so Save and PDF always capture the latest text.
+  function commitEdits(){
+    const a=document.activeElement;
+    if(a&&a.isContentEditable) a.blur();
+    if(editing) toggleEdit();
+  }
+
+  function serialize(){
+    const html=document.documentElement.cloneNode(true);
+    html.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    const b=html.querySelector('body'); b.classList.remove('editing');
+    html.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+    return '<!DOCTYPE html>\n'+html.outerHTML;
+  }
+  async function save(){
+    const wasEditing=editing; commitEdits();
+    const data=serialize();
+    if(window.showSaveFilePicker){
+      try{
+        const h=await showSaveFilePicker({suggestedName:'deck.html',types:[{description:'HTML',accept:{'text/html':['.html']}}]});
+        const w=await h.createWritable(); await w.write(data); await w.close();
+        if(wasEditing)toggleEdit(); return;
+      }catch(err){ if(err.name==='AbortError'){ if(wasEditing)toggleEdit(); return; } }
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([data],{type:'text/html'}));
+    a.download='deck.html'; a.click(); URL.revokeObjectURL(a.href);
+    if(wasEditing)toggleEdit();
+  }
+  document.getElementById('saveBtn').onclick=save;
+
+  // ---------- one-click PDF, fully in-browser (no server, no print dialog) ----------
+  // Each slide is rasterised with html-to-image, then wrapped as a JPEG page in a
+  // minimal hand-written PDF. Visuals are inline SVG, so the output matches the screen
+  // exactly in any browser. One 1200x675 pt page per slide (16:9).
+  function imagesToPdf(images, ptW, ptH){
+    const enc=new TextEncoder(), chunks=[]; let len=0; const off=[];
+    const W=u=>{chunks.push(u);len+=u.length;}, S=s=>W(typeof s==='string'?enc.encode(s):s);
+    S("%PDF-1.4\n");
+    let id=0; const nid=()=>++id;
+    const catId=nid(), pagesId=nid();
+    const pages=images.map(im=>({imgId:nid(),contId:nid(),pageId:nid(),im}));
+    const obj=(i,b)=>{off[i]=len;S(i+" 0 obj\n");S(b);S("\nendobj\n");};
+    const objS=(i,d,bytes)=>{off[i]=len;S(i+" 0 obj\n");S(d+"\nstream\n");W(bytes);S("\nendstream\nendobj\n");};
+    obj(catId,"<< /Type /Catalog /Pages "+pagesId+" 0 R >>");
+    obj(pagesId,"<< /Type /Pages /Count "+pages.length+" /Kids ["+pages.map(p=>p.pageId+" 0 R").join(" ")+"] >>");
+    const w=ptW.toFixed(2), h=ptH.toFixed(2);
+    for(const p of pages){
+      objS(p.imgId,"<< /Type /XObject /Subtype /Image /Width "+p.im.w+" /Height "+p.im.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+p.im.bytes.length+" >>",p.im.bytes);
+      const c=enc.encode("q "+w+" 0 0 "+h+" 0 0 cm /Im0 Do Q");
+      objS(p.contId,"<< /Length "+c.length+" >>",c);
+      obj(p.pageId,"<< /Type /Page /Parent "+pagesId+" 0 R /MediaBox [0 0 "+w+" "+h+"] /Resources << /XObject << /Im0 "+p.imgId+" 0 R >> >> /Contents "+p.contId+" 0 R >>");
+    }
+    const xref=len, n=id+1;
+    S("xref\n0 "+n+"\n0000000000 65535 f \n");
+    for(let k=1;k<n;k++) S(String(off[k]).padStart(10,'0')+" 00000 n \n");
+    S("trailer\n<< /Size "+n+" /Root "+catId+" 0 R >>\nstartxref\n"+xref+"\n%%EOF");
+    return new Blob(chunks,{type:'application/pdf'});
+  }
+
+  const pdfBtn=document.getElementById('pdfBtn');
+  async function exportPDF(){
+    if(!window.htmlToImage){ pdfBtn.textContent='no lib'; setTimeout(()=>pdfBtn.textContent='PDF',2000); return; }
+    pdfBtn.disabled=true;
+    const wasEditing=editing; commitEdits();
+    const prev=i;
+    document.body.classList.add('exporting');
+    try{
+      await document.fonts.ready;
+      // Embed the web fonts once, then reuse for every slide (avoids re-fetching per slide).
+      let fontCSS=''; try{ fontCSS=await htmlToImage.getFontEmbedCSS(stage); }catch(e){}
+      await new Promise(r=>setTimeout(r,30));
+      const images=[];
+      for(let k=0;k<slides.length;k++){
+        const s=slides[k];
+        const saved=s.style.cssText;
+        s.style.opacity='1'; s.style.visibility='visible'; s.style.transition='none';
+        void s.offsetHeight;                 // force synchronous style/layout recalc (robust in any tab)
+        pdfBtn.textContent=(k+1)+'/'+slides.length;
+        const bg=getComputedStyle(s).backgroundColor;
+        const canvas=await htmlToImage.toCanvas(s,{width:1600,height:900,pixelRatio:2,
+          fontEmbedCSS:fontCSS, backgroundColor:bg,
+          style:{transition:'none',opacity:'1',visibility:'visible'}});
+        s.style.cssText=saved;
+        const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.92));
+        images.push({bytes:new Uint8Array(await blob.arrayBuffer()),w:canvas.width,h:canvas.height});
+      }
+      const pdf=imagesToPdf(images,1200,675);
+      window.__lastPdfBlob=pdf;
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(pdf); a.download='claude-fable-5-terminal-deck.pdf'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }catch(e){ console.error(e); pdfBtn.textContent='error'; setTimeout(()=>pdfBtn.textContent='PDF',2500); return; }
+    finally{ document.body.classList.remove('exporting'); show(prev); if(wasEditing)toggleEdit(); pdfBtn.disabled=false; }
+    pdfBtn.textContent='PDF';
+  }
+  pdfBtn.onclick=exportPDF;
+  window.exportDeckPDF=exportPDF;   // programmatic export hook
+  window.__lastPdfBlob=null;
+
+  function fit(){stage.style.transform=`scale(${Math.min(innerWidth/1600,innerHeight/900)})`;}
+  addEventListener('resize',fit);
+  fit();show(i);
+</script>
+</body>
+</html>

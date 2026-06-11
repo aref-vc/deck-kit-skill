@@ -1,0 +1,22 @@
+{
+  "_comment": "Reusable collage library. All assets are monochrome cutouts on flat accent paper shapes, white-pointed (-level 0%,89.5%) so they blend into any light slide background via mix-blend-mode:multiply. aspect = source ratio. 'baked' lists accent colors painted into the pixels (these do NOT recolor with CSS themes). 'use' = which slide types it fits. Regenerate per-deck for topic/palette match (see references/image-prompts.md).",
+  "assets": [
+    { "file": "cover-hero.jpg",      "motif": "classical David head + butterfly", "aspect": "4:5",  "baked": ["red","cyan"],   "use": ["cover"],                     "role": "hero" },
+    { "file": "agenda-statue.jpg",   "motif": "marble eye fragment + marble hand w/ paper plane, vertical strip", "aspect": "3:4", "baked": ["cyan"], "use": ["agenda","list","toc"], "role": "edge-strip" },
+    { "file": "agenda-side.jpg",     "motif": "human eye + hand w/ paper plane (alt)", "aspect": "3:4", "baked": ["cyan"], "use": ["agenda","list"],         "role": "edge-strip" },
+    { "file": "divider-statue.jpg",  "motif": "Augustus statue pointing, clouds, planet", "aspect": "4:5", "baked": ["red","yellow"], "use": ["section-divider"],   "role": "hero" },
+    { "file": "divider-city.jpg",    "motif": "NYC skyline + vintage camera (alt)", "aspect": "4:5", "baked": ["red","yellow"], "use": ["section-divider"],     "role": "hero" },
+    { "file": "about-statue.jpg",    "motif": "toga statue reading a newspaper", "aspect": "3:4", "baked": ["yellow","peach","cyan"], "use": ["about","content-figure"], "role": "figure" },
+    { "file": "about-figure.jpg",    "motif": "1950s woman reading newspaper (alt)", "aspect": "3:4", "baked": ["yellow","peach","cyan"], "use": ["about","content-figure"], "role": "figure" },
+    { "file": "card-bust.jpg",       "motif": "Roman bust on torn red paper", "aspect": "1:1", "baked": ["red"],    "use": ["cards","initiatives","grid"], "role": "card" },
+    { "file": "card-saturn.jpg",     "motif": "Saturn on torn yellow paper", "aspect": "1:1", "baked": ["yellow"], "use": ["cards","initiatives","grid"], "role": "card" },
+    { "file": "card-plant.jpg",      "motif": "hand holding seedling on torn cyan paper", "aspect": "1:1", "baked": ["cyan"], "use": ["cards","initiatives","grid"], "role": "card" },
+    { "file": "impact-moon.jpg",     "motif": "full moon with man on a ladder, peach scrap", "aspect": "1:1", "baked": ["peach"], "use": ["impact","data-feature","quote"], "role": "feature" },
+    { "file": "outlook-row.jpg",     "motif": "4 cutouts (mountain/plant/astronaut/rocket) on color circles", "aspect": "21:9", "baked": ["cyan","peach","olive","yellow"], "use": ["timeline","roadmap"], "role": "row" },
+    { "file": "closing-venus.jpg",   "motif": "Venus head w/ collaged flowers + yellow strip", "aspect": "3:4", "baked": ["cyan","yellow"], "use": ["closing","thank-you"], "role": "hero" },
+    { "file": "closing-portrait.jpg","motif": "1950s portrait w/ flowers + yellow strip (alt)", "aspect": "3:4", "baked": ["cyan","yellow"], "use": ["closing","thank-you"], "role": "hero" },
+    { "file": "hand-point.jpg",      "motif": "marble pointing hand + red dot + ink scribble", "aspect": "1:1", "baked": ["red"], "use": ["accent"], "role": "accent" },
+    { "file": "brush.jpg",           "motif": "black ink dry-brush stroke", "aspect": "21:9", "baked": [], "use": ["accent"], "role": "accent" },
+    { "file": "scraps.jpg",          "motif": "torn newspaper scraps texture tile", "aspect": "16:9", "baked": [], "use": ["texture"], "role": "texture" }
+  ]
+}

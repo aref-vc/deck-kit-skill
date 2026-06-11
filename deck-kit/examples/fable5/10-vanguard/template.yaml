@@ -1,0 +1,107 @@
+# template-10 · Vanguard
+# Robotics / deep-tech reskin of the deck backbone. Same keys as template-01.
+# Build pipeline reads this file to drive ingest -> outline -> theme -> assemble -> image -> pdf.
+
+id: "10"
+call: template-10
+name: Vanguard
+family: editorial-collage
+status: built            # built | draft | planned
+best_for:
+  - robotics capabilities
+  - deep-tech / R&D brief
+  - hardware product deck
+  - futurist strategy
+
+reference_decks:         # working implementations in this repo
+  - 10-vanguard/deck.html            # 12-slide, lab-grey palette, wireframe/HUD medium
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range
+
+mood:
+  - technical
+  - blueprint
+  - HUD / telemetry
+  - futurist
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: vanguard
+  themes:
+    vanguard:  { bg: "#F2F5F7", ink: "#0A0F1C", ink_2: "#4A5566", paper: "#FFFFFF",
+                 red: "#2B6BFF", cyan: "#19D3E0", yellow: "#7A3CFF", olive: "#2B6BFF", peach: "#19D3E0" }
+    newsroom:  { bg: "#ECECEC", ink: "#1E1E1E", ink_2: "#565656", paper: "#F6F4EE",
+                 red: "#E5443B", cyan: "#34C5CE", yellow: "#ECC94B", olive: "#C2CE86", peach: "#F0AA8B" }
+    riso:      { bg: "#F2EFE6", ink: "#1A1A2E", red: "#F8487F", cyan: "#3D5AFE", yellow: "#FFC400", olive: "#26C281", peach: "#FF8A65" }
+    noir:      { bg: "#E9E7E2", ink: "#161616", red: "#E5403A", cyan: "#9AA0A6", yellow: "#C9C2B0", olive: "#B8BCAE", peach: "#CDC4BB" }
+    botanic:   { bg: "#EDE9DF", ink: "#2B2A26", red: "#CE5B3C", cyan: "#5FA6B5", yellow: "#E0A52E", olive: "#7E8C4F", peach: "#E5A07C" }
+  # accent slots keep deck names but hold this template's hexes:
+  # red = electric blue, cyan = cyan, yellow = violet, olive/peach reuse blue/cyan.
+
+typography:
+  source: google-fonts        # bundled locally in vendor/fonts so the PDF embeds them
+  # varied from deck-02 (Fraunces/Spline/Mono) so two decks do not read identically
+  pairings:
+    chakra-spacegrotesk-mono:
+      heading: { family: Chakra Petch, weight: 700, case: upper, width: wide, tracking: out }
+      body:    { family: Space Grotesk, weight: 400 }
+      label:   { family: Space Mono, weight: 400, case: upper }   # kickers, page numbers, footer, telemetry
+
+imagery:
+  medium: wireframe          # collage | duotone-photo | painterly | geometric | charts | wireframe | ephemera
+  strategy: authored-svg     # no generated photos; all visuals are inline SVG/CSS
+  motifs:
+    - exploded isometric mech sketches (quadruped, rover, aerial scout, robot arm)
+    - sensor / targeting reticles
+    - telemetry readouts and gauge clusters
+    - circuit traces and node networks
+    - blueprint grid overlays
+    - HUD panels with corner brackets
+  rendering: [line-art, blueprint, dashed construction lines, single accent on ink wireframe]
+  generate: none             # geometric medium: assets/*.jpg deleted, visuals authored in markup
+  fallback: inline-svg       # visuals live in the slide markup, no missing-asset path
+
+layout:
+  signature:
+    - HUD panels with corner brackets
+    - wireframe / blueprint line-art
+    - exploded isometric mech sketches
+    - sensor / targeting reticles
+    - telemetry readouts and gauge clusters
+    - blueprint grid overlay on every slide
+    - strong asymmetry, one idea per slide
+  blocks:                    # the section vocabulary; pick and order per outline
+    - cover
+    - statement              # full-bleed opening line
+    - index                  # contents / scan
+    - about                  # narrative + arm schematic
+    - landscape              # two-column field context + terrain plot
+    - pillars                # 5 build-loop steps in a circuit row
+    - services               # 3 platform cards
+    - team                   # sensor-bust gallery (placeholders)
+    - numbers                # stats + gauge cluster (placeholders)
+    - roadmap                # telemetry timeline, 6 milestones
+    - perspective            # pull quote + track-lock portrait
+    - closing                # contact
+
+effects:
+  texture: [film grain overlay, blueprint grid]
+  shadows: none
+
+rules:
+  - inline SVG/CSS line-art only; no generated photos, no clip-art
+  - single accent colour on an ink wireframe; keep the lab-grey ground
+  - keep dashed construction lines, brackets, reticles, telemetry labels on-brand
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                    # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true          # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

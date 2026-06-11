@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Studio · Plein Air Deck 03</title>
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<style>
+  /* ===== palette themes ===== */
+  :root,
+  .theme-plein-air{          /* default for this deck: warm cream + lavender / sky / wheat / rose / sage */
+    --bg:#F3EEE2; --ink:#3A3631; --ink-2:#6B6459; --paper:#F8F4EA;
+    --red:#B7A8D1; --cyan:#9CC0DE; --yellow:#E9D8A6; --olive:#E5A6A1; --peach:#A9BE9C;
+  }
+  .theme-newsroom{
+    --bg:#ECECEC; --ink:#1E1E1E; --ink-2:#565656; --paper:#F6F4EE;
+    --red:#E5443B; --cyan:#34C5CE; --yellow:#ECC94B; --olive:#C2CE86; --peach:#F0AA8B;
+  }
+  .theme-riso{
+    --bg:#F2EFE6; --ink:#1A1A2E; --ink-2:#5A5A6E; --paper:#FBFAF4;
+    --red:#F8487F; --cyan:#3D5AFE; --yellow:#FFC400; --olive:#26C281; --peach:#FF8A65;
+  }
+  .theme-noir{
+    --bg:#E9E7E2; --ink:#161616; --ink-2:#4F4F4F; --paper:#F4F2EC;
+    --red:#E5403A; --cyan:#9AA0A6; --yellow:#C9C2B0; --olive:#B8BCAE; --peach:#CDC4BB;
+  }
+  .theme-botanic{
+    --bg:#EDE9DF; --ink:#2B2A26; --ink-2:#5E5B50; --paper:#F6F2E8;
+    --red:#CE5B3C; --cyan:#5FA6B5; --yellow:#E0A52E; --olive:#7E8C4F; --peach:#E5A07C;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:var(--bg);overflow:hidden}
+  body{font-family:'Mulish',sans-serif;color:var(--ink)}
+
+  .viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  .stage{position:relative;width:1600px;height:900px;flex:none;transform-origin:center center}
+  .slide{position:absolute;inset:0;background:var(--bg);opacity:0;visibility:hidden;transition:opacity .45s ease;overflow:hidden}
+  .slide.active{opacity:1;visibility:visible}
+
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.32;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== image slot + CSS/SVG fallback ===== */
+  /* painterly fields: cover-crop, soft-feathered edges that dissolve into --bg */
+  .slot{position:absolute}
+  .slot>img{width:100%;height:100%;object-fit:cover;display:block;
+            -webkit-mask-image:radial-gradient(120% 120% at 50% 50%,#000 58%,transparent 100%);
+            mask-image:radial-gradient(120% 120% at 50% 50%,#000 58%,transparent 100%)}
+  .slot>.ph{display:none;position:absolute;inset:0;background:var(--c,var(--red));opacity:.7;
+            -webkit-mask-image:radial-gradient(120% 120% at 50% 50%,#000 56%,transparent 100%);
+            mask-image:radial-gradient(120% 120% at 50% 50%,#000 56%,transparent 100%)}
+  .slot.noimg>.ph{display:flex;align-items:center;justify-content:center}
+  .slot.noimg>img{display:none}
+  .ph .phg{width:46%;height:46%;fill:rgba(58,54,49,.18)}
+
+  /* ===== typography ===== */
+  .eyebrow{font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;color:var(--ink-2);letter-spacing:.22em;line-height:1.95}
+  h1,h2,h3,.num{font-family:'Playfair Display',serif;color:var(--ink);letter-spacing:0}
+  h1{font-size:104px;font-weight:600;line-height:1.0;letter-spacing:-.01em}
+  h2{font-size:58px;font-weight:600;line-height:1.06;letter-spacing:0}
+  h3{font-size:23px;font-weight:600;letter-spacing:0}
+  .kicker{font-family:'Mulish',sans-serif;font-weight:600;text-transform:uppercase;font-size:12.5px;letter-spacing:.22em;color:var(--ink-2)}
+  .body{font-size:16px;line-height:1.8;color:var(--ink-2)}
+  .small{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+
+  .foot{position:absolute;bottom:34px;left:64px;right:64px;display:flex;justify-content:space-between;z-index:30;
+        font-family:'Mulish',sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
+  .plus{position:absolute;font-family:'Playfair Display',serif;font-weight:600;font-size:40px;color:var(--ink-2);z-index:20}
+  .scrap{position:absolute;background-image:url("assets/texture-scraps.jpg");background-size:cover;pointer-events:none;z-index:1;opacity:.85;
+         -webkit-mask-image:radial-gradient(120% 120% at 50% 50%,#000 40%,transparent 100%);
+         mask-image:radial-gradient(120% 120% at 50% 50%,#000 40%,transparent 100%)}
+  .rule{height:4px;background:var(--red);border-radius:3px}
+  .dotgrid{position:absolute;z-index:5;background-image:radial-gradient(var(--ink-2) 2.2px,transparent 2.4px);background-size:24px 24px;opacity:.45}
+  /* translucent pastel washes that overlap and bleed off edges */
+  .wash{position:absolute;border-radius:50%;pointer-events:none;z-index:2;mix-blend-mode:multiply;
+        filter:blur(46px);opacity:.5}
+
+  /* ===== index ===== */
+  .index-list{position:absolute;left:100px;top:248px;width:740px;z-index:10}
+  .index-row{display:flex;align-items:baseline;gap:24px;padding:16px 0;border-bottom:1px solid rgba(58,54,49,.14)}
+  .index-row .num{font-size:22px;font-weight:600;color:var(--ink-2);min-width:42px}
+  .index-row h3{font-size:23px;flex:1}
+  .index-row .pg{font-family:'Mulish',sans-serif;font-weight:600;font-size:12px;color:var(--ink-2);letter-spacing:.14em}
+
+  /* ===== two-column ===== */
+  .twocol{position:absolute;left:100px;top:256px;width:710px;display:grid;grid-template-columns:1fr 1fr;gap:48px;z-index:10}
+  .twocol h3{margin-bottom:14px}
+
+  /* ===== pillars / row labels ===== */
+  .rowlabel{position:absolute;width:200px;transform:translateX(-50%);text-align:center;z-index:10}
+  .rowlabel h3{font-size:18px;margin-bottom:6px}
+
+  /* ===== cards ===== */
+  .col3{position:absolute;left:110px;right:110px;top:250px;display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:90px}
+  .col3 .cell{display:flex;flex-direction:column}
+  .col3 .slot{position:relative;width:74%;aspect-ratio:1/1;align-self:center}
+  .col3 h3{margin:28px 0 12px}
+
+  /* ===== stats ===== */
+  .stats{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:36px 60px;z-index:10}
+  .stat .statnum{font-family:'Playfair Display',serif;font-weight:600;font-size:62px;line-height:1;color:var(--ink)}
+  .stat .statlabel{font-size:14px;color:var(--ink-2);margin-top:6px}
+  .stat .bar{width:46px;height:5px;border-radius:3px;background:var(--red);margin:14px 0 0}
+
+  /* ===== timeline ===== */
+  .tl-line{position:absolute;height:2px;background:var(--ink-2);opacity:.5;z-index:10}
+  .tl-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--red);transform:translate(-50%,-5px);z-index:11}
+  .tl-year{position:absolute;transform:translateX(-50%);font-family:'Mulish',sans-serif;font-weight:600;letter-spacing:.14em;font-size:16px;color:var(--ink-2);z-index:10}
+
+  /* ===== contact ===== */
+  .contact{display:flex;flex-direction:column;gap:18px;margin-top:40px}
+  .contact div{display:flex;align-items:center;gap:16px;font-size:15px;color:var(--ink)}
+  .contact svg{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ===== nav + toolbar ===== */
+  .nav{position:fixed;right:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:10px;
+       font-family:'Mulish',sans-serif;font-weight:600;font-size:11px;letter-spacing:.14em;color:var(--ink-2);user-select:none}
+  .nav button{border:1px solid rgba(58,54,49,.3);background:transparent;color:var(--ink);width:30px;height:30px;cursor:pointer;font-size:14px;border-radius:3px}
+  .nav button:hover{background:var(--ink);color:var(--bg)}
+  .toolbar{position:fixed;left:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:8px;
+           font-family:'Mulish',sans-serif;font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.32;transition:opacity .2s}
+  .toolbar:hover{opacity:1}
+  .toolbar select,.toolbar button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);
+           border:1px solid rgba(58,54,49,.3);background:rgba(255,255,255,.55);height:30px;padding:0 10px;cursor:pointer;border-radius:3px}
+  .toolbar button:hover{background:var(--ink);color:var(--bg)}
+  .toolbar button.on{background:var(--red);border-color:var(--red);color:var(--ink)}
+
+  body.editing [contenteditable]{outline:1px dashed rgba(58,54,49,.4);outline-offset:3px;border-radius:2px}
+  body.editing [contenteditable]:focus{outline:1.5px solid var(--red);background:rgba(255,255,255,.6)}
+
+  /* during PDF export, force every slide fully visible so each captures its real content */
+  body.exporting .slide{opacity:1!important;visibility:visible!important;transition:none!important}
+
+  @media print{
+    @page{size:1600px 900px;margin:0}
+    html,body{overflow:visible;height:auto;background:#fff}
+    .viewport{position:static;display:block;width:auto;height:auto}
+    .stage{position:static;transform:none!important;width:1600px;height:auto}
+    .slide{position:relative;inset:auto;opacity:1!important;visibility:visible!important;
+           width:1600px;height:900px;break-after:page;page-break-after:always;
+           -webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .slide:last-child{break-after:auto;page-break-after:auto}
+    .nav,.toolbar{display:none!important}
+  }
+
+  /* ---- IMGSWAP_FEATURE: click or drop to replace an image (edit mode only) ---- */
+  .imgedit-cue{display:none}
+  body.editing .imgedit{cursor:pointer;z-index:50;outline:1.5px dashed rgba(128,128,128,.6);outline-offset:3px}
+  body.editing .imgedit .imgedit-cue{display:flex;align-items:center;gap:6px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(17,17,17,.66);color:#fff;font:600 12px/1 -apple-system,system-ui,sans-serif;letter-spacing:.03em;padding:8px 12px;border-radius:5px;opacity:0;transition:opacity .14s;pointer-events:none;white-space:nowrap;z-index:61}
+  body.editing .imgedit:hover .imgedit-cue,body.editing .imgedit.dragover .imgedit-cue{opacity:1}
+  body.editing .imgedit.dragover{outline:2px solid #2FD7E5;outline-offset:3px}
+</style>
+</head>
+<body class="theme-plein-air">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="g-bust" viewBox="0 0 100 120">
+  <path d="M50 8c-12 0-20 9-20 22 0 8 3 13 3 18 0 4-5 5-10 7-9 4-14 10-14 22v43h82v-43c0-12-5-18-14-22-5-2-10-3-10-7 0-5 3-10 3-18 0-13-8-22-20-22z"/>
+</symbol></svg>
+
+<div class="viewport"><div class="stage">
+
+  <!-- 01 · COVER -->
+  <section class="slide active">
+    <div class="wash" style="width:560px;height:560px;left:-120px;bottom:-160px;background:var(--cyan)"></div>
+    <div class="wash" style="width:420px;height:420px;left:380px;top:-120px;background:var(--olive)"></div>
+    <div class="slot" style="left:860px;top:0;width:740px;height:900px">
+      <img class="cut" src="assets/cover.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
+    </div>
+    <div style="position:absolute;left:104px;top:236px;z-index:10;max-width:680px">
+      <p class="eyebrow">Field Notes · Season 2026</p>
+      <h1 style="margin:30px 0 0">Field Studio</h1>
+      <div class="rule" style="width:64px;margin:40px 0 24px"></div>
+      <p class="body" style="max-width:430px">A painting practice that works outdoors. We teach people to see, slow down, and put light on canvas.</p>
+    </div>
+    <span class="plus" style="left:700px;top:600px">+</span>
+    <div class="foot"><span>Field Studio · 2026</span><span>01 / 12</span></div>
+  </section>
+
+  <!-- 02 · STATEMENT -->
+  <section class="slide">
+    <div class="wash" style="width:520px;height:520px;right:-140px;top:-120px;background:var(--yellow)"></div>
+    <p class="kicker" style="position:absolute;left:104px;top:150px;z-index:10">01 · Statement</p>
+    <h2 style="position:absolute;left:104px;top:300px;width:860px;z-index:10;font-size:62px">We paint what the day looks like, before it changes.</h2>
+    <p class="body" style="position:absolute;left:104px;top:574px;width:480px;z-index:10">Light moves. Weather turns. We work in the open air and finish on the spot, so the painting holds the hour it was made in.</p>
+    <div class="slot" style="left:1010px;top:210px;width:520px;height:520px">
+      <img class="cut" src="assets/manifesto.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--red)"></div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>02 / 12</span></div>
+  </section>
+
+  <!-- 03 · INDEX -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:104px;z-index:10">Contents</h2>
+    <div class="index-list">
+      <div class="index-row"><span class="num">01</span><h3>Statement</h3><span class="pg">P. 02</span></div>
+      <div class="index-row"><span class="num">02</span><h3>About the Studio</h3><span class="pg">P. 04</span></div>
+      <div class="index-row"><span class="num">03</span><h3>The Field</h3><span class="pg">P. 05</span></div>
+      <div class="index-row"><span class="num">04</span><h3>How We Paint</h3><span class="pg">P. 06</span></div>
+      <div class="index-row"><span class="num">05</span><h3>What We Offer</h3><span class="pg">P. 07</span></div>
+      <div class="index-row"><span class="num">06</span><h3>The Painters</h3><span class="pg">P. 08</span></div>
+      <div class="index-row"><span class="num">07</span><h3>By the Numbers</h3><span class="pg">P. 09</span></div>
+      <div class="index-row"><span class="num">08</span><h3>The Season Ahead</h3><span class="pg">P. 10</span></div>
+    </div>
+    <div class="slot" style="left:1120px;top:40px;width:480px;height:760px">
+      <img class="cut" src="assets/index-strip.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--cyan)"></div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>03 / 12</span></div>
+  </section>
+
+  <!-- 04 · ABOUT -->
+  <section class="slide">
+    <div class="wash" style="width:480px;height:480px;left:-160px;top:-140px;background:var(--peach)"></div>
+    <h2 style="position:absolute;left:104px;top:128px;z-index:10">About the studio</h2>
+    <p class="body" style="position:absolute;left:104px;top:296px;width:440px;z-index:10">Field Studio is a placeholder name for your practice. We are a small group of painters who run outdoor sessions, classes, and seasonal expeditions. Use this space to say who you are and who you paint with.</p>
+    <p class="kicker" style="position:absolute;left:104px;top:534px;z-index:10">Founded 2014 · Working from the coast and the hills</p>
+    <div class="slot" style="left:850px;top:60px;width:560px;height:780px">
+      <img class="cut" src="assets/about.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--cyan)"><svg class="phg"><use href="#g-bust"/></svg></div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>04 / 12</span></div>
+  </section>
+
+  <!-- 05 · THE FIELD -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:104px;z-index:10">The field</h2>
+    <div class="twocol" style="top:272px;width:660px">
+      <div><h3>What we paint</h3><p class="body">Open country, water, and weather. We choose places where the light does most of the work and the scene keeps moving.</p></div>
+      <div><h3>Why outdoors</h3><p class="body">A photograph flattens light. Standing in it does not. Painting on site keeps the colour true to the moment.</p></div>
+    </div>
+    <div class="slot" style="left:830px;top:200px;width:700px;height:520px">
+      <img class="cut" src="assets/landscape.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--yellow)"></div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>05 / 12</span></div>
+  </section>
+
+  <!-- 06 · HOW WE PAINT (5 pillars) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:96px;z-index:10">How we paint</h2>
+    <div class="slot" style="left:160px;top:226px;width:1280px;height:470px">
+      <img class="cut" src="assets/pillars-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--olive)"></div>
+    </div>
+    <div class="rowlabel" style="left:352px;top:740px"><h3>Look first</h3><p class="small">Sit with the scene before the brush.</p></div>
+    <div class="rowlabel" style="left:576px;top:740px"><h3>Block in</h3><p class="small">Lay the big shapes and values early.</p></div>
+    <div class="rowlabel" style="left:800px;top:740px"><h3>Chase light</h3><p class="small">Work fast while the light holds.</p></div>
+    <div class="rowlabel" style="left:1024px;top:740px"><h3>Mix true</h3><p class="small">Match the colour you actually see.</p></div>
+    <div class="rowlabel" style="left:1248px;top:740px"><h3>Stop early</h3><p class="small">Leave it before it goes muddy.</p></div>
+    <div class="foot"><span>Field Studio · 2026</span><span>06 / 12</span></div>
+  </section>
+
+  <!-- 07 · WHAT WE OFFER (3 services) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:96px;z-index:10">What we offer</h2>
+    <div class="dotgrid" style="right:110px;top:108px;width:150px;height:80px"></div>
+    <div class="col3" style="top:268px">
+      <div class="cell">
+        <div class="slot"><img class="cut" src="assets/card-1.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--red)"></div></div>
+        <h3>Day classes</h3><p class="small">Small groups in the field. Bring nothing, leave with a finished study.</p>
+      </div>
+      <div class="cell">
+        <div class="slot"><img class="cut" src="assets/card-2.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--cyan)"></div></div>
+        <h3>Painting trips</h3><p class="small">A week on the coast or the hills, painting morning and evening light.</p>
+      </div>
+      <div class="cell">
+        <div class="slot"><img class="cut" src="assets/card-3.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--olive)"></div></div>
+        <h3>Commissions</h3><p class="small">A painting of a place that matters to you, made on site.</p>
+      </div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>07 / 12</span></div>
+  </section>
+
+  <!-- 08 · THE PAINTERS (6 placeholders) -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:96px;z-index:10">The painters</h2>
+    <div class="slot" style="left:160px;top:200px;width:1280px;height:520px">
+      <img class="cut" src="assets/team-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--peach)"></div>
+    </div>
+    <div class="rowlabel" style="left:300px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Lead painter</p></div>
+    <div class="rowlabel" style="left:500px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Tutor</p></div>
+    <div class="rowlabel" style="left:700px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Tutor</p></div>
+    <div class="rowlabel" style="left:900px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Trips lead</p></div>
+    <div class="rowlabel" style="left:1100px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Studio</p></div>
+    <div class="rowlabel" style="left:1300px;top:748px"><h3 style="font-size:17px">First Last</h3><p class="small">Bookings</p></div>
+    <div class="foot"><span>Field Studio · 2026</span><span>08 / 12</span></div>
+  </section>
+
+  <!-- 09 · BY THE NUMBERS -->
+  <section class="slide">
+    <h2 style="position:absolute;left:104px;top:96px;z-index:10">By the numbers</h2>
+    <div class="slot" style="left:40px;top:200px;width:660px;height:660px">
+      <img class="cut" src="assets/results.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--red)"></div>
+    </div>
+    <div class="stats" style="left:800px;top:280px;width:700px">
+      <div class="stat"><div class="statnum">900+</div><div class="statlabel">Paintings made on site</div><div class="bar"></div></div>
+      <div class="stat"><div class="statnum">40</div><div class="statlabel">Painting trips run</div><div class="bar" style="background:var(--cyan)"></div></div>
+      <div class="stat"><div class="statnum">88%</div><div class="statlabel">Students who book again</div><div class="bar" style="background:var(--yellow)"></div></div>
+      <div class="stat"><div class="statnum">12</div><div class="statlabel">Years in the field</div><div class="bar" style="background:var(--olive)"></div></div>
+    </div>
+    <p class="small" style="position:absolute;left:800px;top:700px;z-index:10">Figures are placeholders. Replace with your own and cite the source.</p>
+    <div class="foot"><span>Field Studio · 2026</span><span>09 / 12</span></div>
+  </section>
+
+  <!-- 10 · THE SEASON AHEAD (6 milestones) -->
+  <section class="slide">
+    <div class="wash" style="width:420px;height:420px;right:-120px;top:-120px;background:var(--cyan)"></div>
+    <h2 style="position:absolute;left:104px;top:96px;z-index:10">The season ahead</h2>
+    <span class="tl-year" style="left:300px;top:206px">Spring</span>
+    <span class="tl-year" style="left:500px;top:206px">Summer</span>
+    <span class="tl-year" style="left:700px;top:206px">Autumn</span>
+    <span class="tl-year" style="left:900px;top:206px">Winter</span>
+    <span class="tl-year" style="left:1100px;top:206px">2027</span>
+    <span class="tl-year" style="left:1300px;top:206px">2028</span>
+    <div class="slot" style="left:160px;top:240px;width:1280px;height:520px">
+      <img class="cut" src="assets/roadmap-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--cyan)"></div>
+    </div>
+    <div class="tl-line" style="left:280px;right:280px;top:778px"></div>
+    <span class="tl-dot" style="left:300px;top:778px"></span>
+    <span class="tl-dot" style="left:500px;top:778px"></span>
+    <span class="tl-dot" style="left:700px;top:778px"></span>
+    <span class="tl-dot" style="left:900px;top:778px"></span>
+    <span class="tl-dot" style="left:1100px;top:778px"></span>
+    <span class="tl-dot" style="left:1300px;top:778px"></span>
+    <div class="rowlabel" style="left:300px;top:796px"><p class="small">Open the new class dates.</p></div>
+    <div class="rowlabel" style="left:500px;top:796px"><p class="small">Run the coastal trips.</p></div>
+    <div class="rowlabel" style="left:700px;top:796px"><p class="small">Hold the autumn show.</p></div>
+    <div class="rowlabel" style="left:900px;top:796px"><p class="small">Paint indoors and plan.</p></div>
+    <div class="rowlabel" style="left:1100px;top:796px"><p class="small">Add a second region.</p></div>
+    <div class="rowlabel" style="left:1300px;top:796px"><p class="small">Start a small residency.</p></div>
+    <div class="foot"><span>Field Studio · 2026</span><span>10 / 12</span></div>
+  </section>
+
+  <!-- 11 · PERSPECTIVE -->
+  <section class="slide">
+    <div class="wash" style="width:480px;height:480px;left:-150px;bottom:-150px;background:var(--olive)"></div>
+    <p class="kicker" style="position:absolute;left:104px;top:210px;z-index:10">Perspective</p>
+    <h2 style="position:absolute;left:104px;top:308px;width:780px;z-index:10;font-size:56px">Paint the light, not the thing.</h2>
+    <p class="body" style="position:absolute;left:104px;top:540px;width:420px;z-index:10">First Last, Lead Painter</p>
+    <div class="slot" style="left:1010px;top:40px;width:560px;height:780px">
+      <img class="cut" src="assets/quote.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>11 / 12</span></div>
+  </section>
+
+  <!-- 12 · CONTACT -->
+  <section class="slide">
+    <div class="wash" style="width:520px;height:520px;left:380px;bottom:-200px;background:var(--peach)"></div>
+    <div class="slot" style="left:1000px;top:0;width:600px;height:900px">
+      <img class="cut" src="assets/closing.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
+      <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
+    </div>
+    <div style="position:absolute;left:104px;top:248px;z-index:10;max-width:540px">
+      <h1 style="font-size:92px">Come paint</h1>
+      <p class="body" style="margin:32px 0 0;max-width:400px">Dates open each season. Write to us and we will send the next set, with what to bring and where to meet.</p>
+      <div class="contact">
+        <div><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><ellipse cx="24" cy="24" rx="7" ry="16"/><path d="M8 24h32"/></svg> www.example.com</div>
+        <div><svg viewBox="0 0 48 48"><rect x="8" y="13" width="32" height="22" rx="2"/><path d="M9 15l15 12 15-12"/></svg> hello@example.com</div>
+        <div><svg viewBox="0 0 48 48"><rect x="10" y="10" width="28" height="28" rx="7"/><circle cx="24" cy="24" r="7"/><circle cx="33.5" cy="14.5" r="1.6" fill="currentColor"/></svg> @example</div>
+      </div>
+    </div>
+    <div class="foot"><span>Field Studio · 2026</span><span>12 / 12</span></div>
+  </section>
+
+</div></div>
+
+<div class="toolbar">
+  <select id="theme" title="Palette">
+    <option value="plein-air">Plein Air</option>
+    <option value="newsroom">Newsroom</option>
+    <option value="riso">Riso</option>
+    <option value="noir">Noir</option>
+    <option value="botanic">Botanic</option>
+  </select>
+  <button id="editBtn" title="Toggle inline editing (E)">Edit</button>
+  <button id="saveBtn" title="Save edited HTML (Cmd S)">Save</button>
+  <button id="pdfBtn" title="Print to PDF">PDF</button>
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous slide">‹</button>
+  <span id="counter">01 / 12</span>
+  <button id="next" aria-label="Next slide">›</button>
+</div>
+
+<script src="vendor/html-to-image.js"></script>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const stage=document.querySelector('.stage');
+  let i=Math.min(Math.max((parseInt(location.hash.slice(1))||1)-1,0),slides.length-1);
+
+  function show(n){
+    i=(n+slides.length)%slides.length;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+
+  addEventListener('keydown',e=>{
+    if(e.target.isContentEditable){
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save();}
+      return;
+    }
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save();return;}
+    if(e.key.toLowerCase()==='e'){e.preventDefault();toggleEdit();return;}
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  addEventListener('hashchange',()=>{const n=(parseInt(location.hash.slice(1))||1)-1;if(n!==i)show(n);});
+
+  const themeSel=document.getElementById('theme');
+  const THEMES=['plein-air','newsroom','riso','noir','botanic'];
+  function setTheme(name){
+    THEMES.forEach(t=>document.body.classList.remove('theme-'+t));
+    document.body.classList.add('theme-'+name);
+    themeSel.value=name;
+  }
+  themeSel.onchange=()=>setTheme(themeSel.value);
+  setTheme((document.body.className.match(/theme-([\w-]+)/)||[])[1]||'plein-air');
+
+  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.body,.small,.statnum,.statlabel,.tl-year,.pg,.foot span,.contact div';
+  const editBtn=document.getElementById('editBtn');
+  let editing=false;
+  function toggleEdit(){
+    editing=!editing;
+    document.body.classList.toggle('editing',editing);
+    editBtn.classList.toggle('on',editing);
+    editBtn.textContent=editing?'Done':'Edit';
+    stage.querySelectorAll(EDIT_SEL).forEach(el=>{
+      if(editing)el.setAttribute('contenteditable','true');
+      else el.removeAttribute('contenteditable');
+    });
+  }
+  editBtn.onclick=toggleEdit;
+  // Flush any in-progress edit so Save and PDF always capture the latest text.
+  function commitEdits(){
+    const a=document.activeElement;
+    if(a&&a.isContentEditable) a.blur();
+    if(editing) toggleEdit();
+  }
+
+  function serialize(){
+    const html=document.documentElement.cloneNode(true);
+    html.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    const b=html.querySelector('body'); b.classList.remove('editing');
+    html.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+    return '<!DOCTYPE html>\n'+html.outerHTML;
+  }
+  async function save(){
+    const wasEditing=editing; commitEdits();
+    const data=serialize();
+    if(window.showSaveFilePicker){
+      try{
+        const h=await showSaveFilePicker({suggestedName:'deck.html',types:[{description:'HTML',accept:{'text/html':['.html']}}]});
+        const w=await h.createWritable(); await w.write(data); await w.close();
+        if(wasEditing)toggleEdit(); return;
+      }catch(err){ if(err.name==='AbortError'){ if(wasEditing)toggleEdit(); return; } }
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([data],{type:'text/html'}));
+    a.download='deck.html'; a.click(); URL.revokeObjectURL(a.href);
+    if(wasEditing)toggleEdit();
+  }
+  document.getElementById('saveBtn').onclick=save;
+
+  // ---------- one-click PDF, fully in-browser (no server, no print dialog) ----------
+  // Each slide is rasterised with html-to-image, then wrapped as a JPEG page in a
+  // minimal hand-written PDF. Collage blends are baked into the assets, so the output
+  // matches the screen exactly in any browser. One 1200x675 pt page per slide (16:9).
+  function imagesToPdf(images, ptW, ptH){
+    const enc=new TextEncoder(), chunks=[]; let len=0; const off=[];
+    const W=u=>{chunks.push(u);len+=u.length;}, S=s=>W(typeof s==='string'?enc.encode(s):s);
+    S("%PDF-1.4\n");
+    let id=0; const nid=()=>++id;
+    const catId=nid(), pagesId=nid();
+    const pages=images.map(im=>({imgId:nid(),contId:nid(),pageId:nid(),im}));
+    const obj=(i,b)=>{off[i]=len;S(i+" 0 obj\n");S(b);S("\nendobj\n");};
+    const objS=(i,d,bytes)=>{off[i]=len;S(i+" 0 obj\n");S(d+"\nstream\n");W(bytes);S("\nendstream\nendobj\n");};
+    obj(catId,"<< /Type /Catalog /Pages "+pagesId+" 0 R >>");
+    obj(pagesId,"<< /Type /Pages /Count "+pages.length+" /Kids ["+pages.map(p=>p.pageId+" 0 R").join(" ")+"] >>");
+    const w=ptW.toFixed(2), h=ptH.toFixed(2);
+    for(const p of pages){
+      objS(p.imgId,"<< /Type /XObject /Subtype /Image /Width "+p.im.w+" /Height "+p.im.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+p.im.bytes.length+" >>",p.im.bytes);
+      const c=enc.encode("q "+w+" 0 0 "+h+" 0 0 cm /Im0 Do Q");
+      objS(p.contId,"<< /Length "+c.length+" >>",c);
+      obj(p.pageId,"<< /Type /Page /Parent "+pagesId+" 0 R /MediaBox [0 0 "+w+" "+h+"] /Resources << /XObject << /Im0 "+p.imgId+" 0 R >> >> /Contents "+p.contId+" 0 R >>");
+    }
+    const xref=len, n=id+1;
+    S("xref\n0 "+n+"\n0000000000 65535 f \n");
+    for(let k=1;k<n;k++) S(String(off[k]).padStart(10,'0')+" 00000 n \n");
+    S("trailer\n<< /Size "+n+" /Root "+catId+" 0 R >>\nstartxref\n"+xref+"\n%%EOF");
+    return new Blob(chunks,{type:'application/pdf'});
+  }
+
+  const pdfBtn=document.getElementById('pdfBtn');
+  async function exportPDF(){
+    if(!window.htmlToImage){ pdfBtn.textContent='no lib'; setTimeout(()=>pdfBtn.textContent='PDF',2000); return; }
+    pdfBtn.disabled=true;
+    const wasEditing=editing; commitEdits();
+    const prev=i;
+    document.body.classList.add('exporting');
+    try{
+      await document.fonts.ready;
+      // Embed the web fonts once, then reuse for every slide (avoids re-fetching per slide).
+      let fontCSS=''; try{ fontCSS=await htmlToImage.getFontEmbedCSS(stage); }catch(e){}
+      await new Promise(r=>setTimeout(r,30));
+      const images=[];
+      for(let k=0;k<slides.length;k++){
+        const s=slides[k];
+        const saved=s.style.cssText;
+        s.style.opacity='1'; s.style.visibility='visible'; s.style.transition='none';
+        void s.offsetHeight;                 // force synchronous style/layout recalc (robust in any tab)
+        pdfBtn.textContent=(k+1)+'/'+slides.length;
+        const bg=getComputedStyle(s).backgroundColor;
+        const canvas=await htmlToImage.toCanvas(s,{width:1600,height:900,pixelRatio:2,
+          fontEmbedCSS:fontCSS, backgroundColor:bg,
+          style:{transition:'none',opacity:'1',visibility:'visible'}});
+        s.style.cssText=saved;
+        const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.92));
+        images.push({bytes:new Uint8Array(await blob.arrayBuffer()),w:canvas.width,h:canvas.height});
+      }
+      const pdf=imagesToPdf(images,1200,675);
+      window.__lastPdfBlob=pdf;
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(pdf); a.download='field-studio-deck.pdf'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }catch(e){ console.error(e); pdfBtn.textContent='error'; setTimeout(()=>pdfBtn.textContent='PDF',2500); return; }
+    finally{ document.body.classList.remove('exporting'); show(prev); if(wasEditing)toggleEdit(); pdfBtn.disabled=false; }
+    pdfBtn.textContent='PDF';
+  }
+  pdfBtn.onclick=exportPDF;
+  window.exportDeckPDF=exportPDF;   // programmatic export hook
+  window.__lastPdfBlob=null;
+
+  function fit(){stage.style.transform=`scale(${Math.min(innerWidth/1600,innerHeight/900)})`;}
+  addEventListener('resize',fit);
+  fit();show(i);
+</script>
+<script>
+/* IMGSWAP_FEATURE: click-in-place + drag-and-drop image replacement (Edit mode only) */
+(function(){
+  var MAX=1600,Q=0.85;
+  var input=document.createElement('input');input.type='file';input.accept='image/*';input.style.display='none';document.body.appendChild(input);
+  var target=null;
+  function editing(){return document.body.classList.contains('editing');}
+  function setImage(slot,url){var img=slot.querySelector('img');if(!img)return;img.removeAttribute('srcset');img.src=url;slot.classList.remove('noimg');}
+  function processFile(slot,file){
+    if(!file||!/^image\//.test(file.type))return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,MAX/Math.max(w,h));
+        var cw=Math.max(1,Math.round(w*s)),ch=Math.max(1,Math.round(h*s));
+        var c=document.createElement('canvas');c.width=cw;c.height=ch;
+        c.getContext('2d').drawImage(im,0,0,cw,ch);
+        var out;try{out=c.toDataURL('image/jpeg',Q);}catch(e){out=fr.result;}
+        setImage(slot,out);
+      };
+      im.onerror=function(){setImage(slot,fr.result);};
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
+  input.addEventListener('change',function(){if(target&&input.files&&input.files[0])processFile(target,input.files[0]);target=null;input.value='';});
+  function wire(slot){
+    slot.classList.add('imgedit');
+    if(!slot.querySelector('.imgedit-cue')){var cue=document.createElement('span');cue.className='imgedit-cue';cue.textContent='Click or drop image';slot.appendChild(cue);}
+    slot.addEventListener('click',function(e){if(!editing())return;e.preventDefault();e.stopPropagation();target=slot;input.click();});
+    slot.addEventListener('dragover',function(e){if(!editing())return;e.preventDefault();slot.classList.add('dragover');});
+    slot.addEventListener('dragleave',function(){slot.classList.remove('dragover');});
+    slot.addEventListener('drop',function(e){if(!editing())return;e.preventDefault();slot.classList.remove('dragover');var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)processFile(slot,f);});
+  }
+  function init(){document.querySelectorAll('.slot').forEach(function(s){if(s.querySelector(':scope > img'))wire(s);});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deck Kit — ten editorial slide templates</title>
+<style>
+  :root{ --bg:#F4F2EC; --card:#FFFFFF; --ink:#1A1A1A; --ink2:#666056; --line:rgba(26,26,26,.12); --accent:#E5443B; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:64px 28px 96px}
+  header{margin-bottom:48px;max-width:760px}
+  .kick{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:-.02em;margin:18px 0 16px;font-weight:800}
+  .lede{font-size:18px;color:var(--ink2);max-width:640px}
+  .meta{margin-top:22px;font-size:14px;color:var(--ink2)}
+  .meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+  .meta a:hover{border-color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:26px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+  .card .shot{display:block;width:100%;background:#0f1115;aspect-ratio:1146/729;object-fit:cover}
+  .card .body{padding:16px 18px 18px}
+  .card .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .card h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .card .num{font:600 12px/1 ui-monospace,Menlo,monospace;color:var(--ink2)}
+  .card .fam{font:600 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:7px 0 9px}
+  .card .best{font-size:14px;color:var(--ink2);min-height:40px}
+  .card .links{display:flex;gap:14px;margin-top:14px;font-size:13.5px}
+  .card .links a{color:var(--ink);text-decoration:none;font-weight:600;border-bottom:1px solid var(--line);padding-bottom:1px}
+  .card .links a:hover{border-color:var(--ink)}
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink2)}
+  footer a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kick">Deck Kit</div>
+    <h1>Ten editorial slide templates, as self-contained HTML.</h1>
+    <p class="lede">One backbone, ten distinct looks. Each deck opens in any browser, edits in place,
+      swaps its own images, and exports a pixel-accurate PDF. No install, no server.</p>
+    <p class="meta">Each card opens a live, empty template, or the same Claude Fable 5 report rendered
+      in that style. Full source on <a href="https://github.com/aref-vc/deck-kit">GitHub</a>.</p>
+  </header>
+  <div class="grid" id="grid"></div>
+  <footer>
+    Built with the Deck Kit. Fonts are open-licensed (SIL OFL / Apache 2.0). See the
+    <a href="README.md">README</a> and <a href="deck-kit/BUILD.md">build spec</a>.
+  </footer>
+</div>
+<script>
+  var T=[
+    ["01","newsroom","Newsroom","Editorial collage","Brand story, manifesto, research dossier"],
+    ["02","grid","Grid","Mondrian / De Stijl","Frameworks, design systems"],
+    ["03","plein-air","Plein Air","Impressionist","Culture, vision, narrative"],
+    ["04","studio","Studio","Creative agency","Pitches, portfolios, proposals"],
+    ["05","arena","Arena","Sports","Sponsorship, sports business"],
+    ["06","maison","Maison","Luxury","Investor / board, premium brand"],
+    ["07","drifter","Drifter","Earthy / kraft","Travel, craft, sustainability"],
+    ["08","ledger","Ledger","Data / research","Market research, financial, KPI"],
+    ["09","terminal","Terminal","Dark CRT console","Repos, architecture, AI agents"],
+    ["10","vanguard","Vanguard","Robotics / futuristic","Deep-tech, robotics, R&D"]
+  ];
+  document.getElementById('grid').innerHTML = T.map(function(t){
+    var id=t[0]+'-'+t[1];
+    return '<div class="card">'
+      + '<a href="deck-kit/templates/'+id+'/deck.html"><img class="shot" loading="lazy" src="screenshots/'+id+'-grid.jpg" alt="'+t[2]+' slides"></a>'
+      + '<div class="body"><div class="row"><h2>'+t[2]+'</h2><span class="num">'+t[0]+'</span></div>'
+      + '<div class="fam">'+t[3]+'</div>'
+      + '<div class="best">'+t[4]+'</div>'
+      + '<div class="links"><a href="deck-kit/templates/'+id+'/deck.html">Open template &rarr;</a>'
+      + '<a href="deck-kit/examples/fable5/'+id+'/deck.html">Fable 5 example &rarr;</a></div>'
+      + '</div></div>';
+  }).join('');
+</script>
+</body>
+</html>
