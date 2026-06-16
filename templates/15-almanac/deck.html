@@ -7,10 +7,10 @@
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
   /* ===== palette themes ===== */
-  /* Academic / scientific editorial-serif. Light scholarly cream, very restrained colour.
-     accent map: red=primary accent, cyan=figure-callout secondary, yellow/olive/peach=quiet support */
+  /* Academic / scholarly-journal. Cream paper, ink text, very restrained colour.
+     accent map: red=ink-blue primary, cyan=oxblood figure-callout, the rest are quiet support */
   :root,
-  .theme-almanac{           /* default: paper cream + ink-blue primary, oxblood callouts */
+  .theme-almanac{           /* default: cream paper, ink-blue primary, oxblood callouts */
     --bg:#F4F0E6; --ink:#20242B; --ink-2:#5A5448; --paper:#FAF7EE;
     --red:#2A3A6B; --cyan:#8A2B2B; --yellow:#9A8C6A; --olive:#4B6358; --peach:#7A5C46;
   }
@@ -36,87 +36,130 @@
   .slide{position:absolute;inset:0;background:var(--bg);opacity:0;visibility:hidden;transition:opacity .45s ease;overflow:hidden}
   .slide.active{opacity:1;visibility:visible}
 
+  /* faint laid-paper grain, no painterly drama */
   .slide::after{
-    content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.18;
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.10;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* ===== image slot + CSS/SVG fallback ===== */
   /* figure plates: cover-crop inside a thin scholarly rule frame, crisp edges */
-  .slot{position:absolute;border:1px solid rgba(32,36,43,.34);background:var(--paper);padding:6px}
+  .slot{position:absolute;border:1px solid rgba(32,36,43,.42);background:var(--paper);padding:7px}
   .slot>img{width:100%;height:100%;object-fit:cover;display:block}
-  .slot>.ph{display:none;position:absolute;inset:6px;background:var(--c,var(--red));opacity:.14}
+  .slot>.ph{display:none;position:absolute;inset:7px;background:var(--c,var(--red));opacity:.14}
   .slot.noimg>.ph{display:flex;align-items:center;justify-content:center}
   .slot.noimg>img{display:none}
   .ph .phg{width:42%;height:42%;fill:rgba(32,36,43,.22)}
-  /* numbered figure caption beneath a plate */
-  .figcap{position:absolute;font-family:'Mulish',sans-serif;font-size:11.5px;line-height:1.5;
-          color:var(--ink-2);letter-spacing:.01em;z-index:12}
-  .figcap b{font-weight:700;color:var(--ink);letter-spacing:.04em}
+
+  /* ===== running head (every slide): thin top rule, section name left, folio right ===== */
+  .runhead{position:absolute;left:64px;right:64px;top:50px;z-index:30;
+           display:flex;justify-content:space-between;align-items:flex-end;
+           padding-bottom:9px;border-bottom:1px solid rgba(32,36,43,.5)}
+  .runhead .sec{font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;
+                letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
+  .runhead .fol{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ink-2)}
+
+  /* ===== numbered figure plate caption ===== */
+  .figcap{position:absolute;font-family:'Mulish',sans-serif;font-size:12px;line-height:1.5;
+          color:var(--ink-2);letter-spacing:.005em;z-index:12;padding-top:7px;border-top:1px solid rgba(32,36,43,.28)}
+  .figcap b{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;color:var(--ink);margin-right:2px}
 
   /* ===== typography ===== */
-  /* small-caps section labels (letter-spaced uppercase), Playfair serif heads, Mulish body */
-  .eyebrow{font-family:'Mulish',sans-serif;font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--red);letter-spacing:.26em;line-height:1.9}
+  /* small-caps section labels, Playfair serif heads + figure numbers + epigraph, Mulish body */
+  .eyebrow{font-family:'Mulish',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--red);letter-spacing:.3em;line-height:1.9}
   h1,h2,h3,.num{font-family:'Playfair Display',serif;color:var(--ink);letter-spacing:0}
-  h1{font-size:92px;font-weight:600;line-height:1.02;letter-spacing:-.005em}
-  h2{font-size:52px;font-weight:600;line-height:1.08;letter-spacing:0}
-  h3{font-size:22px;font-weight:600;letter-spacing:0}
-  .kicker{font-family:'Mulish',sans-serif;font-weight:700;text-transform:uppercase;font-size:11.5px;letter-spacing:.26em;color:var(--red)}
-  .body{font-size:15.5px;line-height:1.72;color:var(--ink-2)}
-  .small{font-size:13px;line-height:1.66;color:var(--ink-2)}
-  /* two-column flowing body where space allows */
-  .cols2{column-count:2;column-gap:42px;column-rule:1px solid rgba(32,36,43,.14)}
+  h1{font-size:74px;font-weight:600;line-height:1.04;letter-spacing:-.005em}
+  h2{font-size:42px;font-weight:600;line-height:1.1;letter-spacing:0}
+  h3{font-size:21px;font-weight:600;letter-spacing:0}
+  .kicker{font-family:'Mulish',sans-serif;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.3em;color:var(--red)}
+  /* small-caps section label, scholarly */
+  .smallcaps{font-family:'Mulish',sans-serif;font-weight:700;font-size:12px;
+             text-transform:uppercase;letter-spacing:.26em;color:var(--ink)}
+  .body{font-size:15.5px;line-height:1.74;color:var(--ink)}
+  .small{font-size:13px;line-height:1.68;color:var(--ink-2)}
+  /* justified measured columns */
+  .justify{text-align:justify;text-justify:inter-word;hyphens:auto}
+  .cols2{column-count:2;column-gap:46px;column-rule:1px solid rgba(32,36,43,.18)}
   .cols2 p{margin:0;break-inside:avoid}
-  /* footnotes / source citations along the bottom of a slide */
+  .cols2 p+p{margin-top:14px}
+
+  /* drop-figure-number used as a serif marker */
+  .fignum{font-family:'Playfair Display',serif;font-style:italic;color:var(--red)}
+
+  /* ===== footnotes / source citations above a thin rule ===== */
   .footnote{position:absolute;font-family:'Mulish',sans-serif;font-size:11px;line-height:1.55;
-            color:var(--ink-2);letter-spacing:.01em;z-index:12;border-top:1px solid rgba(32,36,43,.16);padding-top:8px}
+            color:var(--ink-2);letter-spacing:.005em;z-index:12;border-top:1px solid rgba(32,36,43,.32);padding-top:9px}
   .footnote sup{font-weight:700;color:var(--ink);margin-right:5px}
 
   .foot{position:absolute;bottom:34px;left:64px;right:64px;display:flex;justify-content:space-between;z-index:30;
         font-family:'Mulish',sans-serif;font-weight:700;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-2)}
-  .plus{position:absolute;font-family:'Playfair Display',serif;font-weight:600;font-size:34px;color:var(--ink-2);opacity:.5;z-index:20}
+  /* kept for compatibility, not used as decoration anymore */
+  .plus{display:none}
   .scrap{display:none}
-  .rule{height:2px;background:var(--red);border-radius:0}
-  .dotgrid{position:absolute;z-index:5;background-image:radial-gradient(var(--ink-2) 1px,transparent 1.4px);background-size:18px 18px;opacity:.22}
-  /* very quiet tint field, no blur drama */
+  .rule{height:1px;background:var(--ink);border:0}
+  .dotgrid{display:none}
   .wash{display:none}
 
-  /* ===== index ===== */
-  .index-list{position:absolute;left:100px;top:248px;width:740px;z-index:10}
-  .index-row{display:flex;align-items:baseline;gap:24px;padding:15px 0;border-bottom:1px solid rgba(32,36,43,.16)}
-  .index-row .num{font-size:20px;font-weight:600;color:var(--red);min-width:42px}
-  .index-row h3{font-size:22px;flex:1}
-  .index-row .pg{font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;color:var(--ink-2);letter-spacing:.18em;text-transform:uppercase}
+  /* ===== contents (table of contents with leader dots) ===== */
+  .toc{position:absolute;z-index:10}
+  .toc-row{display:flex;align-items:baseline;padding:13px 0}
+  .toc-row+.toc-row{border-top:1px solid rgba(32,36,43,.16)}
+  .toc-row .num{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--red);width:46px;flex:none}
+  .toc-row .ttl{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--ink);white-space:nowrap}
+  .toc-row .leader{flex:1;margin:0 14px;border-bottom:1px dotted rgba(32,36,43,.5);transform:translateY(-4px)}
+  .toc-row .fol{font-family:'Mulish',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--ink-2)}
 
-  /* ===== two-column ===== */
-  .twocol{position:absolute;left:100px;top:256px;width:710px;display:grid;grid-template-columns:1fr 1fr;gap:48px;z-index:10}
-  .twocol h3{margin-bottom:14px}
+  /* ===== enumerated serif list (pillars / methods) ===== */
+  .enum{position:absolute;z-index:10}
+  .enum li{list-style:none;display:flex;gap:24px;padding:17px 0}
+  .enum li+li{border-top:1px solid rgba(32,36,43,.16)}
+  .enum .mk{font-family:'Playfair Display',serif;font-style:italic;font-size:24px;color:var(--red);width:58px;flex:none;line-height:1.2}
+  .enum .lead{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--ink);margin-right:6px}
+  .enum .txt{font-size:14.5px;line-height:1.62;color:var(--ink);flex:1}
 
-  /* ===== pillars / row labels ===== */
-  .rowlabel{position:absolute;width:200px;transform:translateX(-50%);text-align:center;z-index:10}
-  .rowlabel h3{font-size:18px;margin-bottom:6px}
+  /* ===== three subsections (services) ===== */
+  .subs{position:absolute;display:grid;grid-template-columns:1fr 1fr 1fr;gap:54px;z-index:10}
+  .subs .sub h3{margin-bottom:9px}
+  .subs .sub p{font-size:13px;line-height:1.62;color:var(--ink);text-align:justify;hyphens:auto}
+  .subs .sub .slot{position:relative;width:100%;height:148px;margin-top:14px}
 
-  /* ===== cards ===== */
-  .col3{position:absolute;left:110px;right:110px;top:250px;display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:90px}
-  .col3 .cell{display:flex;flex-direction:column}
-  .col3 .slot{position:relative;width:74%;aspect-ratio:1/1;align-self:center}
-  .col3 h3{margin:28px 0 12px}
+  /* ===== contributors / masthead ===== */
+  .masthead{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:0 64px;z-index:10}
+  .contrib{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0;border-bottom:1px solid rgba(32,36,43,.16)}
+  .contrib .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:22px;color:var(--ink)}
+  .contrib .rl{font-family:'Mulish',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
 
-  /* ===== stats ===== */
-  .stats{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:36px 60px;z-index:10}
-  .stat .statnum{font-family:'Playfair Display',serif;font-weight:600;font-size:58px;line-height:1;color:var(--ink)}
-  .stat .statlabel{font-size:13.5px;color:var(--ink-2);margin-top:6px}
-  .stat .bar{width:42px;height:2px;border-radius:0;background:var(--red);margin:13px 0 0}
+  /* ===== data table (findings) ===== */
+  .dtable{position:absolute;z-index:10;border-collapse:collapse;width:560px}
+  .dtable caption{font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;letter-spacing:.22em;
+                  text-transform:uppercase;color:var(--ink-2);text-align:left;padding-bottom:10px}
+  .dtable th{font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;
+             text-transform:uppercase;color:var(--ink-2);text-align:left;padding:8px 0;
+             border-bottom:1.5px solid var(--ink)}
+  .dtable th.r,.dtable td.r{text-align:right}
+  .dtable td{padding:13px 0;border-bottom:1px solid rgba(32,36,43,.18);font-size:14.5px;color:var(--ink)}
+  .dtable td.fig{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--ink)}
 
-  /* ===== timeline ===== */
-  .tl-line{position:absolute;height:1px;background:var(--ink-2);opacity:.5;z-index:10}
-  .tl-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--red);transform:translate(-50%,-4px);z-index:11}
-  .tl-year{position:absolute;transform:translateX(-50%);font-family:'Mulish',sans-serif;font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--ink-2);z-index:10}
+  /* ===== programme (phased enumeration) ===== */
+  .phase{position:absolute;z-index:10;display:flex;flex-direction:column}
+  .phrow{display:flex;gap:30px;align-items:baseline;padding:15px 0}
+  .phrow+.phrow{border-top:1px solid rgba(32,36,43,.16)}
+  .phrow .yr{font-family:'Playfair Display',serif;font-weight:600;font-size:26px;color:var(--red);width:120px;flex:none}
+  .phrow .ph-t{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--ink);width:240px;flex:none}
+  .phrow .ph-n{font-size:14px;line-height:1.6;color:var(--ink);flex:1}
 
-  /* ===== contact ===== */
-  .contact{display:flex;flex-direction:column;gap:18px;margin-top:40px}
-  .contact div{display:flex;align-items:center;gap:16px;font-size:15px;color:var(--ink)}
-  .contact svg{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  /* ===== epigraph (block-quote) ===== */
+  .epi{position:absolute;z-index:10}
+  .epi blockquote{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;
+                  font-size:46px;line-height:1.24;color:var(--ink);border-left:2px solid var(--red);padding-left:42px}
+  .epi cite{display:block;font-style:normal;font-family:'Mulish',sans-serif;font-weight:700;
+            font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin:30px 0 0 44px}
+
+  /* ===== colophon (closing) ===== */
+  .colophon{position:absolute;z-index:10}
+  .colophon .ln{display:flex;gap:18px;font-size:14px;color:var(--ink);padding:9px 0;border-bottom:1px solid rgba(32,36,43,.16)}
+  .colophon .ln span:first-child{font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;
+              letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);width:150px;flex:none}
 
   /* ===== nav + toolbar ===== */
   .nav{position:fixed;right:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:10px;
@@ -165,222 +208,226 @@
 
 <div class="viewport"><div class="stage">
 
-  <!-- 01 · COVER -->
+  <!-- 01 · COVER (journal title page) -->
   <section class="slide active">
-    <div class="slot" style="left:900px;top:80px;width:600px;height:600px">
+    <div class="runhead"><span class="sec">The Aldous Institute</span><span class="fol">Annual Review · MMXXVI</span></div>
+    <div style="position:absolute;left:104px;top:178px;width:760px;z-index:10">
+      <p class="smallcaps" style="color:var(--red)">The Aldous Institute for Environmental Study</p>
+      <h1 style="margin:34px 0 0">A Field Almanac of a Changing Climate</h1>
+      <div class="rule" style="width:520px;margin:40px 0 26px"></div>
+      <p class="body justify" style="max-width:560px">An independent research institute documenting how communities adapt to a shifting environment. This placeholder title page opens your report, grant brief, or annual review.</p>
+      <p class="small" style="margin-top:30px;font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--ink)">Edited by First Last · Director · Volume XVII · MMXXVI</p>
+    </div>
+    <div class="slot" style="left:1020px;top:178px;width:476px;height:540px">
       <img class="cut" src="assets/cover.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
     </div>
-    <p class="figcap" style="left:900px;top:692px;width:600px"><b>Fig. 1</b> · Armillary sphere from the institute's instrument collection.</p>
-    <div style="position:absolute;left:104px;top:200px;z-index:10;max-width:700px">
-      <p class="eyebrow">Annual Review · 2026</p>
-      <h1 style="margin:26px 0 0">The Aldous<br>Institute</h1>
-      <div class="rule" style="width:72px;margin:38px 0 24px"></div>
-      <p class="body" style="max-width:460px;font-size:18px">An independent research institute studying how communities adapt to a changing environment. This is a placeholder cover for your report or grant pitch.</p>
-    </div>
+    <p class="figcap" style="left:1020px;top:732px;width:476px"><b>Fig. 1.</b> Armillary sphere from the institute's instrument collection.</p>
     <div class="foot"><span>The Aldous Institute</span><span>01 / 12</span></div>
   </section>
 
-  <!-- 02 · STATEMENT -->
+  <!-- 02 · STATEMENT (abstract) -->
   <section class="slide">
-    <p class="kicker" style="position:absolute;left:104px;top:150px;z-index:10">Statement</p>
-    <h2 style="position:absolute;left:104px;top:270px;width:880px;z-index:10;font-size:58px">We study the evidence first, then say what it means.</h2>
-    <p class="body" style="position:absolute;left:104px;top:560px;width:520px;z-index:10;font-size:17px">Our work begins in the field and ends in print. We measure carefully, report plainly, and let others test the result. Replace this line with your own thesis.</p>
-    <div class="slot" style="left:1030px;top:230px;width:480px;height:480px">
-      <img class="cut" src="assets/manifesto.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
-      <div class="ph" style="--c:var(--red)"></div>
+    <div class="runhead"><span class="sec">Abstract</span><span class="fol">02</span></div>
+    <p class="smallcaps" style="position:absolute;left:380px;top:230px;color:var(--red);z-index:10">Abstract</p>
+    <div style="position:absolute;left:380px;top:282px;width:760px;z-index:10">
+      <p class="body justify" style="font-size:18px;line-height:1.82">We study the evidence first, then say what it means. This report sets out a decade of continuous field measurement across eighteen sites and asks a single question · how do communities adapt when the records that describe their environment fall out of date faster than they can be revised. Our method is plain. We measure on a fixed schedule, log every reading with full provenance, test the data against stated hypotheses, and publish the methods alongside the result so that any reader may check the work. Replace this paragraph with your own thesis, scope, and the headline finding you wish to lead with.</p>
+      <p class="small" style="margin-top:26px;font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--ink-2)">Keywords · field measurement, adaptation, open data, provenance, peer review.</p>
     </div>
-    <p class="figcap" style="left:1030px;top:722px;width:480px"><b>Fig. 2</b> · Field notebook and reference specimens from the archive.</p>
     <div class="foot"><span>The Aldous Institute</span><span>02 / 12</span></div>
   </section>
 
-  <!-- 03 · INDEX -->
+  <!-- 03 · INDEX (table of contents, leader dots) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:108px;z-index:10">Contents</p>
-    <h2 style="position:absolute;left:104px;top:138px;z-index:10">In this report</h2>
-    <div class="index-list" style="top:268px">
-      <div class="index-row"><span class="num">01</span><h3>Statement</h3><span class="pg">P. 02</span></div>
-      <div class="index-row"><span class="num">02</span><h3>About the Institute</h3><span class="pg">P. 04</span></div>
-      <div class="index-row"><span class="num">03</span><h3>The Context</h3><span class="pg">P. 05</span></div>
-      <div class="index-row"><span class="num">04</span><h3>Research Pillars</h3><span class="pg">P. 06</span></div>
-      <div class="index-row"><span class="num">05</span><h3>What We Provide</h3><span class="pg">P. 07</span></div>
-      <div class="index-row"><span class="num">06</span><h3>The Researchers</h3><span class="pg">P. 08</span></div>
-      <div class="index-row"><span class="num">07</span><h3>Findings in Numbers</h3><span class="pg">P. 09</span></div>
-      <div class="index-row"><span class="num">08</span><h3>The Programme Ahead</h3><span class="pg">P. 10</span></div>
-    </div>
-    <div class="slot" style="left:1120px;top:60px;width:480px;height:740px">
-      <img class="cut" src="assets/index-strip.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
-      <div class="ph" style="--c:var(--cyan)"></div>
+    <div class="runhead"><span class="sec">Contents</span><span class="fol">03</span></div>
+    <h2 style="position:absolute;left:104px;top:130px;z-index:10">Contents</h2>
+    <p class="small" style="position:absolute;left:104px;top:200px;z-index:10;font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--ink-2)">Eight sections · this volume.</p>
+    <div class="toc" style="left:104px;top:262px;width:1392px">
+      <div class="toc-row"><span class="num">I.</span><span class="ttl">Abstract</span><span class="leader"></span><span class="fol">p. 02</span></div>
+      <div class="toc-row"><span class="num">II.</span><span class="ttl">About the Institute</span><span class="leader"></span><span class="fol">p. 04</span></div>
+      <div class="toc-row"><span class="num">III.</span><span class="ttl">The Context</span><span class="leader"></span><span class="fol">p. 05</span></div>
+      <div class="toc-row"><span class="num">IV.</span><span class="ttl">Research Pillars</span><span class="leader"></span><span class="fol">p. 06</span></div>
+      <div class="toc-row"><span class="num">V.</span><span class="ttl">What We Provide</span><span class="leader"></span><span class="fol">p. 07</span></div>
+      <div class="toc-row"><span class="num">VI.</span><span class="ttl">The Contributors</span><span class="leader"></span><span class="fol">p. 08</span></div>
+      <div class="toc-row"><span class="num">VII.</span><span class="ttl">Findings in Numbers</span><span class="leader"></span><span class="fol">p. 09</span></div>
+      <div class="toc-row"><span class="num">VIII.</span><span class="ttl">The Programme Ahead</span><span class="leader"></span><span class="fol">p. 10</span></div>
     </div>
     <div class="foot"><span>The Aldous Institute</span><span>03 / 12</span></div>
   </section>
 
-  <!-- 04 · ABOUT -->
+  <!-- 04 · ABOUT (two-column justified + figure plate) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:108px;z-index:10">About</p>
-    <h2 style="position:absolute;left:104px;top:138px;z-index:10">About the Institute</h2>
-    <div class="cols2" style="position:absolute;left:104px;top:296px;width:640px;z-index:10">
-      <p class="body">The Aldous Institute is a placeholder name for your organisation. We are an independent research body working across field study, data analysis, and policy. Use this space to describe your mandate and the audiences you serve.</p>
-      <p class="body" style="margin-top:16px">Our findings are open and peer-reviewed. We partner with universities, foundations, and public agencies to put evidence into practice. Replace this paragraph with your own history and remit.</p>
+    <div class="runhead"><span class="sec">About the Institute</span><span class="fol">04</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:128px;color:var(--red);z-index:10">Section II</p>
+    <h2 style="position:absolute;left:104px;top:158px;z-index:10">About the Institute</h2>
+    <div class="cols2 justify" style="position:absolute;left:104px;top:272px;width:740px;z-index:10">
+      <p class="body">The Aldous Institute is a placeholder name for your organisation. We are an independent research body working across field study, data analysis, and policy. Founded in 2009, we have grown from a single coastal station into a network of eighteen long-term sites. Use this space to set out your mandate and the audiences you serve.</p>
+      <p class="body">Our findings are open and peer reviewed. We partner with universities, foundations, and public agencies to put evidence into practice, and we release the underlying data with every publication. Replace this column with your own history, remit, and the principles that govern how you work.</p>
     </div>
-    <p class="kicker" style="position:absolute;left:104px;top:560px;z-index:10;color:var(--ink-2)">Founded 2009 · Field and policy research</p>
-    <div class="slot" style="left:880px;top:80px;width:560px;height:680px">
+    <p class="footnote" style="left:104px;bottom:90px;width:740px"><sup>1</sup>Established 2009 · field and policy research · charitable registration on request.</p>
+    <div class="slot" style="left:920px;top:148px;width:576px;height:560px">
       <img class="cut" src="assets/about.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--cyan)"><svg class="phg"><use href="#g-bust"/></svg></div>
     </div>
-    <p class="figcap" style="left:880px;top:772px;width:560px"><b>Fig. 3</b> · Field survey of a coastal study area, hand lens and sample.</p>
+    <p class="figcap" style="left:920px;top:722px;width:576px"><b>Fig. 2.</b> Field survey of a coastal study area · hand lens and reference sample.</p>
     <div class="foot"><span>The Aldous Institute</span><span>04 / 12</span></div>
   </section>
 
-  <!-- 05 · CONTEXT -->
+  <!-- 05 · CONTEXT (full-width plate + side caption column) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:108px;z-index:10">Context</p>
-    <h2 style="position:absolute;left:104px;top:138px;z-index:10">The context</h2>
-    <div class="twocol" style="left:104px;top:300px;width:640px">
-      <div><h3>The problem</h3><p class="body">Conditions are shifting faster than the records that describe them. Decisions are made on data that is years out of date.</p></div>
-      <div><h3>Our approach</h3><p class="body">We close the gap with continuous field measurement and open methods, so the evidence stays current and testable.</p></div>
-    </div>
-    <div class="slot" style="left:830px;top:220px;width:700px;height:470px">
+    <div class="runhead"><span class="sec">The Context</span><span class="fol">05</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:126px;color:var(--red);z-index:10">Section III</p>
+    <h2 style="position:absolute;left:104px;top:156px;z-index:10">The context</h2>
+    <div class="slot" style="left:104px;top:262px;width:920px;height:436px">
       <img class="cut" src="assets/landscape.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--yellow)"></div>
     </div>
-    <p class="figcap" style="left:830px;top:702px;width:700px"><b>Fig. 4</b> · Stratigraphic section of the study region, surveyed since 2014.</p>
-    <p class="footnote" style="left:104px;bottom:78px;width:640px"><sup>1</sup>Figures shown are placeholders. Replace with your own data and cite the source dataset and year.</p>
+    <p class="figcap" style="left:104px;top:710px;width:920px"><b>Fig. 3.</b> Stratigraphic section of the study region · surveyed continuously since 2014.</p>
+    <div style="position:absolute;left:1080px;top:262px;width:416px;z-index:10">
+      <h3 style="margin-bottom:10px">The problem</h3>
+      <p class="body justify">Conditions are shifting faster than the records that describe them. Many decisions still rest on data that is years out of date.</p>
+      <h3 style="margin:24px 0 10px">Our approach</h3>
+      <p class="body justify">We close the gap with continuous field measurement and open methods, so the evidence stays current and testable by anyone.</p>
+    </div>
+    <p class="footnote" style="left:1080px;bottom:96px;width:416px"><sup>2</sup>Figures shown are placeholders · replace with your data and cite the source dataset and year.</p>
     <div class="foot"><span>The Aldous Institute</span><span>05 / 12</span></div>
   </section>
 
-  <!-- 06 · RESEARCH PILLARS (5) -->
+  <!-- 06 · RESEARCH PILLARS (enumerated serif methods list) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:84px;z-index:10">Method</p>
-    <h2 style="position:absolute;left:104px;top:114px;z-index:10">Research pillars</h2>
-    <div class="slot" style="left:160px;top:240px;width:1280px;height:430px">
-      <img class="cut" src="assets/pillars-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
-      <div class="ph" style="--c:var(--olive)"></div>
-    </div>
-    <p class="figcap" style="left:160px;top:680px;width:1280px"><b>Fig. 5</b> · Specimen series from the long-term herbarium collection.</p>
-    <div class="rowlabel" style="left:352px;top:740px"><h3>Observe</h3><p class="small">Measure in the field, on a fixed schedule.</p></div>
-    <div class="rowlabel" style="left:576px;top:740px"><h3>Record</h3><p class="small">Log every reading with full provenance.</p></div>
-    <div class="rowlabel" style="left:800px;top:740px"><h3>Analyse</h3><p class="small">Test the data against stated hypotheses.</p></div>
-    <div class="rowlabel" style="left:1024px;top:740px"><h3>Review</h3><p class="small">Submit methods and results for scrutiny.</p></div>
-    <div class="rowlabel" style="left:1248px;top:740px"><h3>Publish</h3><p class="small">Release findings and the underlying data.</p></div>
+    <div class="runhead"><span class="sec">Research Pillars</span><span class="fol">06</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:124px;color:var(--red);z-index:10">Section IV · Method</p>
+    <h2 style="position:absolute;left:104px;top:154px;z-index:10">Research pillars</h2>
+    <ul class="enum" style="left:104px;top:264px;width:1392px">
+      <li><span class="mk">i.</span><span class="txt"><span class="lead">Observe.</span>Measure in the field on a fixed schedule, with calibrated instruments and recorded conditions at every visit.</span></li>
+      <li><span class="mk">ii.</span><span class="txt"><span class="lead">Record.</span>Log every reading with full provenance · site, time, instrument, observer, and the raw value before any correction.</span></li>
+      <li><span class="mk">iii.</span><span class="txt"><span class="lead">Analyse.</span>Test the data against stated hypotheses, declare the method in advance, and report the result whether or not it confirms.</span></li>
+      <li><span class="mk">iv.</span><span class="txt"><span class="lead">Review.</span>Submit methods and results for outside scrutiny before any claim leaves the institute.</span></li>
+      <li><span class="mk">v.</span><span class="txt"><span class="lead">Publish.</span>Release the findings together with the underlying data, so that any reader may reproduce the work.</span></li>
+    </ul>
     <div class="foot"><span>The Aldous Institute</span><span>06 / 12</span></div>
   </section>
 
-  <!-- 07 · WHAT WE PROVIDE (3) -->
+  <!-- 07 · WHAT WE PROVIDE (three subsections, each subhead + justified text + plate) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:84px;z-index:10">Programmes</p>
-    <h2 style="position:absolute;left:104px;top:114px;z-index:10">What we provide</h2>
-    <div class="dotgrid" style="right:110px;top:96px;width:150px;height:80px"></div>
-    <div class="col3" style="top:280px">
-      <div class="cell">
+    <div class="runhead"><span class="sec">What We Provide</span><span class="fol">07</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:124px;color:var(--red);z-index:10">Section V · Programmes</p>
+    <h2 style="position:absolute;left:104px;top:154px;z-index:10">What we provide</h2>
+    <div class="subs" style="left:104px;right:104px;top:262px">
+      <div class="sub">
+        <h3>§ 1 · Field studies</h3>
+        <p>Long-run measurement programmes with open data and documented methods, sustained across years rather than seasons.</p>
         <div class="slot"><img class="cut" src="assets/card-1.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--red)"></div></div>
-        <h3>Field studies</h3><p class="small">Long-run measurement programmes with open data and documented methods.</p>
+        <p class="figcap" style="position:relative;left:0;margin-top:9px;width:100%"><b>Fig. 4a.</b> Specimen, herbarium series.</p>
       </div>
-      <div class="cell">
+      <div class="sub">
+        <h3>§ 2 · Policy briefs</h3>
+        <p>Short, fully cited briefings that translate the evidence for decision-makers without softening or overstating it.</p>
         <div class="slot"><img class="cut" src="assets/card-2.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--cyan)"></div></div>
-        <h3>Policy briefs</h3><p class="small">Short, cited briefings that translate the evidence for decision-makers.</p>
+        <p class="figcap" style="position:relative;left:0;margin-top:9px;width:100%"><b>Fig. 4b.</b> Specimen, coastal series.</p>
       </div>
-      <div class="cell">
+      <div class="sub">
+        <h3>§ 3 · Training</h3>
+        <p>Fellowships and courses for early-career researchers and educators, taught from the institute's own records.</p>
         <div class="slot"><img class="cut" src="assets/card-3.jpg" alt="" onerror="this.parentNode.classList.add('noimg')"><div class="ph" style="--c:var(--olive)"></div></div>
-        <h3>Training</h3><p class="small">Fellowships and courses for early-career researchers and educators.</p>
+        <p class="figcap" style="position:relative;left:0;margin-top:9px;width:100%"><b>Fig. 4c.</b> Specimen, upland series.</p>
       </div>
     </div>
     <div class="foot"><span>The Aldous Institute</span><span>07 / 12</span></div>
   </section>
 
-  <!-- 08 · THE RESEARCHERS (6) -->
+  <!-- 08 · THE CONTRIBUTORS (masthead, names + roles, no photos) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:84px;z-index:10">People</p>
-    <h2 style="position:absolute;left:104px;top:114px;z-index:10">The researchers</h2>
-    <div class="slot" style="left:160px;top:218px;width:1280px;height:480px">
-      <img class="cut" src="assets/team-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
-      <div class="ph" style="--c:var(--peach)"></div>
+    <div class="runhead"><span class="sec">The Contributors</span><span class="fol">08</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:124px;color:var(--red);z-index:10">Section VI · Masthead</p>
+    <h2 style="position:absolute;left:104px;top:154px;z-index:10">The contributors</h2>
+    <p class="small" style="position:absolute;left:104px;top:222px;z-index:10;font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--ink-2)">This volume was prepared by the following members of the institute.</p>
+    <div class="masthead" style="left:104px;top:296px;width:1392px">
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Director</span></div>
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Lead · Field Studies</span></div>
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Data Analyst</span></div>
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Policy Fellow</span></div>
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Research Fellow</span></div>
+      <div class="contrib"><span class="nm">First Last</span><span class="rl">Programmes</span></div>
     </div>
-    <div class="rowlabel" style="left:300px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Director</p></div>
-    <div class="rowlabel" style="left:500px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Lead, field studies</p></div>
-    <div class="rowlabel" style="left:700px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Data analyst</p></div>
-    <div class="rowlabel" style="left:900px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Policy fellow</p></div>
-    <div class="rowlabel" style="left:1100px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Research fellow</p></div>
-    <div class="rowlabel" style="left:1300px;top:746px"><h3 style="font-size:17px">First Last</h3><p class="small">Programmes</p></div>
+    <p class="footnote" style="left:104px;bottom:78px;width:1392px"><sup>3</sup>Correspondence to the Director · research@example.org · full author affiliations are listed in the printed edition.</p>
     <div class="foot"><span>The Aldous Institute</span><span>08 / 12</span></div>
   </section>
 
-  <!-- 09 · FINDINGS IN NUMBERS -->
+  <!-- 09 · FINDINGS IN NUMBERS (ruled data table + figures + plate) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:84px;z-index:10">Evidence</p>
-    <h2 style="position:absolute;left:104px;top:114px;z-index:10">Findings in numbers</h2>
-    <div class="slot" style="left:60px;top:220px;width:640px;height:600px">
+    <div class="runhead"><span class="sec">Findings in Numbers</span><span class="fol">09</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:124px;color:var(--red);z-index:10">Section VII · Evidence</p>
+    <h2 style="position:absolute;left:104px;top:154px;z-index:10">Findings in numbers</h2>
+    <table class="dtable" style="left:104px;top:282px">
+      <caption>Table 1 · Register summary, 2014 to 2026</caption>
+      <thead><tr><th>Measure</th><th class="r">Value</th><th class="r">Unit</th></tr></thead>
+      <tbody>
+        <tr><td>Field readings logged</td><td class="r fig">1,240</td><td class="r">count</td></tr>
+        <tr><td>Sites under observation</td><td class="r fig">18</td><td class="r">sites</td></tr>
+        <tr><td>Data passing review</td><td class="r fig">94</td><td class="r">per cent</td></tr>
+        <tr><td>Years of continuous record</td><td class="r fig">12</td><td class="r">years</td></tr>
+      </tbody>
+    </table>
+    <p class="footnote" style="left:104px;top:690px;width:560px"><sup>4</sup>Placeholder figures · source · institute field register, 2014 to 2026. Replace before publication.</p>
+    <div class="slot" style="left:900px;top:262px;width:596px;height:436px">
       <img class="cut" src="assets/results.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--red)"></div>
     </div>
-    <p class="figcap" style="left:60px;top:832px;width:640px"><b>Fig. 6</b> · Micrograph plate from the 2026 findings dataset.</p>
-    <div class="stats" style="left:800px;top:260px;width:700px">
-      <div class="stat"><div class="statnum">1,240</div><div class="statlabel">Field readings logged</div><div class="bar"></div></div>
-      <div class="stat"><div class="statnum">18</div><div class="statlabel">Sites under observation</div><div class="bar" style="background:var(--cyan)"></div></div>
-      <div class="stat"><div class="statnum">94%</div><div class="statlabel">Data passing review</div><div class="bar" style="background:var(--olive)"></div></div>
-      <div class="stat"><div class="statnum">12</div><div class="statlabel">Years of continuous record</div><div class="bar" style="background:var(--peach)"></div></div>
-    </div>
-    <p class="footnote" style="left:800px;top:700px;width:640px"><sup>2</sup>Placeholder figures. Source: institute field register, 2014 to 2026. Replace before publication.</p>
+    <p class="figcap" style="left:900px;top:710px;width:596px"><b>Fig. 5.</b> Micrograph plate from the 2026 findings dataset.</p>
     <div class="foot"><span>The Aldous Institute</span><span>09 / 12</span></div>
   </section>
 
-  <!-- 10 · THE PROGRAMME AHEAD -->
+  <!-- 10 · THE PROGRAMME AHEAD (phased enumeration, dates + notes) -->
   <section class="slide">
-    <p class="eyebrow" style="position:absolute;left:104px;top:84px;z-index:10">Roadmap</p>
-    <h2 style="position:absolute;left:104px;top:114px;z-index:10">The programme ahead</h2>
-    <span class="tl-year" style="left:300px;top:212px">2026</span>
-    <span class="tl-year" style="left:500px;top:212px">2027</span>
-    <span class="tl-year" style="left:700px;top:212px">2028</span>
-    <span class="tl-year" style="left:900px;top:212px">2029</span>
-    <span class="tl-year" style="left:1100px;top:212px">2030</span>
-    <span class="tl-year" style="left:1300px;top:212px">2031</span>
-    <div class="slot" style="left:160px;top:248px;width:1280px;height:500px">
-      <img class="cut" src="assets/roadmap-row.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
-      <div class="ph" style="--c:var(--cyan)"></div>
+    <div class="runhead"><span class="sec">The Programme Ahead</span><span class="fol">10</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:124px;color:var(--red);z-index:10">Section VIII · Programme</p>
+    <h2 style="position:absolute;left:104px;top:154px;z-index:10">The programme ahead</h2>
+    <div class="phase" style="left:104px;top:272px;width:1392px">
+      <div class="phrow"><span class="yr">2026</span><span class="ph-t">Extend the network</span><span class="ph-n">Add three coastal stations and bring the field network to twenty-one sites.</span></div>
+      <div class="phrow"><span class="yr">2027</span><span class="ph-t">Open the archive</span><span class="ph-n">Release the full data archive under an open licence with versioned provenance.</span></div>
+      <div class="phrow"><span class="yr">2028</span><span class="ph-t">Mid-term review</span><span class="ph-n">Publish the mid-term review and submit the core methods for external audit.</span></div>
+      <div class="phrow"><span class="yr">2029</span><span class="ph-t">Second region</span><span class="ph-n">Begin a second study region to test the method outside its first setting.</span></div>
+      <div class="phrow"><span class="yr">2030</span><span class="ph-t">Fellowship</span><span class="ph-n">Launch the early-career fellowship and the first cohort of resident researchers.</span></div>
+      <div class="phrow"><span class="yr">2031</span><span class="ph-t">Decade findings</span><span class="ph-n">Report the decade findings and set the agenda for the volume that follows.</span></div>
     </div>
-    <div class="tl-line" style="left:280px;right:280px;top:778px"></div>
-    <span class="tl-dot" style="left:300px;top:778px"></span>
-    <span class="tl-dot" style="left:500px;top:778px"></span>
-    <span class="tl-dot" style="left:700px;top:778px"></span>
-    <span class="tl-dot" style="left:900px;top:778px"></span>
-    <span class="tl-dot" style="left:1100px;top:778px"></span>
-    <span class="tl-dot" style="left:1300px;top:778px"></span>
-    <div class="rowlabel" style="left:300px;top:794px"><p class="small">Extend the field network.</p></div>
-    <div class="rowlabel" style="left:500px;top:794px"><p class="small">Open the data archive.</p></div>
-    <div class="rowlabel" style="left:700px;top:794px"><p class="small">Publish the mid-term review.</p></div>
-    <div class="rowlabel" style="left:900px;top:794px"><p class="small">Add a second study region.</p></div>
-    <div class="rowlabel" style="left:1100px;top:794px"><p class="small">Launch the fellowship.</p></div>
-    <div class="rowlabel" style="left:1300px;top:794px"><p class="small">Report decade findings.</p></div>
     <div class="foot"><span>The Aldous Institute</span><span>10 / 12</span></div>
   </section>
 
-  <!-- 11 · QUOTE -->
+  <!-- 11 · QUOTE (epigraph block-quote) -->
   <section class="slide">
-    <p class="kicker" style="position:absolute;left:104px;top:200px;z-index:10">From the director</p>
-    <h2 style="position:absolute;left:104px;top:296px;width:800px;z-index:10;font-size:52px;font-style:italic">Good policy starts with measurements that anyone can check.</h2>
-    <p class="body" style="position:absolute;left:104px;top:560px;width:460px;z-index:10">First Last, Director, The Aldous Institute</p>
-    <div class="slot" style="left:1030px;top:80px;width:480px;height:740px">
+    <div class="runhead"><span class="sec">Epigraph</span><span class="fol">11</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:206px;color:var(--red);z-index:10">From the Director</p>
+    <div class="epi" style="left:104px;top:286px;width:820px">
+      <blockquote>Good policy starts with measurements that anyone can check.</blockquote>
+      <cite>First Last · Director · The Aldous Institute</cite>
+    </div>
+    <div class="slot" style="left:1040px;top:148px;width:456px;height:560px">
       <img class="cut" src="assets/quote.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
     </div>
+    <p class="figcap" style="left:1040px;top:722px;width:456px"><b>Fig. 6.</b> Field notebook · reference specimens from the institute archive.</p>
     <div class="foot"><span>The Aldous Institute</span><span>11 / 12</span></div>
   </section>
 
-  <!-- 12 · CLOSING -->
+  <!-- 12 · CLOSING (colophon) -->
   <section class="slide">
-    <div class="slot" style="left:1000px;top:80px;width:520px;height:740px">
+    <div class="runhead"><span class="sec">Colophon</span><span class="fol">12</span></div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:200px;color:var(--red);z-index:10">Colophon</p>
+    <h2 style="position:absolute;left:104px;top:240px;width:760px;z-index:10">Work with us.</h2>
+    <p class="body justify" style="position:absolute;left:104px;top:330px;width:560px;z-index:10">We welcome research partners, funders, and reviewers. Write for the full dataset, the documented methods, and the next grant cycle.</p>
+    <div class="colophon" style="left:104px;top:452px;width:660px">
+      <div class="ln"><span>Institute</span><span>The Aldous Institute for Environmental Study</span></div>
+      <div class="ln"><span>Correspondence</span><span>research@example.org</span></div>
+      <div class="ln"><span>Web</span><span>www.example.org · @aldousinstitute</span></div>
+      <div class="ln"><span>Citation</span><span>The Aldous Institute (MMXXVI). Annual Review, Vol. XVII.</span></div>
+    </div>
+    <p class="smallcaps" style="position:absolute;left:104px;top:712px;color:var(--ink-2);z-index:10">Set in Playfair Display and Mulish · printed in the year MMXXVI</p>
+    <div class="slot" style="left:1020px;top:148px;width:476px;height:560px">
       <img class="cut" src="assets/closing.jpg" alt="" onerror="this.parentNode.classList.add('noimg')">
       <div class="ph" style="--c:var(--red)"><svg class="phg"><use href="#g-bust"/></svg></div>
     </div>
-    <div style="position:absolute;left:104px;top:230px;z-index:10;max-width:560px">
-      <h1 style="font-size:84px">Work with us</h1>
-      <p class="body" style="margin:30px 0 0;max-width:420px;font-size:17px">We welcome research partners, funders, and reviewers. Write to us for the full dataset, methods, and the next grant cycle.</p>
-      <div class="contact">
-        <div><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><ellipse cx="24" cy="24" rx="7" ry="16"/><path d="M8 24h32"/></svg> www.example.org</div>
-        <div><svg viewBox="0 0 48 48"><rect x="8" y="13" width="32" height="22" rx="2"/><path d="M9 15l15 12 15-12"/></svg> research@example.org</div>
-        <div><svg viewBox="0 0 48 48"><rect x="10" y="10" width="28" height="28" rx="7"/><circle cx="24" cy="24" r="7"/><circle cx="33.5" cy="14.5" r="1.6" fill="currentColor"/></svg> @aldousinstitute</div>
-      </div>
-    </div>
+    <p class="figcap" style="left:1020px;top:722px;width:476px"><b>Fig. 7.</b> Closing plate · the institute's standing instrument array.</p>
     <div class="foot"><span>The Aldous Institute</span><span>12 / 12</span></div>
   </section>
 
@@ -442,9 +489,9 @@
     themeSel.value=name;
   }
   themeSel.onchange=()=>setTheme(themeSel.value);
-  setTheme((document.body.className.match(/theme-([\w-]+)/)||[])[1]||'plein-air');
+  setTheme((document.body.className.match(/theme-([\w-]+)/)||[])[1]||'almanac');
 
-  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.body,.small,.statnum,.statlabel,.tl-year,.pg,.foot span,.contact div';
+  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.smallcaps,.body,.small,.txt,.lead,.ttl,.fol,.sec,.nm,.rl,.yr,.ph-t,.ph-n,.figcap,.footnote,blockquote,cite,caption,.dtable td,.foot span';
   const editBtn=document.getElementById('editBtn');
   let editing=false;
   function toggleEdit(){
@@ -491,8 +538,8 @@
 
   // ---------- one-click PDF, fully in-browser (no server, no print dialog) ----------
   // Each slide is rasterised with html-to-image, then wrapped as a JPEG page in a
-  // minimal hand-written PDF. Collage blends are baked into the assets, so the output
-  // matches the screen exactly in any browser. One 1200x675 pt page per slide (16:9).
+  // minimal hand-written PDF. The output matches the screen exactly in any browser.
+  // One 1200x675 pt page per slide (16:9).
   function imagesToPdf(images, ptW, ptH){
     const enc=new TextEncoder(), chunks=[]; let len=0; const off=[];
     const W=u=>{chunks.push(u);len+=u.length;}, S=s=>W(typeof s==='string'?enc.encode(s):s);
