@@ -62,7 +62,7 @@ photographic or collage imagery (see Imagery below).
    library), and `build-standalone.py`.
 
 3. **Fill the 12 slides.** Edit `my-deck/deck.html`. The slide block vocabulary (cover, statement,
-   index, about, landscape, pillars, cards, team, numbers, roadmap, quote, closing) and how to map a
+   index, about, context, pillars, services, team, numbers, roadmap, quote, closing) and how to map a
    brief onto it is in [references/slide-types.md](references/slide-types.md). Replace headlines,
    captions, stats, the footer running-title, and the `NN / 12` page numbers. Add, remove, or reorder
    blocks to fit the content. Keep the layout primitives intact (1600x900 stage, the `.slot` image

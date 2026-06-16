@@ -37,7 +37,7 @@ template:
     rendering: [high-contrast, diagonal slash, grain]
   layout:
     signature: [dynamic diagonals, oversized stat numbers, ticker strips, energetic asymmetry]
-    blocks: [cover, manifesto, index, about, context, approach, services, team, numbers, roadmap, quote, closing]
+    blocks: [cover, statement, index, about, context, pillars, services, team, numbers, roadmap, quote, closing]
   effects: { texture: grain, shadows: hard }
   rules: [mono/duotone photo + 1 electric accent, no clip-art, stats are the hero]
 ```
@@ -45,6 +45,12 @@ template:
 Same 8 keys every time — `canvas, mood, palette, typography, imagery, layout, effects, rules` — plus
 `id/call/name/family/best_for`. Swap the fill, keep the schema, and the pipeline (ingest → outline →
 theme → assemble → image → PDF) works unchanged.
+
+`layout.blocks` is the canonical 12-block backbone — `cover, statement, index, about, context,
+pillars, services, team, numbers, roadmap, quote, closing` — shared verbatim by every template and by
+`SKILL.md`. Each template relabels and restyles the blocks (slot 5 `context` is `THE MARKET` in Maison,
+`THE FIELD` in Vanguard) but keeps the sequence. The per-block content levers are in
+[references/slide-types.md](references/slide-types.md).
 
 ---
 
