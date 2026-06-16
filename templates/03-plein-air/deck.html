@@ -440,7 +440,9 @@
     document.body.classList.toggle('editing',editing);
     editBtn.classList.toggle('on',editing);
     editBtn.textContent=editing?'Done':'Edit';
-    stage.querySelectorAll(EDIT_SEL).forEach(el=>{
+    stage.querySelectorAll('*').forEach(el=>{
+      var ed=false,cn=el.childNodes;for(var i=0;i<cn.length;i++){if(cn[i].nodeType===3&&cn[i].textContent.trim()){ed=true;break;}}
+      if(!ed)return;
       if(editing)el.setAttribute('contenteditable','true');
       else el.removeAttribute('contenteditable');
     });
@@ -585,7 +587,7 @@
     slot.addEventListener('dragleave',function(){slot.classList.remove('dragover');});
     slot.addEventListener('drop',function(e){if(!editing())return;e.preventDefault();slot.classList.remove('dragover');var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)processFile(slot,f);});
   }
-  function init(){document.querySelectorAll('.slot').forEach(function(s){if(s.querySelector(':scope > img'))wire(s);});}
+  function init(){var seen=[];document.querySelectorAll('.slide img').forEach(function(img){var p=img.parentElement;if(p&&seen.indexOf(p)<0){seen.push(p);wire(p);}});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
