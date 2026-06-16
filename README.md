@@ -31,20 +31,25 @@ same content reads in ten different voices.
 
 ## The ten templates
 
+Click any thumbnail to open the **live, interactive deck** (all twelve slides, arrow-key navigation,
+palette switching, PDF export) on GitHub Pages.
+
 | | Template | Best for |
 |---|---|---|
-| <img src="screenshots/01-newsroom-cover.jpg" width="260"> | **01 · Newsroom** — editorial collage (sculpture, newsprint, accent shapes) | Brand story, manifesto, research dossier |
-| <img src="screenshots/02-grid-cover.jpg" width="260"> | **02 · Grid** — Mondrian / De Stijl (colour planes, black rules) | Frameworks, design systems, modular breakdowns |
-| <img src="screenshots/03-plein-air-cover.jpg" width="260"> | **03 · Plein Air** — Impressionist (painterly, pastel) | Culture, vision, narrative |
-| <img src="screenshots/04-studio-cover.jpg" width="260"> | **04 · Studio** — creative agency (bold duotone, type-as-hero) | Pitches, portfolios, proposals |
-| <img src="screenshots/05-arena-cover.jpg" width="260"> | **05 · Arena** — sports (dark, motion duotone, ticker) | Sponsorship, sports business, performance |
-| <img src="screenshots/06-maison-cover.jpg" width="260"> | **06 · Maison** — luxury (Didone, gold, deep negative space) | Investor / board, premium brand |
-| <img src="screenshots/07-drifter-cover.jpg" width="260"> | **07 · Drifter** — earthy (kraft, stamps, woodtype) | Travel, craft, sustainability, field reports |
-| <img src="screenshots/08-ledger-cover.jpg" width="260"> | **08 · Ledger** — data (Tufte-clean charts, one signal colour) | Market research, financial, KPI reviews |
-| <img src="screenshots/09-terminal-cover.jpg" width="260"> | **09 · Terminal** — dark CRT console (monospace, schematics) | Repos, architecture, AI / agent systems |
-| <img src="screenshots/10-vanguard-cover.jpg" width="260"> | **10 · Vanguard** — futuristic (wireframe, HUD) | Deep-tech, robotics, R&D |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/01-newsroom/deck.html"><img src="screenshots/01-newsroom-cover.jpg" width="260"></a> | **01 · Newsroom** — editorial collage (sculpture, newsprint, accent shapes) | Brand story, manifesto, research dossier |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/02-grid/deck.html"><img src="screenshots/02-grid-cover.jpg" width="260"></a> | **02 · Grid** — Mondrian / De Stijl (colour planes, black rules) | Frameworks, design systems, modular breakdowns |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/03-plein-air/deck.html"><img src="screenshots/03-plein-air-cover.jpg" width="260"></a> | **03 · Plein Air** — Impressionist (painterly, pastel) | Culture, vision, narrative |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/04-studio/deck.html"><img src="screenshots/04-studio-cover.jpg" width="260"></a> | **04 · Studio** — creative agency (bold duotone, type-as-hero) | Pitches, portfolios, proposals |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/05-arena/deck.html"><img src="screenshots/05-arena-cover.jpg" width="260"></a> | **05 · Arena** — sports (dark, motion duotone, ticker) | Sponsorship, sports business, performance |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/06-maison/deck.html"><img src="screenshots/06-maison-cover.jpg" width="260"></a> | **06 · Maison** — luxury (Didone, gold, deep negative space) | Investor / board, premium brand |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/07-drifter/deck.html"><img src="screenshots/07-drifter-cover.jpg" width="260"></a> | **07 · Drifter** — earthy (kraft, stamps, woodtype) | Travel, craft, sustainability, field reports |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/08-ledger/deck.html"><img src="screenshots/08-ledger-cover.jpg" width="260"></a> | **08 · Ledger** — data (Tufte-clean charts, one signal colour) | Market research, financial, KPI reviews |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/09-terminal/deck.html"><img src="screenshots/09-terminal-cover.jpg" width="260"></a> | **09 · Terminal** — dark CRT console (monospace, schematics) | Repos, architecture, AI / agent systems |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/10-vanguard/deck.html"><img src="screenshots/10-vanguard-cover.jpg" width="260"></a> | **10 · Vanguard** — futuristic (wireframe, HUD) | Deep-tech, robotics, R&D |
 
-Full 12-slide patchworks for each are in [`screenshots/`](screenshots) (the `*-grid.jpg` files).
+Prefer a single still of every slide? The full 12-slide patchworks are in [`screenshots/`](screenshots)
+(the `*-grid.jpg` files). The same content rendered in all ten styles is the
+[Fable 5 example](https://aref-vc.github.io/deck-kit-skill/).
 
 ## Install as a Claude skill
 
