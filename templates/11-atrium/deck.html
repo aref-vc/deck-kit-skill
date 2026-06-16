@@ -6,26 +6,25 @@
 <title>Atrium · Swiss Strategy Deck 11</title>
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
-  /* ===== palette themes ===== */
-  /* Atrium: light near-monochrome, one rationed red, a neutral grey ramp.
-     The five accent slots hold ONE signal colour plus a grey ramp
-     (peach = lightest fill -> cyan = darkest rule) instead of five hues. */
+  /* ===== palette themes =====
+     Atrium is Swiss / International Typographic Style: pure type, grid, whitespace.
+     Near-monochrome paper, one rationed signal red, a quiet grey ramp. */
   :root,
   .theme-atrium{           /* default: warm white paper, near-black ink, one signal red */
     --bg:#F7F6F3; --ink:#14161A; --ink-2:#5A5F66; --paper:#FFFFFF;
-    --red:#D8352A; --cyan:#3A3E45; --yellow:#777C84; --olive:#9DA1A8; --peach:#D2D5D9;
+    --red:#D8352A; --grey:#C9CBCE; --grey-2:#E4E5E7; --rule:rgba(20,22,26,.16); --rulel:rgba(20,22,26,.10);
   }
   .theme-slate{            /* cooler greys, blue-black accent */
     --bg:#F3F4F6; --ink:#10141B; --ink-2:#565E6B; --paper:#FFFFFF;
-    --red:#1F3A5F; --cyan:#363D47; --yellow:#727A86; --olive:#99A1AC; --peach:#D2D6DC;
+    --red:#1F3A5F; --grey:#C6C9CF; --grey-2:#E1E3E7; --rule:rgba(16,20,27,.16); --rulel:rgba(16,20,27,.10);
   }
   .theme-oxblood{          /* deep red accent on warm paper */
     --bg:#F6F3F0; --ink:#1A1614; --ink-2:#605852; --paper:#FFFFFF;
-    --red:#8A2B2B; --cyan:#403A37; --yellow:#7E756E; --olive:#A39A92; --peach:#D8D2CC;
+    --red:#8A2B2B; --grey:#CFC9C3; --grey-2:#E6E1DB; --rule:rgba(26,22,20,.16); --rulel:rgba(26,22,20,.10);
   }
   .theme-graphite{         /* darker neutrals, restrained red */
     --bg:#E9EAEC; --ink:#0C0D0F; --ink-2:#4A4E55; --paper:#F6F6F7;
-    --red:#C23A2E; --cyan:#2E3138; --yellow:#666B72; --olive:#8E9298; --peach:#C7CACE;
+    --red:#C23A2E; --grey:#BCBFC4; --grey-2:#D6D8DB; --rule:rgba(12,13,15,.18); --rulel:rgba(12,13,15,.11);
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
@@ -40,57 +39,36 @@
   /* no texture: Atrium is flat paper. restraint is the whole point. */
   .slide::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:40;opacity:0}
 
-  /* ===== image slot kept for CSS/SVG fallback compatibility (no photos here) ===== */
+  /* ===== image slot kept for IMGSWAP compatibility (Atrium is type-only, no photos) ===== */
   .slot{position:absolute}
   .slot>svg.viz{width:100%;height:100%;display:block;overflow:visible}
+  img.cut{display:block;width:100%;height:100%;object-fit:cover}
 
-  /* ===== typography ===== */
-  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--ink-2);letter-spacing:.18em;line-height:1.95}
-  h1,h2,h3{font-family:'Inter Tight',sans-serif;color:var(--ink);letter-spacing:-.02em}
-  h1{font-size:108px;font-weight:700;line-height:.94;letter-spacing:-.04em}
-  h2{font-size:54px;font-weight:600;line-height:1.0;letter-spacing:-.03em}
-  h3{font-size:21px;font-weight:600;letter-spacing:-.015em}
-  .num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-variant-numeric:tabular-nums}
-  .kicker{font-family:'IBM Plex Mono',monospace;font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.2em;color:var(--red)}
-  .body{font-size:15.5px;line-height:1.72;color:var(--ink-2);font-weight:400}
-  .small{font-size:13px;line-height:1.6;color:var(--ink-2);font-weight:400}
+  /* ===== Swiss typographic system ===== */
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;text-transform:uppercase;color:var(--ink-2);letter-spacing:.24em;line-height:1.6}
+  h1,h2,h3{font-family:'Inter Tight',sans-serif;color:var(--ink)}
+  h1{font-size:clamp(150px,12vw,190px);font-weight:700;line-height:.9;letter-spacing:-.03em}
+  h2{font-size:104px;font-weight:700;line-height:.96;letter-spacing:-.02em}
+  h3{font-size:22px;font-weight:700;letter-spacing:-.015em}
+  .kicker{font-family:'IBM Plex Mono',monospace;font-weight:500;text-transform:uppercase;font-size:13px;letter-spacing:.22em;color:var(--ink-2)}
+  .label{font-family:'IBM Plex Mono',monospace;font-weight:500;text-transform:uppercase;font-size:12px;letter-spacing:.2em;color:var(--ink-2)}
+  .red{color:var(--red)}
+  .body{font-size:16px;line-height:1.62;color:var(--ink);font-weight:400}
+  .small{font-size:13.5px;line-height:1.6;color:var(--ink-2);font-weight:400}
   .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+  .ghost{font-family:'Inter Tight',sans-serif;font-weight:700;color:var(--grey);letter-spacing:-.04em;line-height:.8;user-select:none}
 
-  .foot{position:absolute;bottom:30px;left:64px;right:64px;display:flex;justify-content:space-between;z-index:30;
-        font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
-  .source{position:absolute;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.04em;color:var(--ink-2);opacity:.85;z-index:20}
-  .rule{height:2px;background:var(--red)}
-  .hr{position:absolute;height:1px;background:var(--ink);opacity:.14;z-index:6}
-  .hrl{position:absolute;height:1px;background:rgba(20,22,26,.10);z-index:6}
+  .foot{position:absolute;bottom:36px;left:80px;right:80px;display:flex;justify-content:space-between;z-index:30;
+        font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+  .source{position:absolute;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;color:var(--ink-2);opacity:.85;z-index:20}
 
-  /* ===== index ===== */
-  .index-list{position:absolute;left:100px;top:236px;width:900px;z-index:10}
-  .index-row{display:flex;align-items:baseline;gap:24px;padding:15px 0;border-bottom:1px solid rgba(20,22,26,.12)}
-  .index-row .num{font-size:15px;font-weight:600;color:var(--red);min-width:42px}
-  .index-row h3{font-size:20px;flex:1;font-weight:500}
-  .index-row .pg{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;color:var(--ink-2);letter-spacing:.08em}
-
-  /* ===== two-column ===== */
-  .twocol{position:absolute;left:100px;top:250px;width:720px;display:grid;grid-template-columns:1fr 1fr;gap:46px;z-index:10}
-  .twocol h3{margin-bottom:12px}
-
-  /* ===== row labels (pillars / team / roadmap) ===== */
-  .rowlabel{position:absolute;width:210px;text-align:left;z-index:10}
-  .rowlabel h3{font-size:17px;margin-bottom:5px}
-
-  /* ===== stats ===== */
-  .stats{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:34px 56px;z-index:10}
-  .stat .statnum{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:54px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-  .stat .statlabel{font-size:13.5px;color:var(--ink-2);margin-top:8px}
-  .stat .bar{width:44px;height:3px;background:var(--red);margin:12px 0 0}
-
-  /* ===== data table ===== */
-  table.dt{position:absolute;z-index:10;border-collapse:collapse;font-variant-numeric:tabular-nums}
-  table.dt th,table.dt td{text-align:right;padding:8px 18px 8px 0;font-size:14px;color:var(--ink)}
-  table.dt th{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-2);border-bottom:1.5px solid var(--ink);padding-bottom:8px}
-  table.dt td:first-child,table.dt th:first-child{text-align:left;font-family:'Inter',sans-serif;font-weight:400}
-  table.dt td{font-family:'IBM Plex Mono',monospace;font-weight:400;border-bottom:1px solid rgba(20,22,26,.09)}
-  table.dt td.acc{color:var(--red);font-weight:500}
+  /* ===== the signature: thin black grid rules dividing the 1600x900 stage ===== */
+  .vr{position:absolute;width:1px;background:var(--rule);z-index:6}
+  .hr{position:absolute;height:1px;background:var(--rule);z-index:6}
+  .vrl{position:absolute;width:1px;background:var(--rulel);z-index:6}
+  .hrl{position:absolute;height:1px;background:var(--rulel);z-index:6}
+  .redrule{position:absolute;background:var(--red);z-index:7}
+  .redsq{position:absolute;width:24px;height:24px;background:var(--red);z-index:8}
 
   /* ===== nav + toolbar ===== */
   .nav{position:fixed;right:18px;bottom:14px;z-index:100;display:flex;align-items:center;gap:10px;
@@ -110,19 +88,6 @@
 
   /* during PDF export, force every slide fully visible so each captures its real content */
   body.exporting .slide{opacity:1!important;visibility:visible!important;transition:none!important}
-
-  /* ===== chart helpers (stroke/fill via currentColor where useful) ===== */
-  .viz .axis{stroke:var(--ink);stroke-width:1;fill:none}
-  .viz .gridl{stroke:rgba(20,22,26,.10);stroke-width:1}
-  .viz .ink{stroke:var(--ink);fill:none;stroke-width:1.6}
-  .viz .acc{stroke:var(--red);fill:none;stroke-width:2.2}
-  .viz .accf{fill:var(--red)}
-  .viz .inkf{fill:var(--ink)}
-  .viz .greyf{fill:var(--peach)}
-  .viz .mid{fill:var(--olive)}
-  .viz .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--ink-2);letter-spacing:.02em}
-  .viz .lblb{font-family:'IBM Plex Mono',monospace;font-size:13px;fill:var(--ink);font-weight:500}
-  .viz .lblr{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:var(--red);font-weight:600}
 
   @media print{
     @page{size:1600px 900px;margin:0}
@@ -150,365 +115,256 @@
 
   <!-- 01 · COVER -->
   <section class="slide active">
-    <div style="position:absolute;left:100px;top:150px;z-index:10;max-width:760px">
-      <p class="eyebrow">Strategy Review · Q2 2026</p>
-      <h1 style="margin:30px 0 0">Atrium</h1>
-      <div class="rule" style="width:52px;margin:36px 0 22px"></div>
-      <p class="kicker" style="max-width:480px;line-height:1.7">A strategy and growth review for Northwind. Where we stand and where we go next.</p>
-    </div>
-    <!-- cover index panel: four quiet sparklines. illustrative only. -->
-    <div class="slot" style="left:940px;top:120px;width:560px;height:660px">
-      <svg class="viz" viewBox="0 0 560 660" preserveAspectRatio="xMidYMid meet">
-        <line class="hrl" x1="0" y1="2" x2="560" y2="2" stroke="rgba(20,22,26,.55)" stroke-width="1"/>
-        <!-- four small multiples (placeholder figures) -->
-        <g transform="translate(0,30)">
-          <text class="lbl" x="0" y="0">REVENUE</text>
-          <polyline class="ink" points="0,120 70,108 140,112 210,86 280,90 350,64 420,58 490,40 560,30"/>
-          <text class="lbl" x="498" y="22" fill="var(--ink)">+22%</text>
-          <line class="gridl" x1="0" y1="150" x2="560" y2="150"/>
-        </g>
-        <g transform="translate(0,200)">
-          <text class="lbl" x="0" y="0">ACTIVE ACCOUNTS</text>
-          <polyline class="ink" points="0,90 70,96 140,88 210,100 280,84 350,92 420,74 490,80 560,66"/>
-          <text class="lbl" x="500" y="58" fill="var(--ink)">+14%</text>
-          <line class="gridl" x1="0" y1="150" x2="560" y2="150"/>
-        </g>
-        <g transform="translate(0,370)">
-          <text class="lbl" x="0" y="0">NET RETENTION</text>
-          <polyline class="acc" points="0,70 70,72 140,66 210,68 280,58 350,60 420,50 490,46 560,38"/>
-          <circle class="accf" cx="560" cy="38" r="4"/>
-          <text class="lblr" x="498" y="30">112%</text>
-          <line class="gridl" x1="0" y1="150" x2="560" y2="150"/>
-        </g>
-        <g transform="translate(0,540)">
-          <text class="lbl" x="0" y="0">MARGIN</text>
-          <polyline class="ink" points="0,100 70,92 140,96 210,82 280,86 350,70 420,74 490,62 560,54"/>
-          <text class="lbl" x="500" y="46" fill="var(--ink)">+6pt</text>
-        </g>
-      </svg>
-    </div>
+    <!-- grid frame -->
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <div class="vrl" style="left:80px;top:110px;bottom:110px"></div>
+    <div class="vrl" style="right:80px;top:110px;bottom:110px"></div>
+    <p class="eyebrow" style="position:absolute;left:104px;top:138px;z-index:10">Strategy Review</p>
+    <p class="eyebrow" style="position:absolute;right:104px;top:138px;z-index:10;text-align:right">Q2 2026</p>
+    <!-- enormous wordmark, flush-left, upper-middle -->
+    <h1 style="position:absolute;left:96px;top:300px;z-index:10">Atrium</h1>
+    <!-- full-width thin rule under the wordmark -->
+    <div class="hr" style="left:80px;right:80px;top:558px;height:1px;background:var(--ink);opacity:1"></div>
+    <p class="kicker" style="position:absolute;left:104px;top:584px;z-index:10">A strategy and growth review for Northwind</p>
+    <!-- lone accent: a giant light-grey folio set bottom-right on the grid -->
+    <div class="ghost" style="position:absolute;right:96px;bottom:90px;font-size:300px;z-index:5">01</div>
+    <div class="redsq" style="left:104px;top:712px"></div>
     <div class="foot"><span>Northwind · Strategy</span><span>01 / 12</span></div>
   </section>
 
   <!-- 02 · STATEMENT -->
   <section class="slide">
-    <p class="kicker" style="position:absolute;left:100px;top:118px;z-index:10">01 · Statement</p>
-    <h2 style="position:absolute;left:100px;top:286px;width:880px;z-index:10;font-size:58px">Growth from focus, not from adding more.</h2>
-    <p class="body" style="position:absolute;left:100px;top:540px;width:520px;z-index:10">Replace this line with your own thesis. State the one decision this review asks the board to make and the reason it matters now.</p>
-    <!-- single bar chart: where the value sits (illustrative) -->
-    <div class="slot" style="left:1000px;top:230px;width:460px;height:430px">
-      <svg class="viz" viewBox="0 0 460 430" preserveAspectRatio="xMidYMid meet">
-        <line class="axis" x1="40" y1="0" x2="40" y2="380"/>
-        <line class="axis" x1="40" y1="380" x2="460" y2="380"/>
-        <!-- gridlines -->
-        <line class="gridl" x1="40" y1="285" x2="460" y2="285"/>
-        <line class="gridl" x1="40" y1="190" x2="460" y2="190"/>
-        <line class="gridl" x1="40" y1="95" x2="460" y2="95"/>
-        <!-- bars: evidence weight -->
-        <rect class="greyf" x="70" y="250" width="46" height="130"/>
-        <rect class="greyf" x="140" y="180" width="46" height="200"/>
-        <rect class="greyf" x="210" y="210" width="46" height="170"/>
-        <rect class="accf" x="280" y="70" width="46" height="310"/>
-        <rect class="greyf" x="350" y="160" width="46" height="220"/>
-        <text class="lblr" x="303" y="58" text-anchor="middle">focus</text>
-        <text class="lbl" x="63" y="398">segments by value</text>
-      </svg>
-    </div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">Statement</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">01</p>
+    <h2 style="position:absolute;left:78px;top:280px;width:1320px;z-index:10;font-size:96px;line-height:1.02">
+      Growth comes from <span class="red">focus</span>,<br>not from adding more.
+    </h2>
+    <div class="hr" style="left:80px;right:80px;top:744px"></div>
+    <p class="body" style="position:absolute;left:80px;top:770px;width:760px;z-index:10">State the one decision this review asks the board to make, and the reason it matters now.</p>
     <div class="foot"><span>Northwind · Strategy</span><span>02 / 12</span></div>
   </section>
 
   <!-- 03 · INDEX -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">Contents</h2>
-    <div class="hr" style="left:100px;right:100px;top:200px"></div>
-    <div class="index-list">
-      <div class="index-row"><span class="num">01</span><h3>Statement</h3><span class="pg">P. 02</span></div>
-      <div class="index-row"><span class="num">02</span><h3>The firm</h3><span class="pg">P. 04</span></div>
-      <div class="index-row"><span class="num">03</span><h3>Where we play</h3><span class="pg">P. 05</span></div>
-      <div class="index-row"><span class="num">04</span><h3>How we work</h3><span class="pg">P. 06</span></div>
-      <div class="index-row"><span class="num">05</span><h3>What we deliver</h3><span class="pg">P. 07</span></div>
-      <div class="index-row"><span class="num">06</span><h3>The team</h3><span class="pg">P. 08</span></div>
-      <div class="index-row"><span class="num">07</span><h3>By the numbers</h3><span class="pg">P. 09</span></div>
-      <div class="index-row"><span class="num">08</span><h3>The plan</h3><span class="pg">P. 10</span></div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">Contents</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">02</p>
+    <h2 style="position:absolute;left:78px;top:188px;z-index:10;font-size:72px">Index</h2>
+    <!-- two-column typographic contents, big numerals, right-aligned folios, rules between rows -->
+    <div class="vr" style="left:800px;top:340px;bottom:120px"></div>
+    <div style="position:absolute;left:80px;top:336px;width:660px;z-index:10">
+      <div class="hr" style="position:relative;left:0;right:0;top:0"></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono red" style="font-size:18px;font-weight:600;min-width:42px">01</span><h3 style="flex:1;font-weight:500">Statement</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.02</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">02</span><h3 style="flex:1;font-weight:500">The firm</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.04</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">03</span><h3 style="flex:1;font-weight:500">The field</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.05</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">04</span><h3 style="flex:1;font-weight:500">How we work</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.06</span></div>
     </div>
-    <!-- dot-plot vertical index marker on the right -->
-    <div class="slot" style="left:1200px;top:236px;width:300px;height:480px">
-      <svg class="viz" viewBox="0 0 300 480" preserveAspectRatio="xMidYMid meet">
-        <line class="gridl" x1="40" y1="0" x2="40" y2="480"/>
-        <g font-family="'IBM Plex Mono'">
-          <circle class="inkf" cx="40" cy="22" r="5"/><text class="lbl" x="60" y="26">frame</text>
-          <circle class="inkf" cx="40" cy="80" r="5"/><text class="lbl" x="60" y="84">diagnose</text>
-          <circle class="inkf" cx="40" cy="138" r="5"/><text class="lbl" x="60" y="142">design</text>
-          <circle class="accf" cx="40" cy="196" r="6"/><text class="lblr" x="60" y="200">decide</text>
-          <circle class="inkf" cx="40" cy="254" r="5"/><text class="lbl" x="60" y="258">deliver</text>
-          <circle class="inkf" cx="40" cy="312" r="5"/><text class="lbl" x="60" y="316">review</text>
-        </g>
-      </svg>
+    <div style="position:absolute;left:840px;top:336px;width:660px;z-index:10">
+      <div class="hr" style="position:relative;left:0;right:0;top:0"></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">05</span><h3 style="flex:1;font-weight:500">What we deliver</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.07</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">06</span><h3 style="flex:1;font-weight:500">The team</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.08</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">07</span><h3 style="flex:1;font-weight:500">By the numbers</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.09</span></div>
+      <div style="display:flex;align-items:baseline;gap:28px;padding:20px 0;border-bottom:1px solid var(--rulel)"><span class="mono" style="font-size:18px;font-weight:600;min-width:42px;color:var(--ink-2)">08</span><h3 style="flex:1;font-weight:500">The plan</h3><span class="mono" style="font-size:13px;color:var(--ink-2)">P.10</span></div>
     </div>
     <div class="foot"><span>Northwind · Strategy</span><span>03 / 12</span></div>
   </section>
 
   <!-- 04 · ABOUT -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">The firm</h2>
-    <p class="body" style="position:absolute;left:100px;top:236px;width:440px;z-index:10">Northwind is a placeholder name for your firm. Use this space to say what you do, who you serve, and the result clients keep. Two or three plain sentences are enough.</p>
-    <p class="kicker" style="position:absolute;left:100px;top:430px;z-index:10">Founded 2014 · 40 people · Three practices</p>
-    <!-- cumulative engagements area chart (illustrative) -->
-    <div class="slot" style="left:760px;top:200px;width:700px;height:520px">
-      <svg class="viz" viewBox="0 0 700 520" preserveAspectRatio="xMidYMid meet">
-        <line class="axis" x1="50" y1="0" x2="50" y2="440"/>
-        <line class="axis" x1="50" y1="440" x2="700" y2="440"/>
-        <line class="gridl" x1="50" y1="330" x2="700" y2="330"/>
-        <line class="gridl" x1="50" y1="220" x2="700" y2="220"/>
-        <line class="gridl" x1="50" y1="110" x2="700" y2="110"/>
-        <path class="greyf" d="M50,440 L50,400 130,388 210,350 290,330 370,270 450,230 530,160 610,110 700,60 700,440 Z" opacity="0.5"/>
-        <polyline class="acc" points="50,400 130,388 210,350 290,330 370,270 450,230 530,160 610,110 700,60"/>
-        <circle class="accf" cx="700" cy="60" r="4.5"/>
-        <text class="lblb" x="630" y="46">320</text>
-        <text class="lbl" x="50" y="462">'18</text>
-        <text class="lbl" x="370" y="462">'22</text>
-        <text class="lbl" x="660" y="462">'26</text>
-        <text class="lbl" x="0" y="14" transform="rotate(-90 14 230)" >engagements to date</text>
-      </svg>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">The firm</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">03</p>
+    <!-- giant light-grey folio behind the heading -->
+    <div class="ghost" style="position:absolute;left:60px;top:150px;font-size:300px;z-index:5">03</div>
+    <h2 style="position:absolute;left:78px;top:430px;z-index:10;font-size:80px">The firm</h2>
+    <!-- two justified columns separated by a vertical rule -->
+    <div class="vr" style="left:790px;top:300px;height:380px"></div>
+    <p class="body" style="position:absolute;left:840px;top:300px;width:300px;z-index:10;text-align:justify">Northwind is a placeholder name for your firm. Use this space to say what you do and who you serve. Two or three plain sentences are enough.</p>
+    <p class="body" style="position:absolute;left:1180px;top:300px;width:300px;z-index:10;text-align:justify">Keep the claim concrete. State the result clients keep after the work ends, and the practices that make it repeatable.</p>
+    <!-- one large red inline figure as the lone accent -->
+    <div style="position:absolute;left:840px;top:540px;z-index:10">
+      <div class="ghost red" style="font-size:120px;line-height:.9;color:var(--red)">2014</div>
+      <p class="label" style="margin-top:10px">Founded · 40 people · Three practices</p>
     </div>
-    <div class="source" style="left:760px;top:730px">Cumulative engagements, 2018 to 2026. Illustrative figures.</div>
     <div class="foot"><span>Northwind · Strategy</span><span>04 / 12</span></div>
   </section>
 
-  <!-- 05 · MARKET LANDSCAPE -->
+  <!-- 05 · THE FIELD (quadrant) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">Where we play</h2>
-    <div class="twocol">
-      <div><h3>What changed</h3><p class="body">Describe the shift in the market. State the driver and the size of the move in plain terms the board can check.</p></div>
-      <div><h3>The opening</h3><p class="body">Describe the gap no rival owns yet. Keep the claim concrete and tied to a point on the map at right.</p></div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">The field</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">04</p>
+    <h2 style="position:absolute;left:78px;top:188px;z-index:10;font-size:72px">The field</h2>
+    <!-- 2x2 quadrant divided by thick rules -->
+    <div class="hr" style="left:80px;right:80px;top:480px;height:2px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:800px;top:316px;bottom:120px;width:2px;background:var(--ink);opacity:1"></div>
+    <div style="position:absolute;left:104px;top:344px;width:640px;z-index:10">
+      <p class="label">What changed</p>
+      <p class="body" style="margin-top:14px;font-size:21px;line-height:1.4">Demand shifted toward fewer, larger mandates. The driver is consolidation among buyers.</p>
     </div>
-    <!-- scatter / quadrant -->
-    <div class="slot" style="left:880px;top:170px;width:600px;height:560px">
-      <svg class="viz" viewBox="0 0 600 560" preserveAspectRatio="xMidYMid meet">
-        <line class="axis" x1="60" y1="20" x2="60" y2="480"/>
-        <line class="axis" x1="60" y1="480" x2="580" y2="480"/>
-        <line class="gridl" x1="320" y1="20" x2="320" y2="480"/>
-        <line class="gridl" x1="60" y1="250" x2="580" y2="250"/>
-        <!-- competitor bubbles: grey = peers, red = the gap -->
-        <circle class="greyf" cx="160" cy="360" r="22"/>
-        <circle class="greyf" cx="230" cy="300" r="16"/>
-        <circle class="greyf" cx="300" cy="380" r="26"/>
-        <circle class="greyf" cx="200" cy="200" r="14"/>
-        <circle class="greyf" cx="380" cy="320" r="18"/>
-        <circle class="accf" cx="470" cy="130" r="28"/>
-        <text class="lblr" x="470" y="92" text-anchor="middle">our lane</text>
-        <text class="lbl" x="430" y="500" text-anchor="middle">price &#8594;</text>
-        <text class="lbl" x="0" y="14" transform="rotate(-90 14 250)">demand &#8594;</text>
-      </svg>
+    <div style="position:absolute;left:836px;top:344px;width:640px;z-index:10">
+      <p class="label">The opening</p>
+      <p class="body" style="margin-top:14px;font-size:21px;line-height:1.4">A gap no rival owns: senior work delivered at the pace of a small firm.</p>
     </div>
-    <div class="source" style="left:880px;top:740px">Bubble size = est. share. Illustrative positions for placement only.</div>
+    <div style="position:absolute;left:104px;top:516px;width:640px;z-index:10">
+      <p class="label"><span class="red">Where we win</span></p>
+      <p class="body" style="margin-top:14px;font-size:21px;line-height:1.4">One bill, one team, one focus. The board sees the same faces from frame to delivery.</p>
+    </div>
+    <div style="position:absolute;left:836px;top:516px;width:640px;z-index:10">
+      <p class="label">The risk</p>
+      <p class="body" style="margin-top:14px;font-size:21px;line-height:1.4">Scale without losing the senior touch. The plan guards that line first.</p>
+    </div>
     <div class="foot"><span>Northwind · Strategy</span><span>05 / 12</span></div>
   </section>
 
-  <!-- 06 · METHOD (5 steps) -->
+  <!-- 06 · PILLARS (5 columns) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">How we work</h2>
-    <p class="body" style="position:absolute;left:100px;top:200px;width:520px;z-index:10">Every engagement runs the same five steps. Each one ends in a decision the client owns, not a deck on a shelf.</p>
-    <!-- horizontal process line with 5 nodes -->
-    <div class="hr" style="left:160px;right:160px;top:430px"></div>
-    <svg class="viz" style="position:absolute;left:0;top:0;width:1600px;height:900px;z-index:8;pointer-events:none" viewBox="0 0 1600 900">
-      <circle class="inkf" cx="232" cy="431" r="8"/>
-      <circle class="inkf" cx="520" cy="431" r="8"/>
-      <circle class="accf" cx="808" cy="431" r="11"/>
-      <circle class="inkf" cx="1096" cy="431" r="8"/>
-      <circle class="inkf" cx="1384" cy="431" r="8"/>
-    </svg>
-    <div class="rowlabel" style="left:160px;top:470px"><h3>01 Frame</h3><p class="small">Agree the question and the call the work must answer.</p></div>
-    <div class="rowlabel" style="left:448px;top:470px"><h3>02 Diagnose</h3><p class="small">Read the market, the numbers, and the field. Find the cause.</p></div>
-    <div class="rowlabel" style="left:736px;top:470px"><h3>03 Design</h3><p class="small">Shape two or three real options, costed and ranked.</p></div>
-    <div class="rowlabel" style="left:1024px;top:470px"><h3>04 Decide</h3><p class="small">Put the choice to the board with the trade-offs named.</p></div>
-    <div class="rowlabel" style="left:1312px;top:470px"><h3>05 Deliver</h3><p class="small">Stand up the change and stay until it holds.</p></div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">How we work</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">05</p>
+    <h2 style="position:absolute;left:78px;top:188px;z-index:10;font-size:64px">Five steps</h2>
+    <!-- five vertical columns split by thin rules -->
+    <div class="hr" style="left:80px;right:80px;top:380px;height:1px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:368px;top:404px;bottom:120px"></div>
+    <div class="vr" style="left:656px;top:404px;bottom:120px"></div>
+    <div class="vr" style="left:944px;top:404px;bottom:120px"></div>
+    <div class="vr" style="left:1232px;top:404px;bottom:120px"></div>
+    <div style="position:absolute;left:104px;top:420px;width:232px;z-index:10"><div class="mono" style="font-size:44px;font-weight:600">01</div><h3 style="margin:24px 0 14px;font-size:26px">Frame</h3><p class="small">Agree the question and the call the work must answer.</p></div>
+    <div style="position:absolute;left:392px;top:420px;width:232px;z-index:10"><div class="mono" style="font-size:44px;font-weight:600">02</div><h3 style="margin:24px 0 14px;font-size:26px">Diagnose</h3><p class="small">Read the market and the numbers. Find the cause.</p></div>
+    <div style="position:absolute;left:680px;top:420px;width:232px;z-index:10"><div class="mono red" style="font-size:44px;font-weight:600;color:var(--red)">03</div><h3 style="margin:24px 0 14px;font-size:26px">Design</h3><p class="small">Shape two or three real options, costed and ranked.</p></div>
+    <div style="position:absolute;left:968px;top:420px;width:232px;z-index:10"><div class="mono" style="font-size:44px;font-weight:600">04</div><h3 style="margin:24px 0 14px;font-size:26px">Decide</h3><p class="small">Put the choice to the board with the trade-offs named.</p></div>
+    <div style="position:absolute;left:1256px;top:420px;width:232px;z-index:10"><div class="mono" style="font-size:44px;font-weight:600">05</div><h3 style="margin:24px 0 14px;font-size:26px">Deliver</h3><p class="small">Stand up the change and stay until it holds.</p></div>
     <div class="foot"><span>Northwind · Strategy</span><span>06 / 12</span></div>
   </section>
 
-  <!-- 07 · COVERAGE (3 sectors) -->
+  <!-- 07 · SERVICES (3 bands) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">What we deliver</h2>
-    <p class="body" style="position:absolute;left:100px;top:200px;width:520px;z-index:10">Three practices, one bill. Each card shows where the demand is heading.</p>
-    <div class="hr" style="left:110px;right:110px;top:300px"></div>
-    <!-- three columns with mini bar charts -->
-    <div style="position:absolute;left:110px;top:340px;width:1380px;display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:80px;z-index:10">
-      <div>
-        <p class="kicker">Practice A</p>
-        <h3 style="margin:10px 0 16px">Strategy</h3>
-        <svg class="viz" viewBox="0 0 380 200" style="width:100%;height:200px">
-          <line class="gridl" x1="0" y1="180" x2="380" y2="180"/>
-          <rect class="greyf" x="10" y="120" width="40" height="60"/>
-          <rect class="greyf" x="70" y="100" width="40" height="80"/>
-          <rect class="greyf" x="130" y="110" width="40" height="70"/>
-          <rect class="greyf" x="190" y="80" width="40" height="100"/>
-          <rect class="greyf" x="250" y="70" width="40" height="110"/>
-          <rect class="accf" x="310" y="40" width="40" height="140"/>
-        </svg>
-        <p class="small" style="margin-top:14px">Demand, last six quarters. Growth, where the board sets direction.</p>
-      </div>
-      <div>
-        <p class="kicker">Practice B</p>
-        <h3 style="margin:10px 0 16px">Operations</h3>
-        <svg class="viz" viewBox="0 0 380 200" style="width:100%;height:200px">
-          <line class="gridl" x1="0" y1="180" x2="380" y2="180"/>
-          <rect class="greyf" x="10" y="60" width="40" height="120"/>
-          <rect class="greyf" x="70" y="70" width="40" height="110"/>
-          <rect class="greyf" x="130" y="90" width="40" height="90"/>
-          <rect class="greyf" x="190" y="100" width="40" height="80"/>
-          <rect class="greyf" x="250" y="110" width="40" height="70"/>
-          <rect class="accf" x="310" y="118" width="40" height="62"/>
-        </svg>
-        <p class="small" style="margin-top:14px">Demand, last six quarters. Steady, where the work scales.</p>
-      </div>
-      <div>
-        <p class="kicker">Practice C</p>
-        <h3 style="margin:10px 0 16px">Technology</h3>
-        <svg class="viz" viewBox="0 0 380 200" style="width:100%;height:200px">
-          <line class="gridl" x1="0" y1="180" x2="380" y2="180"/>
-          <rect class="greyf" x="10" y="100" width="40" height="80"/>
-          <rect class="greyf" x="70" y="92" width="40" height="88"/>
-          <rect class="greyf" x="130" y="98" width="40" height="82"/>
-          <rect class="greyf" x="190" y="86" width="40" height="94"/>
-          <rect class="greyf" x="250" y="90" width="40" height="90"/>
-          <rect class="accf" x="310" y="84" width="40" height="96"/>
-        </svg>
-        <p class="small" style="margin-top:14px">Demand, last six quarters. Rising, the newest practice.</p>
-      </div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">What we deliver</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">06</p>
+    <!-- three full-width horizontal bands separated by rules -->
+    <div class="hr" style="left:80px;right:80px;top:230px"></div>
+    <div style="position:absolute;left:80px;right:80px;top:230px;height:178px;z-index:10;display:flex;align-items:center">
+      <span class="mono" style="font-size:60px;font-weight:600;width:140px">01</span>
+      <h3 style="font-size:52px;flex:1;font-weight:700">Strategy</h3>
+      <p class="body" style="width:480px;text-align:right;color:var(--ink-2)">Where the board sets direction. The work that decides the next two years.</p>
     </div>
-    <div class="source" style="left:110px;top:760px">Indexed to 100 at start of window. Illustrative values.</div>
+    <div class="hr" style="left:80px;right:80px;top:408px"></div>
+    <div style="position:absolute;left:80px;right:80px;top:408px;height:178px;z-index:10;display:flex;align-items:center">
+      <span class="mono" style="font-size:60px;font-weight:600;width:140px">02</span>
+      <h3 style="font-size:52px;flex:1;font-weight:700">Operations</h3>
+      <p class="body" style="width:480px;text-align:right;color:var(--ink-2)">Where the work scales. Steady demand, repeatable delivery, measured gains.</p>
+    </div>
+    <div class="hr" style="left:80px;right:80px;top:586px"></div>
+    <div style="position:absolute;left:80px;right:80px;top:586px;height:178px;z-index:10;display:flex;align-items:center">
+      <span class="mono red" style="font-size:60px;font-weight:600;width:140px;color:var(--red)">03</span>
+      <h3 style="font-size:52px;flex:1;font-weight:700">Technology</h3>
+      <p class="body" style="width:480px;text-align:right;color:var(--ink-2)">The newest practice and the fastest rising. Build, not just advise.</p>
+    </div>
+    <div class="hr" style="left:80px;right:80px;top:764px"></div>
     <div class="foot"><span>Northwind · Strategy</span><span>07 / 12</span></div>
   </section>
 
-  <!-- 08 · THE TEAM (6 placeholders, dot-plot row) -->
+  <!-- 08 · TEAM (3x2 grid) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">The team</h2>
-    <p class="body" style="position:absolute;left:100px;top:200px;width:520px;z-index:10">Forty people across three practices. Six partners shown, with years at the firm.</p>
-    <div class="hr" style="left:110px;right:110px;top:300px"></div>
-    <!-- six entries with a tenure dot-plot (illustrative) -->
-    <svg class="viz" style="position:absolute;left:110px;top:360px;width:1380px;height:360px;z-index:10" viewBox="0 0 1380 360">
-      <line class="gridl" x1="0" y1="50" x2="1380" y2="50"/>
-      <line class="gridl" x1="0" y1="50" x2="0" y2="320" stroke="rgba(20,22,26,.18)"/>
-      <g>
-        <text class="lblb" x="0" y="100">First Last</text><text class="lbl" x="0" y="120">Managing partner</text>
-        <line class="gridl" x1="320" y1="95" x2="1300" y2="95"/><circle class="accf" cx="1180" cy="95" r="7"/><text class="lblr" x="1316" y="100">12y</text>
-        <text class="lblb" x="0" y="160">First Last</text><text class="lbl" x="0" y="180">Strategy partner</text>
-        <line class="gridl" x1="320" y1="155" x2="1300" y2="155"/><circle class="inkf" cx="980" cy="155" r="6"/><text class="lbl" x="1316" y="160" fill="var(--ink)">8y</text>
-        <text class="lblb" x="0" y="220">First Last</text><text class="lbl" x="0" y="240">Operations partner</text>
-        <line class="gridl" x1="320" y1="215" x2="1300" y2="215"/><circle class="inkf" cx="860" cy="215" r="6"/><text class="lbl" x="1316" y="220" fill="var(--ink)">6y</text>
-        <text class="lblb" x="0" y="280">First Last</text><text class="lbl" x="0" y="300">Technology partner</text>
-        <line class="gridl" x1="320" y1="275" x2="1300" y2="275"/><circle class="inkf" cx="740" cy="275" r="6"/><text class="lbl" x="1316" y="280" fill="var(--ink)">4y</text>
-      </g>
-    </svg>
-    <div class="rowlabel" style="left:110px;top:740px"><h3 style="font-size:15px">First Last</h3><p class="small">Engagement lead · 3y</p></div>
-    <div class="rowlabel" style="left:430px;top:740px"><h3 style="font-size:15px">First Last</h3><p class="small">Engagement lead · 2y</p></div>
-    <div class="source" style="left:760px;top:760px">Dot = years at the firm. Placeholder names and roles.</div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">The team</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">07</p>
+    <h2 style="position:absolute;left:78px;top:188px;z-index:10;font-size:64px">The team</h2>
+    <!-- 3x2 grid divided by rules -->
+    <div class="hr" style="left:80px;right:80px;top:380px;height:1px;background:var(--ink);opacity:1"></div>
+    <div class="hr" style="left:80px;right:80px;top:574px"></div>
+    <div class="hr" style="left:80px;right:80px;top:768px"></div>
+    <div class="vr" style="left:586px;top:404px;bottom:108px"></div>
+    <div class="vr" style="left:1093px;top:404px;bottom:108px"></div>
+    <div style="position:absolute;left:104px;top:420px;width:460px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px">Managing partner</p></div>
+    <div style="position:absolute;left:610px;top:420px;width:460px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px">Strategy partner</p></div>
+    <div style="position:absolute;left:1117px;top:420px;width:380px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px"><span class="red">Operations partner</span></p></div>
+    <div style="position:absolute;left:104px;top:614px;width:460px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px">Technology partner</p></div>
+    <div style="position:absolute;left:610px;top:614px;width:460px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px">Engagement lead</p></div>
+    <div style="position:absolute;left:1117px;top:614px;width:380px;z-index:10"><h3 style="font-size:34px">First Last</h3><p class="label" style="margin-top:12px">Engagement lead</p></div>
     <div class="foot"><span>Northwind · Strategy</span><span>08 / 12</span></div>
   </section>
 
-  <!-- 09 · BY THE NUMBERS -->
+  <!-- 09 · NUMBERS (giant figures) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">By the numbers</h2>
-    <div class="hr" style="left:100px;right:100px;top:200px"></div>
-    <div class="stats" style="left:100px;top:262px;width:560px">
-      <div class="stat"><div class="statnum">320</div><div class="statlabel">Engagements delivered</div><div class="bar"></div></div>
-      <div class="stat"><div class="statnum">40</div><div class="statlabel">People at the firm</div><div class="bar" style="background:var(--ink)"></div></div>
-      <div class="stat"><div class="statnum">112%</div><div class="statlabel">Net revenue retention</div><div class="bar" style="background:var(--ink)"></div></div>
-      <div class="stat"><div class="statnum">12</div><div class="statlabel">Years in practice</div><div class="bar" style="background:var(--ink)"></div></div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">By the numbers</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">08</p>
+    <!-- four enormous type figures on the grid, one red -->
+    <div class="vr" style="left:800px;top:240px;bottom:120px"></div>
+    <div class="hr" style="left:80px;right:80px;top:514px"></div>
+    <div style="position:absolute;left:104px;top:260px;z-index:10">
+      <p class="label">Engagements delivered</p>
+      <div style="font-family:'Inter Tight';font-weight:700;font-size:170px;line-height:.9;letter-spacing:-.03em;margin-top:14px">320</div>
     </div>
-    <!-- data table on the right (illustrative) -->
-    <table class="dt" style="left:760px;top:250px;width:700px">
-      <thead><tr><th>Practice</th><th>Revenue $m</th><th>YoY</th><th>Trend</th></tr></thead>
-      <tbody>
-        <tr><td>Strategy</td><td>18.4</td><td class="acc">+8.4%</td><td>up</td></tr>
-        <tr><td>Operations</td><td>14.0</td><td>+1.2%</td><td>steady</td></tr>
-        <tr><td>Technology</td><td>9.6</td><td class="acc">+12.0%</td><td>up</td></tr>
-        <tr><td>Public sector</td><td>7.2</td><td>+2.1%</td><td>steady</td></tr>
-        <tr><td>Financial</td><td>5.8</td><td class="acc">+6.5%</td><td>up</td></tr>
-        <tr><td>Retainers</td><td>4.1</td><td>+0.4%</td><td>flat</td></tr>
-      </tbody>
-    </table>
-    <p class="source" style="left:760px;top:640px">Figures are illustrative. Replace with your own and keep the source line.</p>
+    <div style="position:absolute;left:836px;top:260px;z-index:10">
+      <p class="label">Net revenue retention</p>
+      <div class="red" style="font-family:'Inter Tight';font-weight:700;font-size:170px;line-height:.9;letter-spacing:-.03em;margin-top:14px;color:var(--red)">112%</div>
+    </div>
+    <div style="position:absolute;left:104px;top:548px;z-index:10">
+      <p class="label">People at the firm</p>
+      <div style="font-family:'Inter Tight';font-weight:700;font-size:170px;line-height:.9;letter-spacing:-.03em;margin-top:14px">40</div>
+    </div>
+    <div style="position:absolute;left:836px;top:548px;z-index:10">
+      <p class="label">Years in practice</p>
+      <div style="font-family:'Inter Tight';font-weight:700;font-size:170px;line-height:.9;letter-spacing:-.03em;margin-top:14px">12</div>
+    </div>
     <div class="foot"><span>Northwind · Strategy</span><span>09 / 12</span></div>
   </section>
 
-  <!-- 10 · OUTLOOK (forecast with band) -->
+  <!-- 10 · ROADMAP (typographic timeline) -->
   <section class="slide">
-    <h2 style="position:absolute;left:100px;top:96px;z-index:10">The plan</h2>
-    <p class="body" style="position:absolute;left:100px;top:200px;width:440px;z-index:10">The path for the next eight quarters, with the range we are willing to accept. The dashed line marks today, where the plan begins.</p>
-    <!-- forecast chart, full width -->
-    <div class="slot" style="left:560px;top:170px;width:940px;height:560px">
-      <svg class="viz" viewBox="0 0 940 560" preserveAspectRatio="xMidYMid meet">
-        <line class="axis" x1="50" y1="20" x2="50" y2="470"/>
-        <line class="axis" x1="50" y1="470" x2="920" y2="470"/>
-        <line class="gridl" x1="50" y1="360" x2="920" y2="360"/>
-        <line class="gridl" x1="50" y1="250" x2="920" y2="250"/>
-        <line class="gridl" x1="50" y1="140" x2="920" y2="140"/>
-        <!-- history/forecast split -->
-        <line x1="520" y1="20" x2="520" y2="470" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="4 4"/>
-        <text class="lbl" x="528" y="34">plan &#8594;</text>
-        <!-- confidence band -->
-        <path class="greyf" opacity="0.45" d="M520,300 600,270 680,250 760,210 840,175 920,130 920,250 840,270 760,300 680,330 600,350 520,360 Z"/>
-        <!-- history line -->
-        <polyline class="ink" points="50,400 110,390 170,360 230,365 290,330 350,335 410,300 470,310 520,330"/>
-        <!-- forecast line -->
-        <polyline class="acc" stroke-dasharray="6 4" points="520,330 600,310 680,275 760,230 840,195 920,190"/>
-        <circle class="accf" cx="920" cy="190" r="4.5"/>
-        <text class="lbl" x="50" y="492">Q1</text>
-        <text class="lbl" x="500" y="492">now</text>
-        <text class="lbl" x="890" y="492">Q8</text>
-      </svg>
-    </div>
-    <div class="source" style="left:560px;top:740px">Shaded area = accepted range. Illustrative path for placement only.</div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">The plan</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">09</p>
+    <h2 style="position:absolute;left:78px;top:188px;z-index:10;font-size:64px">The plan</h2>
+    <!-- single horizontal rule across the stage with tick nodes -->
+    <div class="hr" style="left:80px;right:80px;top:470px;height:1px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:152px;top:456px;height:28px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:400px;top:456px;height:28px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:648px;top:456px;height:28px;background:var(--ink);opacity:1"></div>
+    <div class="redrule" style="left:894px;top:452px;width:2px;height:36px"></div>
+    <div class="vr" style="left:1144px;top:456px;height:28px;background:var(--ink);opacity:1"></div>
+    <div class="vr" style="left:1448px;top:456px;height:28px;background:var(--ink);opacity:1"></div>
+    <div style="position:absolute;left:152px;top:510px;width:220px;z-index:10"><p class="mono" style="font-size:14px;font-weight:600;letter-spacing:.06em">Q1</p><p class="small" style="margin-top:10px">Frame the plan and set the range.</p></div>
+    <div style="position:absolute;left:400px;top:510px;width:220px;z-index:10"><p class="mono" style="font-size:14px;font-weight:600;letter-spacing:.06em">Q2</p><p class="small" style="margin-top:10px">Stand up the first two mandates.</p></div>
+    <div style="position:absolute;left:648px;top:510px;width:220px;z-index:10"><p class="mono" style="font-size:14px;font-weight:600;letter-spacing:.06em">Q3</p><p class="small" style="margin-top:10px">Open the technology practice.</p></div>
+    <div style="position:absolute;left:894px;top:510px;width:220px;z-index:10"><p class="mono red" style="font-size:14px;font-weight:600;letter-spacing:.06em;color:var(--red)">Q4 · now</p><p class="small" style="margin-top:10px">The board decision the plan turns on.</p></div>
+    <div style="position:absolute;left:1144px;top:510px;width:220px;z-index:10"><p class="mono" style="font-size:14px;font-weight:600;letter-spacing:.06em">Q5</p><p class="small" style="margin-top:10px">Scale delivery, hold the senior line.</p></div>
+    <div style="position:absolute;left:1380px;top:510px;width:140px;z-index:10"><p class="mono" style="font-size:14px;font-weight:600;letter-spacing:.06em">Q6</p><p class="small" style="margin-top:10px">Review against the range.</p></div>
     <div class="foot"><span>Northwind · Strategy</span><span>10 / 12</span></div>
   </section>
 
-  <!-- 11 · PERSPECTIVE -->
+  <!-- 11 · QUOTE -->
   <section class="slide">
-    <p class="kicker" style="position:absolute;left:100px;top:200px;z-index:10">Perspective</p>
-    <h2 style="position:absolute;left:100px;top:296px;width:820px;z-index:10;font-size:54px">A plan is a set of choices, not a wish list.</h2>
-    <p class="body" style="position:absolute;left:100px;top:540px;width:420px;z-index:10">First Last, Managing partner</p>
-    <!-- minimal error-bar motif: ranged choices -->
-    <div class="slot" style="left:1020px;top:160px;width:480px;height:560px">
-      <svg class="viz" viewBox="0 0 480 560" preserveAspectRatio="xMidYMid meet">
-        <line class="gridl" x1="60" y1="0" x2="60" y2="520"/>
-        <!-- error bars: point estimate (ink) with red band -->
-        <g stroke-width="2">
-          <line x1="120" y1="60" x2="120" y2="160" stroke="var(--red)"/><circle class="inkf" cx="120" cy="110" r="6"/>
-          <line x1="220" y1="140" x2="220" y2="260" stroke="var(--red)"/><circle class="inkf" cx="220" cy="200" r="6"/>
-          <line x1="320" y1="200" x2="320" y2="360" stroke="var(--red)"/><circle class="inkf" cx="320" cy="280" r="6"/>
-          <line x1="420" y1="300" x2="420" y2="500" stroke="var(--red)"/><circle class="inkf" cx="420" cy="400" r="6"/>
-        </g>
-        <text class="lbl" x="100" y="548">near &#8594; far</text>
-      </svg>
-    </div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="label" style="position:absolute;left:80px;top:138px;z-index:10">Perspective</p>
+    <p class="label" style="position:absolute;right:80px;top:138px;z-index:10">10</p>
+    <div class="ghost red" style="position:absolute;left:78px;top:200px;font-size:240px;line-height:.7;color:var(--red);z-index:6">&ldquo;</div>
+    <h2 style="position:absolute;left:78px;top:340px;width:1180px;z-index:10;font-size:76px;line-height:1.04">A plan is a set of choices, not a wish list.</h2>
+    <div class="hr" style="left:80px;top:720px;width:200px;background:var(--ink);opacity:1"></div>
+    <p class="label" style="position:absolute;left:80px;top:742px;z-index:10">First Last · Managing partner</p>
     <div class="foot"><span>Northwind · Strategy</span><span>11 / 12</span></div>
   </section>
 
-  <!-- 12 · CONTACT -->
+  <!-- 12 · CLOSING -->
   <section class="slide">
-    <div style="position:absolute;left:110px;top:230px;z-index:10;max-width:560px">
-      <h1 style="font-size:88px">Let's talk</h1>
-      <p class="body" style="margin:30px 0 0;max-width:400px">Use this space for a short closing line and your contact details.</p>
-      <div style="margin-top:40px;display:flex;flex-direction:column;gap:14px;font-size:15px;color:var(--ink)" class="contact">
-        <div class="mono">www.example.com</div>
-        <div class="mono">hello@northwind.example</div>
-        <div class="mono">@northwind</div>
-      </div>
+    <div class="hr" style="left:80px;right:80px;top:110px"></div>
+    <p class="eyebrow" style="position:absolute;left:104px;top:138px;z-index:10">Northwind · Strategy</p>
+    <p class="eyebrow" style="position:absolute;right:104px;top:138px;z-index:10;text-align:right">Q2 2026</p>
+    <h1 style="position:absolute;left:96px;top:280px;z-index:10;font-size:clamp(120px,9vw,150px)">Let&rsquo;s talk</h1>
+    <div class="hr" style="left:80px;right:80px;top:560px;height:1px;background:var(--ink);opacity:1"></div>
+    <!-- contact lines on the grid in mono -->
+    <div class="vr" style="left:800px;top:600px;bottom:120px"></div>
+    <div style="position:absolute;left:104px;top:600px;z-index:10" class="contact">
+      <div class="mono" style="font-size:24px">www.example.com</div>
+      <div class="mono" style="font-size:24px;margin-top:18px">hello@northwind.example</div>
+      <div class="mono" style="font-size:24px;margin-top:18px">@northwind</div>
     </div>
-    <!-- closing: a clean grid of dots, one red -->
-    <div class="slot" style="left:1000px;top:150px;width:480px;height:600px">
-      <svg class="viz" viewBox="0 0 480 600" preserveAspectRatio="xMidYMid meet">
-        <line class="hrl" x1="0" y1="2" x2="480" y2="2" stroke="rgba(20,22,26,.55)" stroke-width="1"/>
-        <g>
-          <!-- 8x10 grid of small dots, one red accent -->
-          <g class="greyf"></g>
-        </g>
-        <g id="ledgerdots"></g>
-        <line class="hrl" x1="0" y1="560" x2="480" y2="560" stroke="rgba(20,22,26,.55)" stroke-width="1"/>
-        <text class="lbl" x="0" y="584">one firm · one focus</text>
-      </svg>
-    </div>
+    <p class="body" style="position:absolute;left:840px;top:600px;width:560px;z-index:10;font-size:21px;line-height:1.5">Use this space for a short closing line. One firm, one focus.</p>
+    <div class="redsq" style="left:840px;top:712px"></div>
     <div class="foot"><span>Northwind · Strategy</span><span>12 / 12</span></div>
   </section>
 
@@ -534,20 +390,6 @@
 
 <script src="vendor/html-to-image.js"></script>
 <script>
-  // build the dot grid on the closing slide
-  (function(){
-    const g=document.getElementById('ledgerdots'); if(!g) return;
-    const cols=8, rows=10, gap=54, x0=20, y0=40, acc=37;
-    let s='';
-    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
-      const idx=r*cols+c, cx=x0+c*gap, cy=y0+r*gap;
-      const cls=(idx===acc)?'accf':'greyf';
-      const rad=(idx===acc)?6:4;
-      s+=`<circle class="${cls}" cx="${cx}" cy="${cy}" r="${rad}"/>`;
-    }
-    g.innerHTML=s;
-  })();
-
   const slides=[...document.querySelectorAll('.slide')];
   const counter=document.getElementById('counter');
   const stage=document.querySelector('.stage');
@@ -586,7 +428,7 @@
   themeSel.onchange=()=>setTheme(themeSel.value);
   setTheme((document.body.className.match(/theme-(\w+)/)||[])[1]||'atrium');
 
-  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.body,.small,.statnum,.statlabel,.pg,.foot span,.contact div,table.dt td,table.dt th,.source';
+  const EDIT_SEL='h1,h2,h3,.num,.kicker,.eyebrow,.label,.body,.small,.contact div,.source,.ghost,.mono';
   const editBtn=document.getElementById('editBtn');
   let editing=false;
   function toggleEdit(){
@@ -633,8 +475,7 @@
 
   // ---------- one-click PDF, fully in-browser (no server, no print dialog) ----------
   // Each slide is rasterised with html-to-image, then wrapped as a JPEG page in a
-  // minimal hand-written PDF. Vector charts render crisply at pixelRatio 2. One
-  // 1200x675 pt page per slide (16:9).
+  // minimal hand-written PDF. One 1200x675 pt page per slide (16:9).
   function imagesToPdf(images, ptW, ptH){
     const enc=new TextEncoder(), chunks=[]; let len=0; const off=[];
     const W=u=>{chunks.push(u);len+=u.length;}, S=s=>W(typeof s==='string'?enc.encode(s):s);
