@@ -1,0 +1,113 @@
+# template-15 · Almanac
+# Academic / scientific editorial-serif deck. Light scholarly cream, beautifully typeset.
+# Same backbone as template-01-newsroom.yaml; the build pipeline reads these keys.
+# Reskinned from template-03-plein-air (shared chrome, vendored Mulish + Playfair Display).
+
+id: "15"
+call: template-15
+name: Almanac
+family: Academic / scientific
+status: built            # built | draft | planned
+best_for:
+  - university / research institute report
+  - think-tank / policy briefing
+  - NGO / foundation findings
+  - grant pitch
+  - edtech / lecture deck
+reference_decks:         # working implementations in this repo
+  - deck-02/deck.html                                  # 12-slide parent this backbone descends from
+  - deck-kit/templates/03-plein-air/deck.html          # donor (chrome + vendored fonts)
+  - deck-kit/templates/15-almanac/deck.html            # this template
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: 12
+
+mood:
+  - scholarly
+  - quiet
+  - text-forward
+  - credible
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  # very restrained colour: this is a typeset-paper look, not a decorative one.
+  default: almanac
+  themes:
+    almanac:      { bg: "#F4F0E6", ink: "#20242B", ink_2: "#5A5448", paper: "#FAF7EE",
+                    red: "#2A3A6B", cyan: "#8A2B2B", yellow: "#9A8C6A", olive: "#4B6358", peach: "#7A5C46" }
+    bluestocking: { bg: "#EEF0F2", ink: "#1A222E", ink_2: "#54606E", paper: "#F7F8FA",
+                    red: "#2B4C8C", cyan: "#3C6DA8", yellow: "#8C94A2", olive: "#3F6E74", peach: "#6B788A" }
+    oxblood:      { bg: "#F3ECE4", ink: "#241C1A", ink_2: "#5E4F46", paper: "#FAF4EC",
+                    red: "#8A2B2B", cyan: "#3A2F5E", yellow: "#9A7A52", olive: "#5A5238", peach: "#7A4A3A" }
+    slate:        { bg: "#ECEDED", ink: "#1F2326", ink_2: "#5C6166", paper: "#F6F6F5",
+                    red: "#3A4A52", cyan: "#7A4A4A", yellow: "#8C8A82", olive: "#4E5E58", peach: "#6E6A62" }
+  # accent-slot mapping (token names kept from the backbone, hexes are Almanac's):
+  #   red = primary scholarly accent (ink-blue), cyan = figure-callout secondary (oxblood),
+  #   yellow/olive/peach = quiet support tints for stat bars and figure placeholders.
+
+typography:
+  source: google-fonts
+  # bundled locally in vendor/fonts so the PDF embeds them.
+  # NOTE: the ideal body face for this look is a text serif (Source Serif 4 / Spectral).
+  # This build uses the bundled Playfair Display + Mulish pairing for self-containment.
+  pairings:
+    playfair-mulish:                     # this template
+      heading: { family: Playfair Display, weight: 600, case: title, role: section heads / figure titles / cover / quote }
+      body:    { family: Mulish, weight: 400, role: body text and captions, note: humanist, readable small }
+      figures: { family: Playfair Display, weight: 600 }
+      label:   { family: Mulish, weight: 700, case: upper, tracking: wide, role: small-caps section labels, eyebrows, footer, page numbers }
+
+imagery:
+  medium: figures / charts   # figure plates and chart placeholders; reuses bundled imagery
+  strategy: reuse            # no new image generation required; keep donor assets as replaceable figure plates
+  motifs:
+    - field stations and study sites
+    - sample plots and instruments
+    - researchers at work
+    - chart / dataset plates
+  rendering: [framed in a thin rule, numbered "Fig. N" caption beneath, crisp edges, light paper]
+  fallback: css-svg          # every image sits in a .slot with a CSS/SVG placeholder if the asset is missing
+
+layout:
+  signature:
+    - quiet cream paper, text-forward
+    - small-caps letter-spaced section labels
+    - numbered figure plates (thin rule frame + "Fig. N — caption" beneath)
+    - two-column flowing body where space allows
+    - footnotes / source citations along the slide bottom
+    - thin hairline rules, single rationed accent
+  blocks:                # the section vocabulary; in deck order
+    - cover              # title page + Fig. 1 plate
+    - statement          # thesis line + figure
+    - index              # "In this report" contents
+    - about              # two-column narrative + figure plate
+    - context            # "The Context" two-column + figure + footnote
+    - pillars            # "Research Pillars" 5 elements in a row
+    - services           # "What We Provide" 3 programme cards
+    - team               # "The Researchers" portrait row (placeholders)
+    - numbers            # "Findings in Numbers" stats + cited footnote
+    - roadmap            # "The Programme Ahead" timeline, 6 milestones
+    - quote              # "From the Director" pull quote, italic serif
+    - closing            # contact
+
+effects:
+  texture: [faint paper grain overlay]
+  shadows: none
+
+rules:
+  - light scholarly cream palette; colour rationed to a single quiet accent
+  - serif heads (Playfair), humanist sans body (Mulish), small-caps section labels
+  - frame images as numbered figure plates; include at least one footnote / citation
+  - academic and credible, not decorative; hairline rules, no heavy fills
+  - keep copy plain: no em dashes, no filler, no jargon
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

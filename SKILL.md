@@ -2,9 +2,10 @@
 name: deck-kit
 description: >-
   Build a polished, self-contained 16:9 HTML slide deck from any input (a topic, a document, a repo, a
-  chat, or a brief) in one of ten editorial styles, from editorial collage, Mondrian, impressionist,
-  creative-agency, sports, and luxury to earthy kraft, data charts, dark terminal, and futuristic
-  wireframe. Every deck has live palette switching, inline text and image editing, and one-click
+  chat, or a brief) in one of fifteen editorial styles, from editorial collage, Mondrian, impressionist,
+  creative-agency, sports, and luxury to earthy kraft, data charts, dark terminal, futuristic wireframe,
+  Swiss corporate, healthcare, cinematic photography, neon gaming, and academic. Every deck has live
+  palette switching, inline text and image editing, and one-click
   pixel-accurate PDF export with fonts embedded. Use this whenever the user wants a presentation, slide
   deck, pitch deck, report deck, capabilities deck, sales deck, or asks to turn something into slides or
   make a deck, even if they do not name a style, and especially when they want a specific visual look or
@@ -14,7 +15,7 @@ description: >-
 # Deck Kit
 
 Turn any input into a finished 16:9 slide deck that is a single self-contained HTML file: open it in
-any browser, edit it in place, and export a pixel-accurate PDF. Ten visual styles share one 12-slide
+any browser, edit it in place, and export a pixel-accurate PDF. Fifteen visual styles share one 12-slide
 backbone, so you pick a look and pour content in.
 
 Each style lives in `templates/<id>-<name>/` as a complete, working deck you copy and re-content. You
@@ -45,9 +46,14 @@ fonts, and best-for is in [TEMPLATES.md](TEMPLATES.md). Quick guide:
 | `08-ledger` | data (Tufte-clean charts, one signal color) | market research, financial, KPI |
 | `09-terminal` | dark CRT console (monospace, schematics) | repos, architecture, AI/agent systems |
 | `10-vanguard` | futuristic (wireframe, HUD) | deep-tech, robotics, R&D |
+| `11-atrium` | Swiss / corporate-modernist (clean grid, one signal) | enterprise, consulting, strategy, board, SaaS sales |
+| `12-vital` | healthcare / wellness (calm, rounded, humane) | pharma, biotech, medtech, wellness, public health |
+| `13-marquee` | cinematic full-bleed photography (Didone, scrims) | hospitality, real estate, travel, architecture, fashion |
+| `14-circuit` | neon cyberpunk (glow, glass HUD, dark) | games, esports, crypto/web3, entertainment, youth brands |
+| `15-almanac` | academic / scientific (serif, figures, footnotes) | universities, think-tanks, policy, edtech, NGO findings |
 
-`02`, `08`, `09`, `10` draw their visuals as inline SVG and need no image generation. The other six use
-photographic or collage imagery (see Imagery below).
+`02`, `08`, `09`, `10`, `11`, `14`, `15` draw their visuals as inline SVG (or reuse bundled figures) and
+need no image generation. The other eight use photographic or collage imagery (see Imagery below).
 
 ## Build a deck
 

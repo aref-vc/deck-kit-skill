@@ -1,0 +1,111 @@
+# template-14 · Circuit
+# Neon cyberpunk / gaming / web3 deck. Dark glowing palette, glassmorphic HUD, neon wireframe schematics.
+# Same 12-slide backbone as the kit; the build pipeline reads these keys.
+
+id: "14"
+call: template-14
+name: Circuit
+family: neon-cyberpunk
+status: built            # built | draft | planned
+best_for:
+  - game studio pitch
+  - esports / gaming platform
+  - crypto / web3 product
+  - music / nightlife / entertainment-tech
+  - Gen-Z consumer brand
+reference_decks:         # working implementations in this repo
+  - templates/10-vanguard/deck.html                    # donor this was reskinned from
+  - templates/14-circuit/deck.html                     # this template
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: [12, 12]       # 12-slide backbone
+
+mood:
+  - dark
+  - neon
+  - energetic
+  - high-contrast
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: circuit
+  themes:
+    circuit:    { bg: "#0A0A12", ink: "#EAF0FF", ink_2: "#8A93B5", paper: "#12132A",
+                  red: "#FF2E97", cyan: "#21E6FF", yellow: "#B6FF3C", olive: "#8A5CFF", peach: "#21E6FF" }
+    synthwave:  { bg: "#0C0716", ink: "#F4ECFF", ink_2: "#9A86C7", paper: "#1A0F2E",
+                  red: "#FF3D81", cyan: "#8A5CFF", yellow: "#FFC24B", olive: "#FF6A9C", peach: "#8A5CFF" }
+    toxic:      { bg: "#06120C", ink: "#EAFFF2", ink_2: "#7FAE97", paper: "#0C2018",
+                  red: "#B6FF3C", cyan: "#21E6FF", yellow: "#FFE45C", olive: "#21E6FF", peach: "#7CFFB0" }
+    royale:     { bg: "#070A18", ink: "#E9EEFF", ink_2: "#8088BE", paper: "#101536",
+                  red: "#8A5CFF", cyan: "#21E6FF", yellow: "#FF2E97", olive: "#5C8CFF", peach: "#21E6FF" }
+  # accent-slot mapping (names kept, hexes are Circuit's): red=primary neon, cyan=secondary neon,
+  # yellow=tertiary glow, olive=violet, peach=secondary. circuit=magenta+cyan, synthwave=magenta+violet,
+  # toxic=lime+cyan, royale=violet+cyan.
+
+typography:
+  source: google-fonts
+  # bundled locally in vendor/fonts so the PDF embeds them.
+  pairings:
+    chakra-grotesk:                        # this template
+      heading: { family: Chakra Petch, weight: 700, case: upper, tracking: wide }
+      body:    { family: Space Grotesk, weight: 400 }
+      figures: { family: Chakra Petch, weight: 700 }
+      label:   { family: Space Mono, weight: 400, case: upper }   # eyebrows, HUD readouts, footer, page numbers
+
+imagery:
+  medium: wireframe / neon-svg   # inline SVG schematics recolored to neon gradient strokes
+  strategy: inline               # no image generation; every visual is hand-drawn SVG/CSS
+  motifs:
+    - exploded isometric node / device schematics
+    - circuit traces and signal waveforms
+    - terrain / heat-map plots and gauges
+    - HUD reticles and telemetry readouts
+  rendering: [neon stroke glow (drop-shadow), gradient strokes magenta to cyan, glass HUD panels, scan grid]
+  generate: none                 # SVG is authored inline, nothing to render
+  fallback: css-svg              # .slot / img.cut pattern retained for any optional image swap
+
+layout:
+  signature:
+    - dark indigo-black stage with scan-grid + corner glow horizon
+    - neon glow on accents, rules, and key numerals (text-shadow / box-shadow)
+    - glassmorphic HUD cards (blur, thin glowing 1px borders)
+    - recolored wireframe SVG schematics with magenta-to-cyan gradient strokes
+    - bold uppercase Chakra Petch headers, Space Mono telemetry readouts
+  blocks:                # the section vocabulary; ordered for the 12-slide backbone
+    - cover              # node schematic + telemetry strip + glow rule
+    - statement          # full-bleed opening line + waveform HUD
+    - index              # contents scan column
+    - about              # narrative + node-graph schematic
+    - context            # "The Scene" two-column + heat-map HUD
+    - pillars            # "How It Works" 5-step circuit trace
+    - services           # "What We Ship" 3 glass cards
+    - team               # "The Squad" portrait row (placeholders)
+    - numbers            # "By the Numbers" gauge + glowing stats
+    - roadmap            # season timeline, 6 milestones
+    - quote              # pull quote + signal-lock portrait HUD
+    - closing            # contact
+
+effects:
+  texture: [fine film grain, scan grid, corner glow gradients]
+  glow: [accent text-shadow, box-shadow on rules/bars/dots, SVG stroke drop-shadow]
+  glass: [backdrop-filter blur on HUD panels and cards]
+  shadows: minimal
+
+rules:
+  - dark neon palette; glow only on accents and key numerals, keep body text legible
+  - inline SVG/CSS visuals only, no generated photography
+  - recolor wireframe schematics to neon gradient strokes (magenta to cyan)
+  - uppercase Chakra Petch headers, Space Mono for HUD readouts and labels
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - one idea per slide; short declarative headlines fit the genre but stay concrete
+  - placeholder brand "Nightwire"; numbers are obviously placeholder
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

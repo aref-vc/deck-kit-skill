@@ -1,0 +1,106 @@
+# template-12 · Vital
+# Healthcare / clinical / wellness deck. Calm mint-white palette, soft rounded cards, humanist type.
+# Same backbone as template-03-plein-air; the build pipeline reads these keys.
+
+id: "12"
+call: template-12
+name: Vital
+family: Healthcare / wellness
+status: built            # built | draft | planned
+best_for:
+  - pharma / biotech / medtech pitch
+  - payer / provider capabilities deck
+  - clinical or patient program overview
+  - wellness and public-health briefing
+reference_decks:         # working implementations in this repo
+  - deck-03/deck.html                                  # 12-slide parent this was reskinned from
+  - deck-kit/templates/12-vital/deck.html              # this template
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range
+
+mood:
+  - calm
+  - humane
+  - trustworthy
+  - clear
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: vital
+  themes:
+    vital:  { bg: "#F2F6F4", ink: "#1E2A2A", ink_2: "#5C6B68", paper: "#FFFFFF",
+              red: "#2F9E8F", cyan: "#7FB3D5", yellow: "#E6B45A", olive: "#8FB89B", peach: "#E8907C" }
+    sage:   { bg: "#F1F5F0", ink: "#202B25", ink_2: "#5A6A60", paper: "#FFFFFF",
+              red: "#5FA06E", cyan: "#8FB89B", yellow: "#D9B86A", olive: "#2F9E8F", peach: "#E8A07C" }
+    sky:    { bg: "#EFF4F8", ink: "#1C2733", ink_2: "#5A6775", paper: "#FFFFFF",
+              red: "#3E8FC4", cyan: "#7FB3D5", yellow: "#E6B45A", olive: "#5FB0A6", peach: "#E89080" }
+    dawn:   { bg: "#F8F3EE", ink: "#2A2422", ink_2: "#6B5F58", paper: "#FFFFFF",
+              red: "#E08A6E", cyan: "#7FB3D5", yellow: "#E6B45A", olive: "#9CB89C", peach: "#E8907C" }
+  # accent-slot mapping (token names kept): red=primary teal, cyan=sky blue, yellow=amber, olive=sage green, peach=soft coral
+
+typography:
+  source: google-fonts
+  # bundled locally in vendor/fonts so the PDF embeds them.
+  pairings:
+    mulish-playfair:                     # this template
+      heading: { family: Mulish, weight: 800, case: sentence }
+      body:    { family: Mulish, weight: 400 }
+      figures: { family: Mulish, weight: 800 }
+      quote:   { family: Playfair Display, weight: 600 }   # occasional editorial pull-quote only
+      label:   { family: Mulish, weight: 700, case: upper }  # eyebrows, kickers, footer, page numbers
+
+imagery:
+  medium: soft-photo     # calm, light, human clinical and wellness photography
+  strategy: replace      # example photos ship in assets/; meant to be swapped, both donor and Vital are light
+  motifs:
+    - clinicians and patients in calm, bright settings
+    - hands, care, listening, reassurance
+    - light clinic and community spaces
+    - everyday wellness and movement
+  rendering: [light and airy, soft natural light, gentle contrast, generous negative space]
+  fallback: css-svg      # every image sits in a rounded .slot with a CSS/SVG placeholder if the asset is missing
+
+layout:
+  signature:
+    - light mint-white stage with lots of air
+    - soft rounded corners (~14-20px) on cards, stat blocks, image slots
+    - gentle soft shadows and thin rounded rules
+    - calm pastel halos that bleed off the edges
+    - recoloured line icons in teal and sage, no harsh edges
+  blocks:                # the section vocabulary; pick and order per outline
+    - cover              # name, promise, rounded portrait
+    - statement          # full-bleed opening line
+    - index              # "Inside" contents
+    - about              # "About Meridian" narrative + figure
+    - context            # "The Need" two-column problem / why now
+    - pillars            # "How We Care" 5 elements in a row
+    - services           # "What We Offer" 3 cards
+    - team               # "The Care Team" portrait row (placeholders)
+    - numbers            # "By the Numbers" stat cards (illustrative)
+    - roadmap            # "The Road Ahead" timeline, 6 milestones
+    - quote              # "In Their Words" pull quote, Playfair
+    - closing            # contact
+
+effects:
+  texture: [faint paper grain, soft drop shadows]
+  shadows: soft
+
+rules:
+  - light, calm, trustworthy palette; teal is the lead accent, used sparingly
+  - soft rounded corners and gentle shadows everywhere; no harsh edges
+  - humanist Mulish for headings and body; Playfair only for an occasional quote
+  - accessible contrast and comfortable line-height
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - mark any figures as illustrative placeholders; cite real sources when replaced
+  - one idea per slide; short declarative headlines
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

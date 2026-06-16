@@ -1,0 +1,107 @@
+# template-11 · Atrium
+# Swiss / International Typographic deck. Reskinned from template-08-ledger to a
+# corporate-modernist system: warm white, hairline rules, one rationed red.
+
+id: "11"
+call: template-11
+name: Atrium
+family: Swiss / International Typographic
+status: built            # built | draft | planned
+best_for:
+  - enterprise B2B
+  - consulting / strategy
+  - board updates
+  - SaaS sales
+  - capability decks
+reference_decks:         # working implementations in this repo
+  - deck-kit/templates/11-atrium/deck.html   # 12-slide, warm white + signal red, geometric medium
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions absolute against this, then scaled to fit
+  slides: [9, 14]        # typical range
+
+mood:
+  - corporate-modernist
+  - quiet
+  - ordered
+  - restrained
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: atrium
+  # the five accent slots hold ONE signal colour plus a neutral grey ramp
+  # (peach = lightest fill -> cyan = darkest rule) instead of five hues.
+  themes:
+    atrium:    { bg: "#F7F6F3", ink: "#14161A", ink_2: "#5A5F66", paper: "#FFFFFF",
+                 red: "#D8352A", cyan: "#3A3E45", yellow: "#777C84", olive: "#9DA1A8", peach: "#D2D5D9" }
+    slate:     { bg: "#F3F4F6", ink: "#10141B", ink_2: "#565E6B", paper: "#FFFFFF",
+                 red: "#1F3A5F", cyan: "#363D47", yellow: "#727A86", olive: "#99A1AC", peach: "#D2D6DC" }
+    oxblood:   { bg: "#F6F3F0", ink: "#1A1614", ink_2: "#605852", paper: "#FFFFFF",
+                 red: "#8A2B2B", cyan: "#403A37", yellow: "#7E756E", olive: "#A39A92", peach: "#D8D2CC" }
+    graphite:  { bg: "#E9EAEC", ink: "#0C0D0F", ink_2: "#4A4E55", paper: "#F6F6F7",
+                 red: "#C23A2E", cyan: "#2E3138", yellow: "#666B72", olive: "#8E9298", peach: "#C7CACE" }
+
+typography:
+  source: google-fonts
+  bundled: true          # woff2 localized under vendor/fonts so the PDF embeds them
+  pairings:
+    inter-tight-plex:
+      heading: { family: Inter Tight, weight: 700, case: title, tracking: tight }  # large, flush-left
+      body:    { family: Inter, weight: 400 }                                       # 400/500
+      figures: { family: IBM Plex Mono, weight: 600, numeric: tabular }            # big quiet numerals
+      label:   { family: IBM Plex Mono, weight: 500, case: upper, letterspaced: true }  # kickers, footer, tables
+
+imagery:
+  medium: geometric      # collage | duotone-photo | painterly | geometric | charts | wireframe | ephemera
+  strategy: none         # no image generation; visuals are inline SVG/CSS geometry only
+  motifs:
+    - hairline rules and strict column grids
+    - quiet sparklines and small multiples
+    - dot-plots and tenure strips
+    - scatter / quadrant maps
+    - thin-rule data tables with tabular numerals
+  rendering: [flat vector, hairline gridlines, one rationed accent, no shadows, no gradients, no photos]
+  generate: none
+  fallback: inline-svg    # visuals live in .slot blocks as SVG; no external assets to miss
+
+layout:
+  signature:
+    - strict column grid with very generous whitespace
+    - everything flush-left
+    - hairline rules at 8-14% ink
+    - small mono kicker labels above tight Inter Tight titles
+    - big quiet numerals, no decorative imagery, no shadows
+    - restraint as the whole point
+  blocks:                # the section vocabulary; pick and order per outline
+    - cover              # kicker + wordmark + stacked sparkline panel
+    - statement          # full-bleed thesis line + single signal bar
+    - index              # contents + dot-plot marker
+    - about              # the firm narrative + cumulative area chart
+    - context            # two-column "where we play" + scatter map
+    - pillars            # 5-step "how we work" process line
+    - services           # 3 practice cards with mini bar charts
+    - team               # partner tenure dot-plot (placeholders)
+    - numbers            # stats + thin-rule data table (placeholders)
+    - roadmap            # "the plan" trajectory line with accepted range
+    - quote              # pull quote + ranged error-bar motif
+    - closing            # contact + dot grid
+
+effects:
+  texture: [none]
+  shadows: none
+
+rules:
+  - one rationed red; one signal per slide max, everything else ink and a grey ramp
+  - hairline rules only; no fills, no gradients, no shadows, no decorative imagery
+  - flush-left everything; mono kicker labels above tight Inter Tight titles
+  - keep copy plain: no em dashes, no filler (transform, leverage, seamless, robust)
+  - one idea per slide; short declarative headlines; numbers marked illustrative
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable (incl. table cells)
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, headless: export-pdf.sh, standalone: build-standalone.py }  # one exact 1600x900 page per slide

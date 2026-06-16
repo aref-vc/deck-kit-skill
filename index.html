@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deck Kit — ten editorial slide templates</title>
+<title>Deck Kit — fifteen editorial slide templates</title>
 <style>
   :root{ --bg:#F4F2EC; --card:#FFFFFF; --ink:#1A1A1A; --ink2:#666056; --line:rgba(26,26,26,.12); --accent:#E5443B; }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -37,8 +37,8 @@
 <div class="wrap">
   <header>
     <div class="kick">Deck Kit</div>
-    <h1>Ten editorial slide templates, as self-contained HTML.</h1>
-    <p class="lede">One backbone, ten distinct looks. Each deck opens in any browser, edits in place,
+    <h1>Fifteen editorial slide templates, as self-contained HTML.</h1>
+    <p class="lede">One backbone, fifteen distinct looks. Each deck opens in any browser, edits in place,
       swaps its own images, and exports a pixel-accurate PDF. No install, no server.</p>
     <p class="meta">Each card opens a live, empty template, or the same Claude Fable 5 report rendered
       in that style. Full source on <a href="https://github.com/aref-vc/deck-kit-skill">GitHub</a>.</p>
@@ -60,7 +60,12 @@
     ["07","drifter","Drifter","Earthy / kraft","Travel, craft, sustainability"],
     ["08","ledger","Ledger","Data / research","Market research, financial, KPI"],
     ["09","terminal","Terminal","Dark CRT console","Repos, architecture, AI agents"],
-    ["10","vanguard","Vanguard","Robotics / futuristic","Deep-tech, robotics, R&D"]
+    ["10","vanguard","Vanguard","Robotics / futuristic","Deep-tech, robotics, R&D"],
+    ["11","atrium","Atrium","Swiss / corporate","Enterprise, consulting, strategy"],
+    ["12","vital","Vital","Healthcare / wellness","Health, biotech, wellness"],
+    ["13","marquee","Marquee","Cinematic photography","Hospitality, property, lifestyle"],
+    ["14","circuit","Circuit","Neon / gaming","Games, crypto, entertainment"],
+    ["15","almanac","Almanac","Academic / research","Universities, think-tanks, policy"]
   ];
   document.getElementById('grid').innerHTML = T.map(function(t){
     var id=t[0]+'-'+t[1];
@@ -70,7 +75,7 @@
       + '<div class="fam">'+t[3]+'</div>'
       + '<div class="best">'+t[4]+'</div>'
       + '<div class="links"><a href="templates/'+id+'/deck.html">Open template &rarr;</a>'
-      + '<a href="examples/fable5/'+id+'/deck.html">Fable 5 example &rarr;</a></div>'
+      + (Number(t[0])<=10 ? '<a href="examples/fable5/'+id+'/deck.html">Fable 5 example &rarr;</a>' : '')
       + '</div></div>';
   }).join('');
 </script>

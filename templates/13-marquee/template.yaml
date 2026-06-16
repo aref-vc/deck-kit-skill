@@ -1,0 +1,103 @@
+# template-13 · Marquee
+# Cinematic, full-bleed photography deck. Dark stage, single warm gold accent, minimal overlaid type.
+# Same backbone as template-01-newsroom.yaml; the build pipeline reads these keys.
+
+id: "13"
+call: template-13
+name: Marquee
+family: Cinematic photography
+status: built            # built | draft | planned
+best_for:
+  - real estate / property
+  - hospitality / hotels
+  - travel / destination
+  - architecture
+  - fashion lookbook
+  - film / brand
+reference_decks:         # working implementations in this repo
+  - deck-kit/templates/06-maison/deck.html             # 12-slide donor this was reskinned from
+  - deck-kit/templates/13-marquee/deck.html            # this template
+
+canvas:
+  ratio: "16:9"
+  stage: [1600, 900]     # px; all positions are absolute against this, then scaled to fit
+  slides: 12             # fixed 12-slide backbone
+
+mood:
+  - cinematic
+  - dark
+  - restrained
+  - editorial
+
+palette:
+  # default theme. Others ship as body.theme-* classes the user can switch live.
+  default: marquee
+  themes:
+    marquee:  { bg: "#0E0E10", ink: "#FFFFFF", ink_2: "#C8C6C2", paper: "#15151A", accent: "#C9A86A" }   # dark, warm gold
+    noir:     { bg: "#0C0D0F", ink: "#FFFFFF", ink_2: "#BFC2C6", paper: "#16181B", accent: "#AEB4BC" }   # dark, cool silver
+    ivory:    { bg: "#F4F1EC", ink: "#15140F", ink_2: "#6B655B", paper: "#FBF9F4", accent: "#B08D4C" }   # light variant
+    dusk:     { bg: "#100D0F", ink: "#FFFFFF", ink_2: "#CBC2C4", paper: "#1A1518", accent: "#C28B8E" }   # dark, muted rose
+  # single accent per theme: gold / silver / gold / rose. Rationed to the thin rule and kickers.
+
+typography:
+  source: google-fonts
+  # bundled locally in vendor/fonts so the PDF embeds them.
+  pairings:
+    bodoni-jost:                         # this template
+      heading: { family: Bodoni Moda, weight: 400, case: title }   # big quiet high-contrast hero lines
+      body:    { family: Jost, weight: 300 }
+      figures: { family: Bodoni Moda, weight: 400 }
+      label:   { family: Jost, weight: 400, case: upper, tracking: ".4em" }   # captions, kickers, footer, page numbers
+
+imagery:
+  medium: photo          # real photography is the hero
+  strategy: place        # placed directly with object-fit:cover, NORMAL compositing (no blend mode)
+  compositing: normal    # CRITICAL: no mix-blend-mode:multiply — light photos must not crush to black on the dark stage
+  scrim: css-gradient    # a .scrim div (bottom / left / radial) lays over each hero photo so overlaid type stays legible
+  motifs:
+    - architecture and interiors in natural light
+    - coastline, landscape, horizon
+    - rooms, table, texture, detail
+    - a single human figure in a large quiet frame
+  fallback: css-svg      # every image sits in a .slot with a CSS/SVG placeholder if the asset is missing
+
+layout:
+  signature:
+    - edge-to-edge full-bleed photography on hero slides
+    - gradient scrims for legibility, lots of cinematic negative space
+    - thin uppercase letterspaced captions and slide numbers
+    - big restrained Bodoni hero lines, minimal words
+    - one thin gold rule as the only drawn accent
+  blocks:                # the fixed 12-slide order
+    - cover              # full-bleed hero + title over bottom scrim
+    - statement          # full-bleed hero + one opening line
+    - index              # contents
+    - about              # "The Place" narrative + side-bleed photo
+    - context            # "The Setting" two-column
+    - pillars            # "What Stays With You" 5 elements
+    - services           # "The Rooms" 3 cards
+    - team               # "The People" portrait row (placeholders)
+    - numbers            # "By the Numbers" stats (placeholders)
+    - roadmap            # "The Plan" timeline, 6 milestones
+    - quote              # full-bleed hero pull quote
+    - closing            # full-bleed hero + contact
+
+effects:
+  texture: [fine film grain overlay, gradient scrim]
+  shadows: none
+
+rules:
+  - dark cinematic stage by default; ivory ships as the one light variant
+  - hero photos use normal compositing with a gradient scrim, never multiply-over-dark
+  - single warm accent rationed to the thin rule and kickers; no busy charts, no clip-art
+  - Bodoni for big quiet lines, Jost uppercase for thin letterspaced labels; minimal words per slide
+  - keep copy plain: no em dashes, no filler, no jargon, no theatrics
+  - update the footer running title and NN/TT page numbers to match the final deck
+
+features:                # shipped in the template, not content
+  navigation: [arrows, space, home/end, on-screen buttons, "#n hash"]
+  palette_switcher: true
+  inline_edit: true       # toolbar Edit / press E; contenteditable
+  image_swap: true        # click or drop to replace any .slot image in edit mode
+  save: file-system-access-api   # toolbar Save / Cmd-S, falls back to download
+  pdf: { in_browser: true, print_css: true, headless: export-pdf.sh }   # one exact 1600x900 page per slide

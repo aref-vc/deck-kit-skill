@@ -1,19 +1,19 @@
 # Deck Kit
 
-**Ten editorial slide-deck templates, as self-contained HTML.** Point it at a topic, a document, a
+**Fifteen editorial slide-deck templates, as self-contained HTML.** Point it at a topic, a document, a
 repo, or a brief, and it produces a 16:9 deck you can open in any browser, edit in place, and export
 to a pixel-accurate PDF. No build step to view, no fonts to install, no server.
 
-![Ten template covers](screenshots/hero.jpg)
+![Deck Kit template covers](screenshots/hero.jpg)
 
 ---
 
 ## What it is
 
-A library of ten deck styles that all share one backbone (12 slides, the same chrome, the same export)
-but each look like a different studio made them. Drop in your content and pick a look. Four of the
-templates draw their visuals as inline SVG; six use mixed-media imagery. Every deck is one HTML file
-with fonts and images bundled in.
+A library of fifteen deck styles that all share one backbone (12 slides, the same chrome, the same
+export) but each look like a different studio made them. Drop in your content and pick a look. Seven of
+the templates draw their visuals as inline SVG (or bundled figures); eight use mixed-media imagery.
+Every deck is one HTML file with fonts and images bundled in.
 
 Each deck, out of the box, can:
 
@@ -26,10 +26,11 @@ Each deck, out of the box, can:
 ## See it in action
 
 `examples/fable5/` is one real report (the launch of Anthropic's Claude Fable 5) rendered
-through all ten templates, with the real benchmark figures. It is the clearest way to see how the
-same content reads in ten different voices.
+through ten of these templates, with the real benchmark figures. It is the clearest way to see how the
+same content reads in different voices. (The example covers the original ten; the five newer styles
+ship as live templates.)
 
-## The ten templates
+## The fifteen templates
 
 Click any thumbnail to open the **live, interactive deck** (all twelve slides, arrow-key navigation,
 palette switching, PDF export) on GitHub Pages.
@@ -46,9 +47,14 @@ palette switching, PDF export) on GitHub Pages.
 | <a href="https://aref-vc.github.io/deck-kit-skill/templates/08-ledger/deck.html"><img src="screenshots/08-ledger-cover.jpg" width="260"></a> | **08 · Ledger** — data (Tufte-clean charts, one signal colour) | Market research, financial, KPI reviews |
 | <a href="https://aref-vc.github.io/deck-kit-skill/templates/09-terminal/deck.html"><img src="screenshots/09-terminal-cover.jpg" width="260"></a> | **09 · Terminal** — dark CRT console (monospace, schematics) | Repos, architecture, AI / agent systems |
 | <a href="https://aref-vc.github.io/deck-kit-skill/templates/10-vanguard/deck.html"><img src="screenshots/10-vanguard-cover.jpg" width="260"></a> | **10 · Vanguard** — futuristic (wireframe, HUD) | Deep-tech, robotics, R&D |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/11-atrium/deck.html"><img src="screenshots/11-atrium-cover.jpg" width="260"></a> | **11 · Atrium** — Swiss / corporate-modernist (clean grid, one signal) | Enterprise, consulting, strategy, board, SaaS sales |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/12-vital/deck.html"><img src="screenshots/12-vital-cover.jpg" width="260"></a> | **12 · Vital** — healthcare / wellness (calm, rounded, humane) | Pharma, biotech, medtech, wellness, public health |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/13-marquee/deck.html"><img src="screenshots/13-marquee-cover.jpg" width="260"></a> | **13 · Marquee** — cinematic full-bleed photography (Didone, scrims) | Hospitality, real estate, travel, architecture, fashion |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/14-circuit/deck.html"><img src="screenshots/14-circuit-cover.jpg" width="260"></a> | **14 · Circuit** — neon cyberpunk (glow, glass HUD, dark) | Games, esports, crypto / web3, entertainment |
+| <a href="https://aref-vc.github.io/deck-kit-skill/templates/15-almanac/deck.html"><img src="screenshots/15-almanac-cover.jpg" width="260"></a> | **15 · Almanac** — academic / scientific (serif, figures, footnotes) | Universities, think-tanks, policy, edtech, NGO |
 
 Prefer a single still of every slide? The full 12-slide patchworks are in [`screenshots/`](screenshots)
-(the `*-grid.jpg` files). The same content rendered in all ten styles is the
+(the `*-grid.jpg` files). The same content rendered in ten of these styles is the
 [Fable 5 example](https://aref-vc.github.io/deck-kit-skill/).
 
 ## Install as a Claude skill
@@ -68,9 +74,9 @@ Claude reads `SKILL.md`, picks a template, maps your content onto the twelve sli
 and hands back a single self-contained `deck-standalone.html`. For claude.ai, zip this folder and
 upload it under **Settings → Features**.
 
-Optional: for fresh, topic-matched imagery on the six photo templates, also install the companion
-[`gemini-imagegen`](https://github.com/anthropics/skills) skill and set `GEMINI_API_KEY`. The four SVG
-templates (Grid, Ledger, Terminal, Vanguard) need nothing.
+Optional: for fresh, topic-matched imagery on the eight photo templates, also install the companion
+[`gemini-imagegen`](https://github.com/anthropics/skills) skill and set `GEMINI_API_KEY`. The seven
+no-image templates (Grid, Ledger, Terminal, Vanguard, Atrium, Circuit, Almanac) need nothing.
 
 ## Use it by hand (no skill needed)
 
@@ -87,8 +93,8 @@ cd my-deck && python3 build-standalone.py     # -> deck-standalone.html
 ```
 deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
   SKILL.md                 the skill: when to use it + the build workflow
-  TEMPLATES.md             registry of the ten templates
-  templates/01..10/        each template: deck.html, assets/, vendor/ (fonts + lib), build-standalone.py
+  TEMPLATES.md             registry of the fifteen templates
+  templates/01..15/        each template: deck.html, assets/, vendor/ (fonts + lib), build-standalone.py
   references/              palettes, slide-types, imagery rules
   library/                 reusable collage assets + manifest
   scripts/                 new-deck.sh, add-image-swap.py
@@ -101,10 +107,10 @@ deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
 
 - **To view, edit, or export a deck:** none. Each deck is a self-contained HTML file. Fonts are
   bundled locally (so the PDF embeds them), and the only library, used for PDF capture, is vendored in.
-- **To generate fresh imagery** for the six photo templates: an image generator (this kit uses Google's
-  Gemini via the `gemini-imagegen` skill). This is optional and build-time only. The four SVG templates
-  (Grid, Ledger, Terminal, Vanguard) never need it, and any photo template can ship with its bundled
-  art.
+- **To generate fresh imagery** for the eight photo templates: an image generator (this kit uses Google's
+  Gemini via the `gemini-imagegen` skill). This is optional and build-time only. The seven no-image
+  templates (Grid, Ledger, Terminal, Vanguard, Atrium, Circuit, Almanac) never need it, and any photo
+  template can ship with its bundled art.
 
 ## Notes
 

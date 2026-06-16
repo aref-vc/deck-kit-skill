@@ -1,6 +1,6 @@
 # Template Registry
 
-Ten themed deck templates that share **one 12-slide backbone** (the style schema below) but fill it with
+Fifteen themed deck templates that share **one 12-slide backbone** (the style schema below) but fill it with
 a distinct mood, palette, typography, visual medium, and layout signature. They live in
 `templates/<id>-<name>/`; pick one by id and point it at an input (research dossier, repo, document,
 chat, brief). The backbone is what makes them interchangeable; the fill is what makes each one feel like
@@ -54,7 +54,7 @@ pillars, services, team, numbers, roadmap, quote, closing` — shared verbatim b
 
 ---
 
-## The library (10 templates)
+## The library (15 templates)
 
 | # | Call | Codename | Family | Visual medium | Best input |
 |---|------|----------|--------|---------------|-----------|
@@ -68,6 +68,11 @@ pillars, services, team, numbers, roadmap, quote, closing` — shared verbatim b
 | 08 | `template-08` | **Ledger** | Data / market research | Charts + mono + 1 signal color | Market research, financial, KPI, due diligence |
 | 09 | `template-09` | **Terminal** | Coding / IT vintage | Monospace + schematic / punch-card | Repo summaries, architecture, AI/agent systems |
 | 10 | `template-10` | **Vanguard** | Robotics / futuristic | Wireframe / HUD + neon | Deep-tech, robotics, R&D, futurist strategy |
+| 11 | `template-11` | **Atrium** | Swiss / International Typographic | Type grid + one signal color | Enterprise, consulting, strategy, board, SaaS sales |
+| 12 | `template-12` | **Vital** | Healthcare / wellness | Soft photo + rounded forms | Pharma, biotech, medtech, wellness, public health |
+| 13 | `template-13` | **Marquee** | Cinematic photography | Full-bleed photo + Didone | Hospitality, real estate, travel, architecture, fashion |
+| 14 | `template-14` | **Circuit** | Neon / cyberpunk | Neon SVG + glass HUD | Games, esports, crypto/web3, entertainment |
+| 15 | `template-15` | **Almanac** | Academic / scientific | Figure plates + serif | Universities, think-tanks, policy, edtech, NGO |
 
 ### Palettes (the quick read)
 
@@ -82,6 +87,11 @@ pillars, services, team, numbers, roadmap, quote, closing` — shared verbatim b
 | 08 Ledger | `#FBFAF8` | `#16181D` | signal red `#E5484D` · grey ramp `#C9CCD1 → #3A3E47` |
 | 09 Terminal | `#0A0E0A` (dark CRT) | `#E3FBE9` | phosphor green `#3BE26B` · amber `#FFB454` · cyan `#54D1E6` |
 | 10 Vanguard | `#F2F5F7` (lab) | `#0A0F1C` | electric blue `#2B6BFF` · cyan `#19D3E0` · violet `#7A3CFF` · *(dark HUD variant: `#0A0F1C` + cyan glow)* |
+| 11 Atrium | `#F7F6F3` | `#14161A` | signal red `#D8352A` · neutral grey ramp |
+| 12 Vital | `#F2F6F4` | `#1E2A2A` | teal `#2F9E8F` · sage `#8FB89B` · sky `#7FB3D5` · coral `#E8907C` · amber `#E6B45A` |
+| 13 Marquee | `#0E0E10` (dark) | `#FFFFFF` | gold `#C9A86A` · *(ivory light variant: `#F4F1EC`)* |
+| 14 Circuit | `#0A0A12` (dark) | `#EAF0FF` | magenta `#FF2E97` · cyan `#21E6FF` · lime `#B6FF3C` · violet `#8A5CFF` |
+| 15 Almanac | `#F4F0E6` (cream) | `#20242B` | ink-blue `#2A3A6B` · oxblood `#8A2B2B` |
 
 ---
 
@@ -126,11 +136,38 @@ with subtle scanlines. Monospace throughout. For repos, architecture, agent/AI s
 blueprint line-art, sensor scans, glowing nodes, targeting reticles; wide techy grotesque + mono.
 Light "lab" theme + dark "HUD" variant. For deep-tech, robotics, R&D.
 
+**11 · Atrium (Swiss / International Typographic)** — Strict column grid, generous whitespace, hairline
+rules, flush-left Inter Tight headings with small mono kicker labels, near-monochrome with a single
+rationed signal color. Big quiet numerals, no decoration. *Trades collage for disciplined type.* For
+enterprise, consulting, strategy, and board decks.
+
+**12 · Vital (Healthcare / wellness)** — Calm mint-white with teal/sage/sky, rounded corners and soft
+shadows, humanist Mulish throughout, accessible contrast, gentle line icons, soft photography.
+Reassuring and clear, not arty. For pharma, biotech, medtech, wellness, and public health.
+
+**13 · Marquee (Cinematic photography)** — Edge-to-edge photography with gradient scrims, light
+high-contrast Bodoni hero lines, wide-tracked Jost captions, a single thin gold rule, deep cinematic
+negative space. Dark by default with a light ivory variant. Hero images composite normally (no
+multiply) so the dark background never crushes them. For hospitality, real estate, travel,
+architecture, and fashion.
+
+**14 · Circuit (Neon / cyberpunk)** — Deep indigo-black with magenta/cyan/lime/violet neon, glow on
+accents and numerals, glassmorphic HUD panels, a scan-grid horizon, Chakra Petch display over Space
+Grotesk and Space Mono. Wireframe schematics recolored to neon gradient strokes; body text stays
+full-legibility. *A vibrant counterpart to Terminal's retro green and Vanguard's clean lab HUD.* For
+games, esports, crypto/web3, and entertainment.
+
+**15 · Almanac (Academic / scientific)** — Cream paper, Playfair serif heads over humanist Mulish body,
+two-column text, numbered figure plates with captions, footnotes and source citations, hairline rules,
+a single restrained scholarly accent. *Trades collage for a typeset paper.* For universities, research
+institutes, think-tanks, policy, and NGO findings.
+
 ---
 
 ## Imagery medium
 
-Each template declares an `imagery.medium`. Collage, duotone-photo, painterly, and ephemera templates
-(01, 03, 04, 05, 06, 07) use photographic or generated imagery via the `gemini-imagegen` skill;
-geometric, charts, and wireframe templates (02, 08, 09, 10) render their visuals as inline SVG and need
-no image generation.
+Each template declares an `imagery.medium`. Collage, duotone-photo, painterly, ephemera, and cinematic
+templates (01, 03, 04, 05, 06, 07, 12, 13) use photographic or generated imagery via the
+`gemini-imagegen` skill; geometric, charts, wireframe, neon, and figure templates (02, 08, 09, 10, 11,
+14, 15) render their visuals as inline SVG (or reuse bundled figure plates) and need no image
+generation.
