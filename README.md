@@ -97,7 +97,7 @@ deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
   templates/01..15/        each template: deck.html, assets/, vendor/ (fonts + lib), build-standalone.py
   references/              palettes, slide-types, imagery rules
   library/                 reusable collage assets + manifest
-  scripts/                 new-deck.sh, add-image-swap.py
+  scripts/                 new-deck.sh, add-image-swap.py, check-decks.py, check-edit.py
   examples/fable5/         the Fable 5 report, rendered ten ways
   screenshots/             covers + 12-slide patchworks
   README.md, index.html    presentation + gallery (not used by the skill itself)
@@ -119,6 +119,9 @@ deck-kit/                  (this repo, cloned to ~/.claude/skills/deck-kit)
   `build-standalone.py`.
 - Dark photo templates must use dark-background imagery placed directly, never the light-theme multiply
   bake (it crushes images to black). See [`references/image-prompts.md`](references/image-prompts.md).
-- `python3 scripts/check-decks.py` asserts every template and example deck shares the same core chrome
-  (navigation, palette, inline editing, PDF export, image swap). Run it as a pre-push or CI guard so a
-  template-only change can't silently skip the examples.
+- `python3 scripts/check-decks.py` is the consistency guard. It (1) asserts every template and example
+  deck shares the same core chrome (navigation, palette, inline editing, PDF export, image swap), then
+  (2) renders each deck in headless Chrome and verifies edit mode actually works: every text leaf is
+  editable, every slide image is swappable, and nothing covers the text. Run it as a pre-push or CI
+  guard. Add `--no-render` for a fast, browserless static-only run; the render stage (`check-edit.py`)
+  skips automatically when Chrome is absent.
